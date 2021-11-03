@@ -1,0 +1,1 @@
+export const WEB_TITLE = '用AppsScript建立React網站';
