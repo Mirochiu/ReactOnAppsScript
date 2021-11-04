@@ -1,6 +1,12 @@
 import React from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import {
+  BsBootstrapFill,
+  BsHouseDoorFill,
+  BsFillGridFill,
+  BsPersonCircle,
+} from 'react-icons/bs';
+import IconNavLink from './IconNavLink';
 
 // read more on https://react-bootstrap.github.io/components/navbar/
 
@@ -8,21 +14,23 @@ const MyNav = () => {
   return (
     <Navbar collapseOnSelect expand="md" bg="primary" variant="dark">
       <Container>
-        <Navbar.Brand>React on AppScript</Navbar.Brand>
+        <Navbar.Brand>
+          <BsBootstrapFill size={32} /> React on AppScript
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
-            <LinkContainer to="/home">
-              <Nav.Link>首頁</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/drive-lister">
-              <Nav.Link>Drive檔案列表</Nav.Link>
-            </LinkContainer>
+            <IconNavLink linkTo="/home" iconComp={<BsHouseDoorFill />}>
+              首頁
+            </IconNavLink>
+            <IconNavLink linkTo="/drive-lister" iconComp={<BsFillGridFill />}>
+              Drive檔案列表
+            </IconNavLink>
           </Nav>
           <Nav>
-            <LinkContainer to="/login">
-              <Nav.Link>登入</Nav.Link>
-            </LinkContainer>
+            <IconNavLink linkTo="/login" iconComp={<BsPersonCircle />}>
+              登入
+            </IconNavLink>
           </Nav>
         </Navbar.Collapse>
       </Container>
