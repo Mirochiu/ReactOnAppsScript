@@ -4,6 +4,7 @@ import MyNav from './components/MyNav';
 import Home from './pages/Home';
 import DirveLister from './pages/DirveLister';
 import Login from './pages/Login';
+import UploadHtml from './pages/UploadHtml';
 import NoSuchPage from './pages/NoSuchPage';
 
 import './styles.css';
@@ -21,6 +22,9 @@ const App = () => {
         </Route>
         <Route path="/login">
           <Login />
+        </Route>
+        <Route path="/upload-html">
+          <UploadHtml />
         </Route>
         <Route>
           <NoSuchPage />

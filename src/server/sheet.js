@@ -14,3 +14,10 @@ export function findIndexInColumn(name, column, sheet) {
     .getValues();
   return list.findIndex(r => name === r[column]);
 }
+
+export function getContentSheet(sheetName) {
+  const book = SpreadsheetApp.openByUrl(SHEET_URL);
+  const sheet =
+    sheetName == null ? book.getSheets()[0] : book.getSheetByName(sheetName);
+  return sheet;
+}

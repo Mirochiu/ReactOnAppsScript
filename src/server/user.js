@@ -67,3 +67,12 @@ export function auth(token) {
     throw new Error(`invalid signature: ${signature}, ${computedSignature}`);
   return json.user;
 }
+
+export function validateUploadPermission(notThrow) {
+  const e = Session.getEffectiveUser();
+  const a = Session.getActiveUser();
+  const result = e?.getEmail() === a?.getEmail();
+  if (!notThrow && !result)
+    throw new Error(`您沒有權限上傳檔案，請確認你已經登入Google帳號`);
+  return result;
+}

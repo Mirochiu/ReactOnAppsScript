@@ -4,6 +4,7 @@ import {
   BsBootstrapFill,
   BsHouseDoorFill,
   BsFillGridFill,
+  BsFillCloudUploadFill,
   BsPersonCircle,
 } from 'react-icons/bs';
 import IconNavLink from './IconNavLink';
@@ -28,6 +29,12 @@ const MyNav = () => {
             </IconNavLink>
           </Nav>
           <Nav>
+            <IconNavLink
+              linkTo="/upload-html"
+              iconComp={<BsFillCloudUploadFill />}
+            >
+              上傳
+            </IconNavLink>
             <IconNavLink linkTo="/login" iconComp={<BsPersonCircle />}>
               登入
             </IconNavLink>
