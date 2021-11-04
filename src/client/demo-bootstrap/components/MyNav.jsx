@@ -3,6 +3,7 @@ import { Navbar, Nav, Container } from 'react-bootstrap';
 import {
   BsBootstrapFill,
   BsHouseDoorFill,
+  BsListUl,
   BsFillGridFill,
   BsFillCloudUploadFill,
   BsPersonCircle,
@@ -23,6 +24,9 @@ const MyNav = () => {
           <Nav className="me-auto">
             <IconNavLink linkTo="/home" iconComp={<BsHouseDoorFill />}>
               首頁
+            </IconNavLink>
+            <IconNavLink linkTo="/link-lister" iconComp={<BsListUl />}>
+              連結列表
             </IconNavLink>
             <IconNavLink linkTo="/drive-lister" iconComp={<BsFillGridFill />}>
               Drive檔案列表

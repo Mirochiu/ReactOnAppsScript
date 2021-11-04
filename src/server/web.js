@@ -10,7 +10,3 @@ export function doGet(req) {
   output.addMetaTag('viewport', 'width=device-width, initial-scale=1');
   return output;
 }
-
-export function getServerUrl() {
-  return ScriptApp.getService().getUrl();
-}
