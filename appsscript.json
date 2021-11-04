@@ -2,7 +2,9 @@
   "timeZone": "America/New_York",
   "dependencies": {},
   "exceptionLogging": "STACKDRIVER",
-  "oauthScopes": [],
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/drive"
+  ],
   "runtimeVersion": "V8",
   "webapp": {
     "executeAs": "USER_DEPLOYING",
