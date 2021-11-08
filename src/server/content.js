@@ -65,3 +65,11 @@ export function getContentByName(name) {
   }
   return DEFAULT_RESPONSE;
 }
+
+export function deleteContentByName(name) {
+  User.validateUploadPermission();
+  const sheet = getContentSheet();
+  const rowIdx = findIndexInColumn(name, COLUMN_IDX_OF_NAME, sheet);
+  if (rowIdx > 0) sheet.deleteRow(1 + rowIdx);
+  return { deleted: rowIdx >= 0 };
+}
