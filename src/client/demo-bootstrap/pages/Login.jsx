@@ -1,63 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Container, Row, Alert, Button } from 'react-bootstrap';
+import { Link, useLocation } from 'react-router-dom';
 import LoginForm from '../components/LoginForm';
-
-import Server from '../../utils/server';
-
-const { serverFunctions } = Server;
-
-const LoginState = {
-  havnt: -2,
-  error: -1,
-  unknown: 0,
-  logined: 1,
-};
+import useAuth from '../hooks/useAuth';
 
 const Login = () => {
-  const [loginState, setLoginState] = useState(LoginState.unknown);
+  const { authed, login, logout } = useAuth();
   const [msg, showText] = useState(null);
-  const [link, showLink] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem('user-token');
-    serverFunctions
-      .authLogin(token)
-      .then(() => {
-        setLoginState(LoginState.logined);
-        showText('您已登入');
-        showLink(true);
-      })
-      .catch(error => {
-        console.warn(error, token);
-        setLoginState(LoginState.havnt);
-      });
-  }, []);
+  const location = useLocation();
 
   const onSubmit = event => {
     event.preventDefault();
     showText('登入中，請稍候...');
-    serverFunctions
-      .loginUser(event.target)
-      .then(response => {
-        setLoginState(LoginState.logined);
-        localStorage.setItem('user-token', response.token);
-        showText(response.message);
-        showLink(true);
-      })
-      .catch(error => {
-        console.error(error);
-        setLoginState(LoginState.error);
-        showText(`登入失敗，錯誤訊息:${error.message}`);
-      });
+    login(event.target).catch(error => {
+      console.warn(error);
+      showText(error.message);
+    });
   };
+
+  const onLogout = () => {
+    logout();
+    showText(null);
+  };
+
+  if (authed) {
+    return (
+      <Container>
+        <h1>您已登入</h1>
+        <Row>
+          <Button onClick={onLogout} variant="secondary">
+            登出
+          </Button>
+        </Row>
+        <Row>
+          <Link to="/home">點此前往首頁</Link>
+        </Row>
+      </Container>
+    );
+  }
+
+  const hint = msg || location?.state?.message;
 
   return (
     <Container>
       <h1>登入</h1>
-      {loginState < 0 && <LoginForm onSubmit={onSubmit} />}
-      <Row>{msg}</Row>
-      {link && <Link to="/home">點此前往首頁</Link>}
+      {hint && <Alert variant="secondary">{hint}</Alert>}
+      <LoginForm onSubmit={onSubmit} />
     </Container>
   );
 };

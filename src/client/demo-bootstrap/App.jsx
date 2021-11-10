@@ -1,5 +1,6 @@
 import React from 'react';
 import { MemoryRouter as Router, Switch, Route } from 'react-router-dom';
+import PrivateRoute from './components/PrivateRoute';
 import MyNav from './components/MyNav';
 import Home from './pages/Home';
 import LinkLister from './pages/LinkLister';
@@ -7,10 +8,11 @@ import DirveLister from './pages/DirveLister';
 import Login from './pages/Login';
 import UploadHtml from './pages/UploadHtml';
 import NoSuchPage from './pages/NoSuchPage';
+import { AuthProvider } from './hooks/useAuth';
 
 import './styles.css';
 
-const App = () => {
+const AppRoutes = () => {
   return (
     <Router>
       <MyNav />
@@ -21,20 +23,28 @@ const App = () => {
         <Route path="/link-lister">
           <LinkLister />
         </Route>
-        <Route path="/drive-lister">
+        <PrivateRoute path="/drive-lister">
           <DirveLister />
-        </Route>
+        </PrivateRoute>
         <Route path="/login">
           <Login />
         </Route>
-        <Route path="/upload-html">
+        <PrivateRoute path="/upload-html">
           <UploadHtml />
-        </Route>
+        </PrivateRoute>
         <Route>
           <NoSuchPage />
         </Route>
       </Switch>
     </Router>
+  );
+};
+
+const App = () => {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
   );
 };
 
