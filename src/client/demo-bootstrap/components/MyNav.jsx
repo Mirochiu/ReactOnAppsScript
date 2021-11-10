@@ -6,9 +6,10 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 const MyNav = () => {
   return (
-    <Navbar bg="primary" variant="dark">
+    <Navbar collapseOnSelect expand="md" bg="primary" variant="dark">
       <Container>
         <Navbar.Brand>React on AppScript</Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
             <LinkContainer to="/home">
