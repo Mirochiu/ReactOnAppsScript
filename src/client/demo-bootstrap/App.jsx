@@ -1,7 +1,7 @@
 import React from 'react';
 import { MemoryRouter as Router, Switch, Route } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute';
-import MyNav from './components/MyNav';
+import MyNav, { BottomNav } from './components/MyNav';
 import Home from './pages/Home';
 import LinkLister from './pages/LinkLister';
 import DirveLister from './pages/DirveLister';
@@ -16,6 +16,7 @@ const AppRoutes = () => {
   return (
     <Router>
       <MyNav />
+      <BottomNav />
       <Switch>
         <Route exact path={['/', '/home']}>
           <Home />
