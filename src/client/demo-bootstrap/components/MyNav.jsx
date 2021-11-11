@@ -11,9 +11,23 @@ import {
 import IconNavLink, { ButtomIconNavLink } from './IconNavLink';
 import useAuth from '../hooks/useAuth';
 
+const haventAuthed = ({ authed }) => !authed;
+
 const AllLinks = {
   home: { path: '/home', label: '首頁', icon: <BsHouseDoorFill /> },
   link_lister: { path: '/link-lister', label: '連結列表', icon: <BsListUl /> },
+  drive_lister: {
+    path: '/drive-lister',
+    label: 'Drive檔案列表',
+    icon: <BsFillGridFill />,
+    disableIf: haventAuthed,
+  },
+  upload_html: {
+    path: '/upload-html',
+    label: '上傳',
+    icon: <BsFillCloudUploadFill />,
+    disableIf: haventAuthed,
+  },
   login: {
     path: '/login',
     label: '登入',
@@ -21,6 +35,8 @@ const AllLinks = {
     icon: <BsPersonCircle />,
   },
 };
+
+const LinksForTop = Object.keys(AllLinks).map(key => AllLinks[key]);
 
 const LinksForBottom = [AllLinks.home, AllLinks.link_lister, AllLinks.login];
 
@@ -58,30 +74,23 @@ const MyNav = () => {
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
-            <IconNavLink linkTo="/home" iconComp={<BsHouseDoorFill />}>
-              首頁
-            </IconNavLink>
-            <IconNavLink linkTo="/link-lister" iconComp={<BsListUl />}>
-              連結列表
-            </IconNavLink>
-            {authed && (
-              <IconNavLink linkTo="/drive-lister" iconComp={<BsFillGridFill />}>
-                Drive檔案列表
-              </IconNavLink>
-            )}
-          </Nav>
-          <Nav>
-            {authed && (
-              <IconNavLink
-                linkTo="/upload-html"
-                iconComp={<BsFillCloudUploadFill />}
-              >
-                上傳
-              </IconNavLink>
-            )}
-            <IconNavLink linkTo="/login" iconComp={<BsPersonCircle />}>
-              {authed ? '登出' : '登入'}
-            </IconNavLink>
+            {LinksForTop.reduce((prev, link, idx) => {
+              if (
+                typeof link.disableIf === 'function' &&
+                link.disableIf({ authed })
+              )
+                return prev;
+              prev.push(
+                <IconNavLink
+                  key={`main-menu-${idx}`}
+                  linkTo={link.path}
+                  iconComp={link.icon}
+                >
+                  {authed ? link.labelForAuth || link.label : link.label}
+                </IconNavLink>
+              );
+              return prev;
+            }, [])}
           </Nav>
         </Navbar.Collapse>
       </Container>
