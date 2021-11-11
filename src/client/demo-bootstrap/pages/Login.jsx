@@ -7,15 +7,19 @@ import useAuth from '../hooks/useAuth';
 const Login = () => {
   const { authed, login, logout } = useAuth();
   const [msg, showText] = useState(null);
+  const [submiting, setSubmit] = useState(null);
   const location = useLocation();
 
   const onSubmit = event => {
     event.preventDefault();
+    setSubmit(true);
     showText('登入中，請稍候...');
-    login(event.target).catch(error => {
-      console.warn(error);
-      showText(error.message);
-    });
+    login(event.target)
+      .catch(error => {
+        console.warn(error);
+        showText(error.message);
+      })
+      .finally(() => setSubmit(false));
   };
 
   const onLogout = () => {
@@ -45,7 +49,7 @@ const Login = () => {
     <Container>
       <h1>登入</h1>
       {hint && <Alert variant="secondary">{hint}</Alert>}
-      <LoginForm onSubmit={onSubmit} />
+      <LoginForm onSubmit={onSubmit} isSubmiting={submiting} />
     </Container>
   );
 };

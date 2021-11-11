@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Row, Col, Button } from 'react-bootstrap';
+import { Form, Row, Col, Button, Spinner } from 'react-bootstrap';
 
-const LoginForm = ({ onSubmit }) => {
+const LoginForm = ({ onSubmit, isSubmiting }) => {
   return (
     <Form onSubmit={onSubmit}>
       <Form.Group as={Row} className="mb-3" controlId="loginAccount">
@@ -34,7 +34,10 @@ const LoginForm = ({ onSubmit }) => {
         </Col>
       </Form.Group>
       <Row>
-        <Button variant="primary" type="submit">
+        <Button variant="primary" type="submit" disabled={isSubmiting}>
+          {isSubmiting && (
+            <Spinner as="span" animation="border" size="sm" role="status" />
+          )}
           登入
         </Button>
       </Row>
@@ -44,6 +47,7 @@ const LoginForm = ({ onSubmit }) => {
 
 LoginForm.propTypes = {
   onSubmit: PropTypes.func,
+  isSubmiting: PropTypes.bool,
 };
 
 export default LoginForm;
