@@ -1,4 +1,4 @@
-import { RE_ACCOUNT, RE_PASSWORD } from './settings';
+import { RE_ACCOUNT, RE_PASSWORD, SERVER_URL } from './settings';
 import { getUserSheet, findIndexInColumn } from './sheet';
 import createJwt from './jwt';
 
@@ -75,4 +75,83 @@ export function validateUploadPermission(notThrow) {
   if (!notThrow && !result)
     throw new Error(`您沒有權限上傳檔案，請確認你已經登入Google帳號`);
   return result;
+}
+
+function addUser(name, pwd) {
+  const sheet = getUserSheet();
+  const rowIdx = findIndexInColumn(name, COLUMN_IDX_OF_NAME, sheet);
+  if (rowIdx >= 0) {
+    const confirmed = sheet
+      .getRange(1 + rowIdx, 1 + COLUMN_IDX_OF_CONFIRMED)
+      .getValue();
+    if (confirmed) throw new Error('你已經註冊過囉!');
+    throw new Error('你已經註冊了，但是還沒點擊確認信，請查看你的信箱!');
+  }
+  const accessToken = createJwt({
+    privateKey: ScriptApp.getScriptId(), // 請改成你喜歡的
+    expiresInHours: 24,
+    data: { iss: name },
+  });
+  sheet.appendRow([name, pwd, accessToken]);
+  const url = `${SERVER_URL}?show=confirmToken&name=${accessToken}`;
+  GmailApp.sendEmail(name, '確認註冊', '', {
+    noReply: true,
+    name: '註冊系統',
+    htmlBody: `<p>您的註冊時間: ${new Date().toString()}</p>
+          <p>請點擊此連結以確認<a href="${url}">${url}</a></p>`,
+  });
+  SpreadsheetApp.flush();
+  return { status: 201, message: '已註冊成功，請查看您的信箱!' };
+}
+
+export function register(form) {
+  const { username, password } = form;
+  if (typeof username !== 'string' || !RE_ACCOUNT.test(username))
+    throw new Error('帳號格式錯誤：應是E-mail');
+  if (password !== form['confim-password']) throw new Error('兩次密碼不同');
+  if (typeof password !== 'string' || !RE_PASSWORD.test(password))
+    throw new Error(
+      '密碼格式錯誤：首字需為英文，其他為大小寫英數字，長度8到16之間'
+    );
+  return addUser(username, password);
+}
+
+function handleConfirm(token) {
+  let json = {};
+  try {
+    const payload = token.split('.')[1];
+    const decoded = Utilities.base64DecodeWebSafe(payload);
+    json = JSON.parse(Utilities.newBlob(decoded).getDataAsString());
+  } catch (error) {
+    Logger.log(`轉換失敗${error.stack}`);
+    throw new Error('確認資訊錯誤');
+  }
+  const sheet = getUserSheet();
+  const rowIdx = findIndexInColumn(json.iss, COLUMN_IDX_OF_NAME, sheet);
+  if (rowIdx < 0) {
+    Logger.log(`${json.iss} '尚未註冊`);
+    throw new Error('尚未註冊');
+  }
+  const range = sheet.getRange(1 + rowIdx, 1 + COLUMN_IDX_OF_ACCESSTOKEN, 1, 2);
+  const [accessToken, confirmed] = range.getValues()[0];
+  if (confirmed) return { status: 200, message: '註冊已確認' };
+  if (token !== accessToken) {
+    Logger.log('token!=', token, accessToken);
+    throw new Error('確認失敗');
+  }
+  range.setValues([[accessToken, new Date()]]);
+  SpreadsheetApp.flush();
+  return { status: 200, message: '註冊已確認' };
+}
+
+export function confirmRegistration(token) {
+  let content;
+  try {
+    handleConfirm(token);
+    content = '註冊確認成功';
+  } catch (error) {
+    Logger.log(error.stack);
+    content = `註冊確認失敗 ${error.message}`;
+  }
+  return HtmlService.createHtmlOutput(content);
 }

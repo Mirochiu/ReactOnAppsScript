@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Form, Row, Col, Button, Spinner } from 'react-bootstrap';
 
-const LoginForm = ({ onSubmit, isSubmiting }) => {
+const LoginForm = ({ onSubmit, isSubmiting, buttonTitle, confirmPassword }) => {
   return (
     <Form onSubmit={onSubmit}>
       <Form.Group as={Row} className="mb-3" controlId="loginAccount">
@@ -33,21 +33,44 @@ const LoginForm = ({ onSubmit, isSubmiting }) => {
           />
         </Col>
       </Form.Group>
+      {confirmPassword && (
+        <Form.Group as={Row} className="mb-3" controlId="confirmPassword">
+          <Form.Label column sm={2}>
+            確認密碼
+          </Form.Label>
+          <Col sm={10}>
+            <Form.Control
+              type="password"
+              name="confim-password"
+              placeholder="輸入密碼"
+              autocomplete="current-password"
+              required
+            />
+          </Col>
+        </Form.Group>
+      )}
       <Row>
         <Button variant="primary" type="submit" disabled={isSubmiting}>
           {isSubmiting && (
             <Spinner as="span" animation="border" size="sm" role="status" />
           )}
-          登入
+          {buttonTitle}
         </Button>
       </Row>
     </Form>
   );
 };
 
+LoginForm.defaultProps = {
+  buttonTitle: '登入',
+  confirmPassword: false,
+};
+
 LoginForm.propTypes = {
   onSubmit: PropTypes.func,
   isSubmiting: PropTypes.bool,
+  buttonTitle: PropTypes.string,
+  confirmPassword: PropTypes.bool,
 };
 
 export default LoginForm;

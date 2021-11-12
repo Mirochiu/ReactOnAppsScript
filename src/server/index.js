@@ -13,3 +13,4 @@ global.loginUser = userFunctions.login;
 global.authLogin = userFunctions.auth;
 global.getLinkList = contentFunctions.getLinkList;
 global.deleteContentFromSheet = contentFunctions.deleteContentByName;
+global.register = userFunctions.register;

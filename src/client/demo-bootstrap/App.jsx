@@ -8,6 +8,7 @@ import DirveLister from './pages/DirveLister';
 import Login from './pages/Login';
 import UploadHtml from './pages/UploadHtml';
 import NoSuchPage from './pages/NoSuchPage';
+import Registration from './pages/Registration';
 import { AuthProvider } from './hooks/useAuth';
 
 import './styles.css';
@@ -29,6 +30,9 @@ const AppRoutes = () => {
         </PrivateRoute>
         <Route path="/login">
           <Login />
+        </Route>
+        <Route path="/register">
+          <Registration />
         </Route>
         <PrivateRoute path="/upload-html">
           <UploadHtml />

@@ -1,4 +1,5 @@
 import { getContentByName } from './content';
+import { confirmRegistration } from './user';
 
 const Handlers = {
   default: {
@@ -6,6 +7,10 @@ const Handlers = {
   },
   html: {
     func: name => HtmlService.createHtmlOutput(getContentByName(name)),
+  },
+  confirmToken: {
+    func: confirmRegistration,
+    immediateRetrun: true,
   },
 };
 

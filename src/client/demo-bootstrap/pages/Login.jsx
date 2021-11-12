@@ -50,6 +50,11 @@ const Login = () => {
       <h1>登入</h1>
       {hint && <Alert variant="secondary">{hint}</Alert>}
       <LoginForm onSubmit={onSubmit} isSubmiting={submiting} />
+      <Row>
+        <Link to="/register" className="text-secondary">
+          <small>註冊會員</small>
+        </Link>
+      </Row>
     </Container>
   );
 };
