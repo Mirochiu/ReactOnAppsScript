@@ -71,6 +71,10 @@ const copyFilesConfig = {
     new CopyWebpackPlugin({
       patterns: [
         {
+          from: 'assets',
+          to: destination,
+        },
+        {
           from: copyAppscriptEntry,
           to: destination,
         },

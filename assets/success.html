@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top" href="<?= baseUrl ?>">
+  </head>
+  <body>
+    <h1>LINE登入成功</h1>
+    <p>歡迎您:<?= loginName ?>使用LINE登入</p>
+    <p>請點一下<a href="exec">這裡</a>回首頁</p>
+    <script>
+      localStorage.setItem('user-token', <?= loginToken ?>);
+      google.script.history.replace(null, '', ''); // remove params and hash
+      // remove all scripts
+      document.querySelectorAll('script').forEach(function (s) {
+        s.parentNode.removeChild(s)
+      });
+    </script>
+  </body>
+</html>

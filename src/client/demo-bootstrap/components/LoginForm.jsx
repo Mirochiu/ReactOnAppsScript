@@ -2,7 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Form, Row, Col, Button, Spinner } from 'react-bootstrap';
 
-const LoginForm = ({ onSubmit, isSubmiting, buttonTitle, confirmPassword }) => {
+const LoginForm = ({
+  onSubmit,
+  isSubmiting,
+  buttonTitle,
+  confirmPassword,
+  lineLoginUrl,
+}) => {
   return (
     <Form onSubmit={onSubmit}>
       <Form.Group as={Row} className="mb-3" controlId="loginAccount">
@@ -57,6 +63,11 @@ const LoginForm = ({ onSubmit, isSubmiting, buttonTitle, confirmPassword }) => {
           {buttonTitle}
         </Button>
       </Row>
+      <Row>
+        {lineLoginUrl && (
+          <a href={lineLoginUrl} className="btn btn-success">以LINE登入</a>
+        )}
+      </Row>
     </Form>
   );
 };
@@ -64,6 +75,7 @@ const LoginForm = ({ onSubmit, isSubmiting, buttonTitle, confirmPassword }) => {
 LoginForm.defaultProps = {
   buttonTitle: '登入',
   confirmPassword: false,
+  lineLoginUrl: null,
 };
 
 LoginForm.propTypes = {
@@ -71,6 +83,7 @@ LoginForm.propTypes = {
   isSubmiting: PropTypes.bool,
   buttonTitle: PropTypes.string,
   confirmPassword: PropTypes.bool,
+  lineLoginUrl: PropTypes.string,
 };
 
 export default LoginForm;

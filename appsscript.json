@@ -6,7 +6,8 @@
     "https://www.googleapis.com/auth/drive",
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/userinfo.email",
-    "https://mail.google.com/"
+    "https://mail.google.com/",
+    "https://www.googleapis.com/auth/script.external_request"
   ],
   "runtimeVersion": "V8",
   "webapp": {

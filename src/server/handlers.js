@@ -1,5 +1,6 @@
 import { getContentByName } from './content';
 import { confirmRegistration } from './user';
+import LineOAuth from './oauth/line';
 
 const Handlers = {
   default: {
@@ -10,6 +11,10 @@ const Handlers = {
   },
   confirmToken: {
     func: confirmRegistration,
+    immediateRetrun: true,
+  },
+  oauth: {
+    func: LineOAuth,
     immediateRetrun: true,
   },
 };

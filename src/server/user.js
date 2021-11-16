@@ -7,15 +7,37 @@ export const COLUMN_IDX_OF_PWD = 1;
 export const COLUMN_IDX_OF_ACCESSTOKEN = 2;
 export const COLUMN_IDX_OF_CONFIRMED = 3;
 
-export function login(form) {
-  const name = form.username;
-  if (typeof name !== 'string' || !RE_ACCOUNT.test(name))
-    throw new Error('帳號格式錯誤：應是E-mail');
-  const { password } = form;
-  if (typeof password !== 'string' || !RE_PASSWORD.test(password))
-    throw new Error(
-      '密碼格式錯誤：首字需為英文，其他為大小寫英數字，長度8到16之間'
-    );
+const createToken = ({ name }) => {
+  return createJwt({
+    privateKey: ScriptApp.getScriptId(), // 請改成你喜歡的
+    expiresInHours: 1,
+    data: {
+      iss: name,
+      user: { name, loginAt: new Date().getTime() },
+      host: ScriptApp.getService().getUrl(),
+    },
+  });
+};
+
+export const loginByLineId = uid => {
+  Logger.log('loginByLineId', uid);
+  const sheet = getUserSheet();
+  const rowIdx = findIndexInColumn(uid, COLUMN_IDX_OF_NAME, sheet);
+  if (rowIdx < 0) {
+    Logger.log('new line account', uid);
+    const newAccount = [];
+    newAccount[COLUMN_IDX_OF_NAME] = uid;
+    newAccount[COLUMN_IDX_OF_CONFIRMED] = new Date();
+    sheet.appendRow(newAccount); // 新增Line使用者
+  }
+  return {
+    status: 201,
+    message: '已成功登入',
+    token: createToken({ name: uid }),
+  };
+};
+
+const loginByAccount = (name, password) => {
   const sheet = getUserSheet();
   const rowIdx = findIndexInColumn(name, COLUMN_IDX_OF_NAME, sheet);
   if (rowIdx < 0) throw new Error('帳號或密碼錯誤');
@@ -26,16 +48,19 @@ export function login(form) {
     throw new Error('你已經註冊了，但是還沒點擊確認信，請查看你的信箱!');
   if (password !== usrData[COLUMN_IDX_OF_PWD])
     throw new Error('帳號或密碼錯誤');
-  const accessToken = createJwt({
-    privateKey: ScriptApp.getScriptId(), // 請改成你喜歡的
-    expiresInHours: 1,
-    data: {
-      iss: name,
-      user: { name, loginAt: new Date().getTime() },
-      host: ScriptApp.getService().getUrl(),
-    },
-  });
-  return { status: 201, message: '已成功登入', token: accessToken };
+  return { status: 201, message: '已成功登入', token: createToken({ name }) };
+};
+
+export function login(form) {
+  const name = form.username;
+  if (typeof name !== 'string' || !RE_ACCOUNT.test(name))
+    throw new Error('帳號格式錯誤：應是E-mail');
+  const { password } = form;
+  if (typeof password !== 'string' || !RE_PASSWORD.test(password))
+    throw new Error(
+      '密碼格式錯誤：首字需為英文，其他為大小寫英數字，長度8到16之間'
+    );
+  loginByAccount(name, password);
 }
 
 export function auth(token) {
