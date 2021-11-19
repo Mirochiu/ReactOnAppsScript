@@ -9,6 +9,20 @@ const Handlers = {
   html: {
     func: name => HtmlService.createHtmlOutput(getContentByName(name)),
   },
+  'html-source': {
+    func: name => {
+      let content = '';
+      try {
+        content = getContentByName(name);
+      } catch (error) {
+        console.error(`找不到${name}`);
+      }
+      return ContentService.createTextOutput(content).setMimeType(
+        ContentService.MimeType.TEXT
+      );
+    },
+    immediateRetrun: true,
+  },
   confirmToken: {
     func: confirmRegistration,
     immediateRetrun: true,
@@ -19,6 +33,6 @@ const Handlers = {
   },
 };
 
-export default function(show) {
+export default function (show) {
   return Handlers[show] || Handlers.default;
 }
