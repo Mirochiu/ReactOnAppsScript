@@ -23,6 +23,20 @@ const Handlers = {
     },
     immediateRetrun: true,
   },
+  'download-html': {
+    func: name => {
+      let content = '';
+      try {
+        content = getContentByName(name);
+      } catch (error) {
+        console.error(`找不到${name}`);
+      }
+      return ContentService.createTextOutput(content)
+        .setMimeType(ContentService.MimeType.TEXT)
+        .downloadAsFile(`download-${Date.now()}.html`);
+    },
+    immediateRetrun: true,
+  },
   confirmToken: {
     func: confirmRegistration,
     immediateRetrun: true,
