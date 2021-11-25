@@ -1,4 +1,4 @@
-import { LINE_CONFIG as config, SERVER_URL } from '../settings';
+import { GOOGLE_CONFIG as config, SERVER_URL } from '../settings';
 import { loginByOAuth } from '../user';
 
 export const checkState = state => state === config.loginState;
@@ -8,7 +8,7 @@ const outputFailure = (error, desc) => {
   template.baseUrl = SERVER_URL;
   template.error = error;
   template.error_description = desc;
-  template.loginBy = 'LINE';
+  template.loginBy = 'Google';
   return template.evaluate();
 };
 
@@ -18,7 +18,7 @@ const outputSuccess = ({ token, name, id }) => {
   template.loginToken = token;
   template.loginName = name;
   template.loginUid = id;
-  template.loginBy = 'LINE';
+  template.loginBy = 'Google';
   return template.evaluate();
 };
 
@@ -35,7 +35,7 @@ function decodeJwtInObjectForm(jwt) {
   return JSON.parse(blob.getDataAsString());
 }
 
-const parseLineLogin = json => {
+const parseLogin = json => {
   const lineUser = decodeJwtInObjectForm(json.id_token);
   const nowTime = Date.now();
   if (lineUser.exp > nowTime)
@@ -64,8 +64,8 @@ const OAuth = ({ state, code, error, error_description: errorDesc }) => {
   if (!state || state !== serverState || !code)
     return outputFailure(error, errorDesc);
   try {
-    const oauthLogin = parseLineLogin(fetchToken(code));
-    const ourLogin = loginByOAuth(oauthLogin.sub, 'LINE');
+    const oauthLogin = parseLogin(fetchToken(code));
+    const ourLogin = loginByOAuth(oauthLogin.sub, 'Google');
     return outputSuccess({
       token: ourLogin.token,
       id: oauthLogin.sub,

@@ -12,3 +12,10 @@ export const LINE_CONFIG = {
   channelSecret: process.env.LINE_CHANNEL_SECRET,
   loginState: process.env.LINE_STATE,
 };
+export const GOOGLE_CONFIG = {
+  tokenUrl: 'https://oauth2.googleapis.com/token',
+  callbackUrl: process.env.SERVER_URL,
+  channelId: process.env.GOOGLE_CLIENT_ID,
+  channelSecret: process.env.GOOGLE_SECRET,
+  loginState: process.env.GOOGLE_STATE,
+};

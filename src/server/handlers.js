@@ -1,6 +1,7 @@
 import { getContentByName } from './content';
 import { confirmRegistration } from './user';
-import LineOAuth from './oauth/line';
+import LineOAuth, { checkState as isLineState } from './oauth/line';
+import GoogleOAuth, { checkState as isGoogleState } from './oauth/google';
 
 const Handlers = {
   default: {
@@ -42,7 +43,17 @@ const Handlers = {
     immediateRetrun: true,
   },
   oauth: {
-    func: LineOAuth,
+    func: arg => {
+      const { state } = arg;
+      if (isLineState(state)) return LineOAuth(arg);
+      if (isGoogleState(state)) return GoogleOAuth(arg);
+      const template = HtmlService.createTemplateFromFile('failure');
+      template.baseUrl = '';
+      template.error = '登入問題';
+      template.error_description = `未知的登入方法${state}`;
+      template.loginBy = '未知';
+      return template.evaluate();
+    },
     immediateRetrun: true,
   },
 };

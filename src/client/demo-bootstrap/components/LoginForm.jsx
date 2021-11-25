@@ -8,6 +8,7 @@ const LoginForm = ({
   buttonTitle,
   confirmPassword,
   lineLoginUrl,
+  googleLoginUrl,
 }) => {
   return (
     <Form onSubmit={onSubmit}>
@@ -65,7 +66,16 @@ const LoginForm = ({
       </Row>
       <Row>
         {lineLoginUrl && (
-          <a href={lineLoginUrl} className="btn btn-success">以LINE登入</a>
+          <a href={lineLoginUrl} className="btn btn-success">
+            以LINE登入
+          </a>
+        )}
+      </Row>
+      <Row>
+        {googleLoginUrl && (
+          <a href={googleLoginUrl} className="btn btn-outline-secondary">
+            以Google登入
+          </a>
         )}
       </Row>
     </Form>
@@ -76,6 +86,7 @@ LoginForm.defaultProps = {
   buttonTitle: '登入',
   confirmPassword: false,
   lineLoginUrl: null,
+  googleLoginUrl: null,
 };
 
 LoginForm.propTypes = {
@@ -84,6 +95,7 @@ LoginForm.propTypes = {
   buttonTitle: PropTypes.string,
   confirmPassword: PropTypes.bool,
   lineLoginUrl: PropTypes.string,
+  googleLoginUrl: PropTypes.string,
 };
 
 export default LoginForm;

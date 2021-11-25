@@ -19,16 +19,17 @@ const createToken = ({ name }) => {
   });
 };
 
-export const loginByLineId = uid => {
-  Logger.log('loginByLineId', uid);
+export const loginByOAuth = (uid, from) => {
+  Logger.log('loginByOAuth', uid, from);
   const sheet = getUserSheet();
+  // TODO: finding uid in column should derived from 'from'
   const rowIdx = findIndexInColumn(uid, COLUMN_IDX_OF_NAME, sheet);
   if (rowIdx < 0) {
-    Logger.log('new line account', uid);
+    Logger.log('new account', uid, from);
     const newAccount = [];
     newAccount[COLUMN_IDX_OF_NAME] = uid;
     newAccount[COLUMN_IDX_OF_CONFIRMED] = new Date();
-    sheet.appendRow(newAccount); // 新增Line使用者
+    sheet.appendRow(newAccount); // 新增OAuth使用者
   }
   return {
     status: 201,
