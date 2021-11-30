@@ -61,7 +61,7 @@ export function login(form) {
     throw new Error(
       '密碼格式錯誤：首字需為英文，其他為大小寫英數字，長度8到16之間'
     );
-  loginByAccount(name, password);
+  return loginByAccount(name, password);
 }
 
 export function auth(token) {
