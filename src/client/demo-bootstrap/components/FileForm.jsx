@@ -7,6 +7,8 @@ const FileForm = ({
   titleName = '檔案名稱',
   titleFile = '請選檔案',
   titleSubmit = '上傳',
+  onNameChange = null,
+  nameListId = null,
 }) => {
   return (
     <Form onSubmit={onSubmit}>
@@ -15,7 +17,14 @@ const FileForm = ({
           {titleName}
         </Form.Label>
         <Col sm={10}>
-          <Form.Control type="text" name="the-name" required />
+          <Form.Control
+            type="text"
+            name="the-name"
+            required="true"
+            onChange={onNameChange}
+            autocomplete="off"
+            list={nameListId}
+          />
         </Col>
       </Form.Group>
       <Form.Group as={Row} className="mb-3" controlId="file_chooser">
@@ -27,7 +36,7 @@ const FileForm = ({
             type="file"
             name="the-file"
             accept="text/html"
-            required
+            required="true"
           />
         </Col>
       </Form.Group>
@@ -45,6 +54,8 @@ FileForm.propTypes = {
   titleName: PropTypes.string,
   titleFile: PropTypes.string,
   titleSubmit: PropTypes.string,
+  onNameChange: PropTypes.func,
+  nameListId: PropTypes.string,
 };
 
 export default FileForm;

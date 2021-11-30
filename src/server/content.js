@@ -34,6 +34,24 @@ export function uploadHtmlFile(form) {
   return name2link(name);
 }
 
+// TODO: limit the length of output
+export function seachHtmlName(name) {
+  if (typeof name !== 'string' || name.length < 1) return [];
+  const target = name.toLowerCase();
+  try {
+    const sheet = getContentSheet();
+    return sheet
+      .getRange(1, 1 + COLUMN_IDX_OF_NAME, sheet.getLastRow(), 1)
+      .getValues()
+      .filter(r => r && r[0] != null && r[0].length > 0)
+      .map(r => r[0].toLowerCase())
+      .filter(htmlName => htmlName.indexOf(target) > -1);
+  } catch (error) {
+    // we do not record this error
+  }
+  return [];
+}
+
 export function getLinkList() {
   const validator = row => row && row[0] != null && row[0].length > 0;
   try {
