@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Alert, Button } from 'react-bootstrap';
+import { Container, Row, Col, Stack, Alert, Button } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 import LoginForm from '../components/LoginForm';
 import useAuth from '../hooks/useAuth';
@@ -51,14 +51,18 @@ const Login = () => {
   if (authed) {
     return (
       <Container>
-        <h1>您已登入</h1>
-        <Row>
-          <Button onClick={onLogout} variant="secondary">
-            登出
-          </Button>
-        </Row>
-        <Row>
-          <Link to="/home">點此前往首頁</Link>
+        <h1 className="text-center mt-5 mb-3">您已登入</h1>
+        <Row className="justify-content-center">
+          <Col md={9} lg={5}>
+            <Stack gap={2}>
+              <Button onClick={onLogout} variant="secondary">
+                登出
+              </Button>
+              <Link to="/home" className="text-decoration-none text-secondary">
+                點此前往首頁
+              </Link>
+            </Stack>
+          </Col>
         </Row>
       </Container>
     );
@@ -68,27 +72,37 @@ const Login = () => {
 
   return (
     <Container>
-      <Row className="justify-content-center">
-        <Col md="6" lg="5">
-          <h1>登入</h1>
-        </Col>
-      </Row>
+      <h1 className="text-center mt-5 mb-3">登入</h1>
       {hint && <Alert variant="secondary">{hint}</Alert>}
       <Row className="justify-content-center">
-        <Col md="6" lg="5">
-          <LoginForm
-            onSubmit={onSubmit}
-            isSubmiting={submiting}
-            lineLoginUrl={getLineLoginURL()}
-            googleLoginUrl={getGoogleLoginURL()}
-          />
-        </Col>
-      </Row>
-      <Row className="justify-content-center">
-        <Col md="6" lg="5">
+        <Col md={9} lg={5}>
+          <LoginForm onSubmit={onSubmit} isSubmiting={submiting} />
           <Link to="/register" className="text-decoration-none text-secondary">
             註冊會員
           </Link>
+          <Stack gap={2}>
+            <Row>
+              <Col>
+                <hr />
+              </Col>
+              <Col className="text-center">或是免註冊登入</Col>
+              <Col>
+                <hr />
+              </Col>
+            </Row>
+            <a
+              href={getLineLoginURL()}
+              className="btn btn-success rounded-pill"
+            >
+              以LINE登入
+            </a>
+            <a
+              href={getGoogleLoginURL()}
+              className="btn btn-outline-secondary rounded-pill"
+            >
+              以Google登入
+            </a>
+          </Stack>
         </Col>
       </Row>
     </Container>

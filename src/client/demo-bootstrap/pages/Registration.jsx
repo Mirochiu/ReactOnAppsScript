@@ -40,18 +40,22 @@ const Registration = () => {
 
   return (
     <Container>
-      <h1>註冊會員</h1>
+      <h1 className="text-center mt-5 mb-3">註冊會員</h1>
       {hint && <Alert variant="secondary">{hint}</Alert>}
-      <LoginForm
-        onSubmit={onSubmit}
-        isSubmiting={submiting}
-        buttonTitle="註冊"
-        confirmPassword={true}
-      />
-      <Row>
-        <Col>
-          <a className="text-secondary" href="#" onClick={goBack}>
-            <small>返回前一頁</small>
+      <Row className="justify-content-center">
+        <Col md={9} lg={5}>
+          <LoginForm
+            onSubmit={onSubmit}
+            isSubmiting={submiting}
+            buttonTitle="註冊"
+            confirmPassword={true}
+          />
+          <a
+            href="#"
+            onClick={goBack}
+            className="text-decoration-none text-secondary"
+          >
+            返回前一頁
           </a>
         </Col>
       </Row>
