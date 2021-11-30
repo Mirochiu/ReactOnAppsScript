@@ -46,7 +46,7 @@ export const BottomNav = () => {
     <Navbar
       fixed="bottom"
       variant="light"
-      className="bottom-tab-nav d-block d-md-none"
+      className="bottom-tab-nav d-block d-md-none bg-light"
     >
       <Nav className="d-flex flex-row justify-content-around w-100">
         {LinksForBottom.map((link, idx) => (
