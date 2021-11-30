@@ -54,7 +54,6 @@ const Handlers = {
       template.loginBy = '未知';
       return template.evaluate();
     },
-    immediateRetrun: true,
   },
 };
 
