@@ -1,5 +1,5 @@
 import { GOOGLE_CONFIG as config, SERVER_URL } from '../settings';
-import { loginByOAuth } from '../user';
+import { loginByOAuth, loginByOpenId, createGoogleBinding } from '../user';
 
 export const checkState = state => state === config.loginState;
 
@@ -8,6 +8,16 @@ const outputFailure = (error, desc) => {
   template.baseUrl = SERVER_URL;
   template.error = error;
   template.error_description = desc;
+  template.loginBy = 'Google';
+  return template.evaluate();
+};
+
+const outputBind = ({ bindUrl, bindName, bindId }) => {
+  const template = HtmlService.createTemplateFromFile('googleBinding');
+  template.baseUrl = SERVER_URL;
+  template.bindUrl = bindUrl;
+  template.bindName = bindName;
+  template.bindUid = bindId;
   template.loginBy = 'Google';
   return template.evaluate();
 };
@@ -58,6 +68,9 @@ const fetchToken = code => {
   return JSON.parse(response.getContentText());
 };
 
+const getTokenBindingUrl = token =>
+  `${SERVER_URL}?show=bind-account&name=${token}`;
+
 const OAuth = ({ state, code, error, error_description: errorDesc }) => {
   if (error) return outputFailure(error, errorDesc);
   const serverState = config.loginState;
@@ -65,11 +78,34 @@ const OAuth = ({ state, code, error, error_description: errorDesc }) => {
     return outputFailure(error, errorDesc);
   try {
     const oauthLogin = parseLogin(fetchToken(code));
-    const ourLogin = loginByOAuth(oauthLogin.sub, 'Google');
+    const { sub: openId, name } = oauthLogin;
+    // use the bind user for login
+    const openIdLogin = loginByOpenId(openId, 'Google');
+    if (openIdLogin) {
+      return outputSuccess({
+        token: openIdLogin.token,
+        id: openId,
+        name,
+      });
+    }
+    // ask user to bind if the email has been registered.
+    const email = oauthLogin.email_verified ? oauthLogin.email : null;
+    if (email) {
+      const bindToken = createGoogleBinding(email, openId);
+      if (bindToken) {
+        return outputBind({
+          bindUrl: getTokenBindingUrl(bindToken),
+          bindId: email,
+          bindName: name,
+        });
+      }
+    }
+    // simple login
+    const ourLogin = loginByOAuth(openId, 'Google');
     return outputSuccess({
       token: ourLogin.token,
-      id: oauthLogin.sub,
-      name: oauthLogin.name,
+      id: openId,
+      name,
     });
   } catch (except) {
     return logErrorAndOutput(except);

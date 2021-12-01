@@ -1,5 +1,5 @@
 import { getContentByName } from './content';
-import { confirmRegistration } from './user';
+import { confirmRegistration, confirmOpenIdBinding } from './user';
 import LineOAuth, { checkState as isLineState } from './oauth/line';
 import GoogleOAuth, { checkState as isGoogleState } from './oauth/google';
 
@@ -41,6 +41,9 @@ const Handlers = {
   confirmToken: {
     func: confirmRegistration,
     immediateRetrun: true,
+  },
+  'bind-account': {
+    func: confirmOpenIdBinding,
   },
   oauth: {
     func: arg => {

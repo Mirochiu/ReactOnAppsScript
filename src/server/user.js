@@ -6,8 +6,9 @@ export const COLUMN_IDX_OF_NAME = 0;
 export const COLUMN_IDX_OF_PWD = 1;
 export const COLUMN_IDX_OF_ACCESSTOKEN = 2;
 export const COLUMN_IDX_OF_CONFIRMED = 3;
+export const COLUMN_IDX_OF_BIND_GOOGLE = 4;
 
-const createToken = ({ name }) => {
+const createToken = ({ name, openId }) => {
   return createJwt({
     privateKey: ScriptApp.getScriptId(), // 請改成你喜歡的
     expiresInHours: 1,
@@ -15,6 +16,7 @@ const createToken = ({ name }) => {
       iss: name,
       user: { name, loginAt: new Date().getTime() },
       host: ScriptApp.getService().getUrl(),
+      openId,
     },
   });
 };
@@ -31,6 +33,26 @@ export const loginByOAuth = (uid, from) => {
     newAccount[COLUMN_IDX_OF_CONFIRMED] = new Date();
     sheet.appendRow(newAccount); // 新增OAuth使用者
   }
+  return {
+    status: 201,
+    message: '已成功登入',
+    token: createToken({ name: uid }),
+  };
+};
+
+export const loginByOpenId = (openId, provider) => {
+  let providerColumnIdx = -1;
+  switch (provider) {
+    case 'Google':
+      providerColumnIdx = COLUMN_IDX_OF_BIND_GOOGLE;
+      break;
+    default:
+  }
+  if (providerColumnIdx < 0) throw new Error(`未知的登入提供者${provider}`);
+  const sheet = getUserSheet();
+  const rowIdx = findIndexInColumn(openId, providerColumnIdx, sheet);
+  if (rowIdx < 0) return null;
+  const uid = sheet.getRange(1 + rowIdx, 1 + COLUMN_IDX_OF_NAME).getValue();
   return {
     status: 201,
     message: '已成功登入',
@@ -180,4 +202,87 @@ export function confirmRegistration(token) {
     content = `註冊確認失敗 ${error.message}`;
   }
   return HtmlService.createHtmlOutput(content);
+}
+
+export const createGoogleBinding = (email, openId) => {
+  const sheet = getUserSheet();
+  const rowIdx = findIndexInColumn(email, COLUMN_IDX_OF_NAME, sheet);
+  if (rowIdx < 0) {
+    return null; // 沒找到既有Email帳號
+  }
+  const bindRange = sheet.getRange(1 + rowIdx, 1 + COLUMN_IDX_OF_BIND_GOOGLE);
+  const bindId = bindRange.getValue();
+  if (bindId && !(typeof bindId === 'string' && bindId.startsWith('ey'))) {
+    throw new Error('已榜定');
+  }
+  const token = createToken({
+    name: email,
+    openId: { id: openId, provider: 'Google' },
+  });
+  bindRange.setValue(token);
+  return token;
+};
+
+function handleOpenIdConfirm(token) {
+  let json = {};
+  try {
+    const payload = token.split('.')[1];
+    const decoded = Utilities.base64DecodeWebSafe(payload);
+    json = JSON.parse(Utilities.newBlob(decoded).getDataAsString());
+  } catch (error) {
+    Logger.log(`轉換失敗${error.stack}`);
+    throw new Error('確認資訊錯誤');
+  }
+  if (!json.openId) {
+    Logger.log(`not found Open ID ${JSON.stringify(json)}`);
+    throw new Error('未取得使用者ID');
+  }
+  const sheet = getUserSheet();
+  const rowIdx = findIndexInColumn(json.iss, COLUMN_IDX_OF_NAME, sheet);
+  if (rowIdx < 0) {
+    Logger.log(`${json.iss} '尚未註冊`);
+    throw new Error('尚未註冊');
+  }
+  let providerColumnIdx = -1;
+  switch (json.openId.provider) {
+    case 'Google':
+      providerColumnIdx = COLUMN_IDX_OF_BIND_GOOGLE;
+      break;
+    default:
+  }
+  if (providerColumnIdx < 0) {
+    throw new Error(`未知的榜定提供者${json.openId.provider}`);
+  }
+  const tokenRange = sheet.getRange(1 + rowIdx, 1 + providerColumnIdx);
+  const accessToken = tokenRange.getValue();
+  if (token !== accessToken) {
+    Logger.log('bind-token!=', token, accessToken);
+    throw new Error('榜定失敗');
+  }
+  tokenRange.setValue(json.openId.id);
+  SpreadsheetApp.flush();
+  return json.openId;
+}
+
+export function confirmOpenIdBinding(token) {
+  try {
+    const openId = handleOpenIdConfirm(token);
+    const openIdLogin = loginByOpenId(openId.id, openId.provider);
+    if (!openIdLogin) throw new Error('登入失敗');
+    const template = HtmlService.createTemplateFromFile('success');
+    template.baseUrl = SERVER_URL;
+    template.loginToken = openIdLogin.token;
+    template.loginName = '';
+    template.loginUid = openId.id;
+    template.loginBy = openId.provider;
+    return template.evaluate();
+  } catch (error) {
+    Logger.log(error.stack);
+    const template = HtmlService.createTemplateFromFile('failure');
+    template.baseUrl = SERVER_URL;
+    template.error = '榜定失敗';
+    template.error_description = `${error.message}`;
+    template.loginBy = '';
+    return template.evaluate();
+  }
 }
