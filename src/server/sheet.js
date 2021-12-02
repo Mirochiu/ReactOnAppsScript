@@ -9,10 +9,8 @@ export function getUserSheet() {
 }
 
 export function findIndexInColumn(name, column, sheet) {
-  const list = sheet
-    .getRange(1, 1 + column, 1 + sheet.getLastRow(), 1)
-    .getValues();
-  return list.findIndex(r => name === r[column]);
+  const list = sheet.getRange(1, 1 + column, sheet.getLastRow(), 1).getValues();
+  return list.findIndex(r => name === r[0]);
 }
 
 export function getContentSheet(sheetName) {
