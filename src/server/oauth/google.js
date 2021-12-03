@@ -1,5 +1,6 @@
 import { GOOGLE_CONFIG as config, SERVER_URL } from '../settings';
 import { loginByOAuth, loginByOpenId, createGoogleBinding } from '../user';
+import { decodeJwt } from '../jwt';
 
 export const checkState = state => state === config.loginState;
 
@@ -8,7 +9,7 @@ const outputFailure = (error, desc) => {
   template.baseUrl = SERVER_URL;
   template.error = error;
   template.error_description = desc;
-  template.loginBy = 'Google';
+  template.loginBy = config.providerName;
   return template.evaluate();
 };
 
@@ -18,7 +19,7 @@ const outputBind = ({ bindUrl, bindName, bindId }) => {
   template.bindUrl = bindUrl;
   template.bindName = bindName;
   template.bindUid = bindId;
-  template.loginBy = 'Google';
+  template.loginBy = config.providerName;
   return template.evaluate();
 };
 
@@ -28,7 +29,7 @@ const outputSuccess = ({ token, name, id }) => {
   template.loginToken = token;
   template.loginName = name;
   template.loginUid = id;
-  template.loginBy = 'Google';
+  template.loginBy = config.providerName;
   return template.evaluate();
 };
 
@@ -37,16 +38,8 @@ const logErrorAndOutput = error => {
   return outputFailure(error.message, JSON.stringify(error));
 };
 
-function decodeJwtInObjectForm(jwt) {
-  const payload = jwt.split('.')[1];
-  const blob = Utilities.newBlob(
-    Utilities.base64DecodeWebSafe(payload, Utilities.Charset.UTF_8)
-  );
-  return JSON.parse(blob.getDataAsString());
-}
-
 const parseLogin = json => {
-  const lineUser = decodeJwtInObjectForm(json.id_token);
+  const lineUser = decodeJwt(json.id_token);
   const nowTime = Date.now();
   if (lineUser.exp > nowTime)
     throw new Error(`login token expired, ${lineUser.exp}>=${nowTime}`);
@@ -80,7 +73,7 @@ const OAuth = ({ state, code, error, error_description: errorDesc }) => {
     const oauthLogin = parseLogin(fetchToken(code));
     const { sub: openId, name } = oauthLogin;
     // use the bind user for login
-    const openIdLogin = loginByOpenId(openId, 'Google');
+    const openIdLogin = loginByOpenId(openId, config.providerName);
     if (openIdLogin) {
       return outputSuccess({
         token: openIdLogin.token,
@@ -101,7 +94,7 @@ const OAuth = ({ state, code, error, error_description: errorDesc }) => {
       }
     }
     // simple login
-    const ourLogin = loginByOAuth(openId, 'Google');
+    const ourLogin = loginByOAuth(openId, config.providerName);
     return outputSuccess({
       token: ourLogin.token,
       id: openId,

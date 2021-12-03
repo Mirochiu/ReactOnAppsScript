@@ -1,6 +1,6 @@
 // from https://www.labnol.org/code/json-web-token-201128
 
-const createJwt = ({ privateKey, expiresInHours, data = {} }) => {
+export const createJwt = ({ privateKey, expiresInHours, data = {} }) => {
   // Sign token using HMAC with SHA-256 algorithm
   const header = {
     alg: 'HS256',
@@ -37,3 +37,14 @@ const createJwt = ({ privateKey, expiresInHours, data = {} }) => {
 };
 
 export default createJwt;
+
+export const decodeJwt = (token, notThrow) => {
+  try {
+    const payload = token.split('.')[1];
+    const decoded = Utilities.base64DecodeWebSafe(payload);
+    return JSON.parse(Utilities.newBlob(decoded).getDataAsString());
+  } catch (error) {
+    if (notThrow) return null;
+    throw error;
+  }
+};

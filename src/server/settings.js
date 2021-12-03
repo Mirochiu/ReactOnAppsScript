@@ -6,6 +6,7 @@ export const RE_ACCOUNT = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]
 export const RE_PASSWORD = /^[A-Za-z][A-Za-z0-9]{7,15}$/;
 export const SERVER_URL = ScriptApp.getService().getUrl();
 export const LINE_CONFIG = {
+  providerName: 'LINE',
   tokenUrl: 'https://api.line.me/oauth2/v2.1/token',
   callbackUrl: process.env.SERVER_URL,
   channelId: process.env.LINE_CHANNEL_ID,
@@ -13,6 +14,7 @@ export const LINE_CONFIG = {
   loginState: process.env.LINE_STATE,
 };
 export const GOOGLE_CONFIG = {
+  providerName: 'Google',
   tokenUrl: 'https://oauth2.googleapis.com/token',
   callbackUrl: process.env.SERVER_URL,
   channelId: process.env.GOOGLE_CLIENT_ID,

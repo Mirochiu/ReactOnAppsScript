@@ -1,6 +1,6 @@
 import { RE_ACCOUNT, RE_PASSWORD, SERVER_URL } from './settings';
 import { getUserSheet, findIndexInColumn } from './sheet';
-import createJwt from './jwt';
+import { createJwt, decodeJwt } from './jwt';
 
 export const COLUMN_IDX_OF_NAME = 0;
 export const COLUMN_IDX_OF_PWD = 1;
@@ -90,14 +90,7 @@ export function auth(token) {
   if (!token || typeof token !== 'string') throw new Error('token arg');
   const [header, payload, signature] = token.split('.');
   if (!header || !payload || !signature) throw new Error('invalid jwt');
-  let json = {};
-  try {
-    const decoded = Utilities.base64DecodeWebSafe(payload);
-    json = JSON.parse(Utilities.newBlob(decoded).getDataAsString());
-  } catch (error) {
-    Logger.log(error);
-    throw new Error('payload');
-  }
+  const json = decodeJwt(token);
   if (json.host !== ScriptApp.getService().getUrl())
     throw new Error(`invalid host:${json.host}`);
   const nowTime = Date.now() / 1000;
@@ -165,14 +158,12 @@ export function register(form) {
 }
 
 function handleConfirm(token) {
-  let json = {};
+  let json;
   try {
-    const payload = token.split('.')[1];
-    const decoded = Utilities.base64DecodeWebSafe(payload);
-    json = JSON.parse(Utilities.newBlob(decoded).getDataAsString());
+    json = decodeJwt(token);
   } catch (error) {
     Logger.log(`轉換失敗${error.stack}`);
-    throw new Error('確認資訊錯誤');
+    throw new Error('確認註冊資訊錯誤');
   }
   const sheet = getUserSheet();
   const rowIdx = findIndexInColumn(json.iss, COLUMN_IDX_OF_NAME, sheet);
@@ -224,18 +215,16 @@ export const createGoogleBinding = (email, openId) => {
 };
 
 function handleOpenIdConfirm(token) {
-  let json = {};
+  let json;
   try {
-    const payload = token.split('.')[1];
-    const decoded = Utilities.base64DecodeWebSafe(payload);
-    json = JSON.parse(Utilities.newBlob(decoded).getDataAsString());
+    json = decodeJwt(token);
   } catch (error) {
     Logger.log(`轉換失敗${error.stack}`);
-    throw new Error('確認資訊錯誤');
+    throw new Error('榜定資訊錯誤');
   }
   if (!json.openId) {
     Logger.log(`not found Open ID ${JSON.stringify(json)}`);
-    throw new Error('未取得使用者ID');
+    throw new Error('無法榜定未知的使用者ID');
   }
   const sheet = getUserSheet();
   const rowIdx = findIndexInColumn(json.iss, COLUMN_IDX_OF_NAME, sheet);
