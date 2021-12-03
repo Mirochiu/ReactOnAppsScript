@@ -1,6 +1,8 @@
 import { GOOGLE_CONFIG as config, SERVER_URL } from '../settings';
 import { loginByOAuth, loginByOpenId, createGoogleBinding } from '../user';
-import { decodeJwt } from '../jwt';
+import { getFuncforFetchToken, parseLogin } from './common';
+
+const fetchToken = getFuncforFetchToken(config);
 
 export const checkState = state => state === config.loginState;
 
@@ -36,29 +38,6 @@ const outputSuccess = ({ token, name, id }) => {
 const logErrorAndOutput = error => {
   Logger.log('logErrorAndOutput', error);
   return outputFailure(error.message, JSON.stringify(error));
-};
-
-const parseLogin = json => {
-  const lineUser = decodeJwt(json.id_token);
-  const nowTime = Date.now();
-  if (lineUser.exp > nowTime)
-    throw new Error(`login token expired, ${lineUser.exp}>=${nowTime}`);
-  return lineUser;
-};
-
-const fetchToken = code => {
-  const response = UrlFetchApp.fetch(config.tokenUrl, {
-    contentType: 'application/x-www-form-urlencoded',
-    method: 'post',
-    payload: {
-      grant_type: 'authorization_code',
-      redirect_uri: config.callbackUrl,
-      code,
-      client_id: config.channelId,
-      client_secret: config.channelSecret,
-    },
-  });
-  return JSON.parse(response.getContentText());
 };
 
 const getTokenBindingUrl = token =>

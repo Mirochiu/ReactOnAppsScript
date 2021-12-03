@@ -1,6 +1,8 @@
 import { LINE_CONFIG as config, SERVER_URL } from '../settings';
 import { loginByOAuth } from '../user';
-import { decodeJwt } from '../jwt';
+import { getFuncforFetchToken, parseLogin } from './common';
+
+const fetchToken = getFuncforFetchToken(config);
 
 export const checkState = state => state === config.loginState;
 
@@ -28,36 +30,13 @@ const logErrorAndOutput = error => {
   return outputFailure(error.message, JSON.stringify(error));
 };
 
-const parseLineLogin = json => {
-  const lineUser = decodeJwt(json.id_token);
-  const nowTime = Date.now();
-  if (lineUser.exp > nowTime)
-    throw new Error(`login token expired, ${lineUser.exp}>=${nowTime}`);
-  return lineUser;
-};
-
-const fetchToken = code => {
-  const response = UrlFetchApp.fetch(config.tokenUrl, {
-    contentType: 'application/x-www-form-urlencoded',
-    method: 'post',
-    payload: {
-      grant_type: 'authorization_code',
-      redirect_uri: config.callbackUrl,
-      code,
-      client_id: config.channelId,
-      client_secret: config.channelSecret,
-    },
-  });
-  return JSON.parse(response.getContentText());
-};
-
 const OAuth = ({ state, code, error, error_description: errorDesc }) => {
   if (error) return outputFailure(error, errorDesc);
   const serverState = config.loginState;
   if (!state || state !== serverState || !code)
     return outputFailure(error, errorDesc);
   try {
-    const oauthLogin = parseLineLogin(fetchToken(code));
+    const oauthLogin = parseLogin(fetchToken(code));
     const ourLogin = loginByOAuth(oauthLogin.sub, config.providerName);
     return outputSuccess({
       token: ourLogin.token,
