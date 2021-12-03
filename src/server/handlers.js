@@ -2,10 +2,11 @@ import { getContentByName } from './content';
 import { confirmRegistration, confirmOpenIdBinding } from './user';
 import LineOAuth, { checkState as isLineState } from './oauth/line';
 import GoogleOAuth, { checkState as isGoogleState } from './oauth/google';
+import templates from './templates';
 
 const Handlers = {
   default: {
-    func: () => HtmlService.createTemplateFromFile('index.html').evaluate(),
+    func: templates.getDefault,
   },
   html: {
     func: name => HtmlService.createHtmlOutput(getContentByName(name)),
@@ -50,16 +51,14 @@ const Handlers = {
       const { state } = arg;
       if (isLineState(state)) return LineOAuth(arg);
       if (isGoogleState(state)) return GoogleOAuth(arg);
-      const template = HtmlService.createTemplateFromFile('failure');
-      template.baseUrl = '';
-      template.error = '登入問題';
-      template.error_description = `未知的登入方法${state}`;
-      template.loginBy = '未知';
-      return template.evaluate();
+      return templates.getFailure({
+        error: '登入問題',
+        desc: `未知的登入方法${state}`,
+      });
     },
   },
 };
 
-export default function (show) {
+export default function(show) {
   return Handlers[show] || Handlers.default;
 }

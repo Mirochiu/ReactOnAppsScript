@@ -1,6 +1,7 @@
 import { RE_ACCOUNT, RE_PASSWORD, SERVER_URL } from './settings';
 import { getUserSheet, findIndexInColumn } from './sheet';
 import { createJwt, decodeJwt } from './jwt';
+import templates from './templates';
 
 export const COLUMN_IDX_OF_NAME = 0;
 export const COLUMN_IDX_OF_PWD = 1;
@@ -258,20 +259,16 @@ export function confirmOpenIdBinding(token) {
     const openId = handleOpenIdConfirm(token);
     const openIdLogin = loginByOpenId(openId.id, openId.provider);
     if (!openIdLogin) throw new Error('登入失敗');
-    const template = HtmlService.createTemplateFromFile('success');
-    template.baseUrl = SERVER_URL;
-    template.loginToken = openIdLogin.token;
-    template.loginName = '';
-    template.loginUid = openId.id;
-    template.loginBy = openId.provider;
-    return template.evaluate();
+    return templates.getSuccess({
+      token: openIdLogin.token,
+      id: openId.id,
+      provider: openId.provider,
+    });
   } catch (error) {
     Logger.log(error.stack);
-    const template = HtmlService.createTemplateFromFile('failure');
-    template.baseUrl = SERVER_URL;
-    template.error = '榜定失敗';
-    template.error_description = `${error.message}`;
-    template.loginBy = '';
-    return template.evaluate();
+    return templates.getFailure({
+      error: '榜定失敗',
+      desc: `${error.message}`,
+    });
   }
 }
