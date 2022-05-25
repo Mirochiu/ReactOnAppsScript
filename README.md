@@ -20,3 +20,27 @@
 * [Apps Script用Sheet生成動態網頁(22): 移植上傳HTML功能](https://codingnote.blogspot.com/2021/11/apps-scriptsheet22-html.html)
 * [Apps Script用Sheet生成動態網頁(21): 移植會員登入頁面](https://codingnote.blogspot.com/2021/11/apps-scriptsheet21.html)
 
+## 使用本專案
+
+### 第一次使用, 請先做以下項目
+
+1. 先安裝`npm`, `yarn`, `jq`以及`clasp`
+1. `yarn` 安裝本專案相依套件
+1. `clasp login`登入Apps Script
+
+### 新Apps Script專案發布成Web App
+
+1. `yarn setup`自動建立新的Apps Script專案
+1. 到Apps Script網站中將建立好得Apps Script發布成Web App, 可參考YT影片: [Apps Script作為Web App](https://www.youtube.com/watch?v=BlJXCdtwJdo)
+1. 紀錄發布的`部署作業 ID`,在`dist/.clasp.json`中加入`deploymentId`鍵值來指定部屬ID
+1. `yarn deploy`發布新版本,記下新發布版本號碼
+1. `yarn open`選擇剛發布的版本號碼,瀏覽器上確認結果
+
+### 使用既有發布成Web App的Apps Script專案
+
+1. 移除`dist`目錄和`.clasp.json`檔案
+1. `clasp clone --rootdir dist`選擇你要用的App Script
+1. 拷貝`dist/.clasp.json`到本專案根目錄
+1. 在`dist/.clasp.json`中加入`deploymentId`鍵值發布到`部署作業 ID`
+1. `yarn deploy`發布新版本,記下新發布版本號碼
+1. `yarn open`選擇剛發布的版本號碼,瀏覽器上確認結果
