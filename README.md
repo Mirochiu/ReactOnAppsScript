@@ -4,7 +4,34 @@
 
 使用MIT協議釋出本專案，由於專案逐步建構中，若有建議歡迎提出。
 
-## 各項功能說明
+## 2022-10-31 新版:升級Webpack 5
+
+!!!! BREAKING CHANGE !!!!
+[090cebdea](https://github.com/Mirochiu/ReactOnAppsScript/commit/090cebdeaf86224e4c6a6a4152ee41f04749886a) 升級到最新的Webpack 5版本
+
+升級到新版本後,使用react-router v5,v6發布到Google Apps Script都無法正常切換頁,所以已經先捨棄react-router套件,因此重構Client換頁組件的構成,新的App.jsx構成如下:
+
+```javascript
+const App = () => {
+  return (
+    <AuthProvider>
+      <LoginController submitForm={<LoginPage />} registForm={<RegistPage />}>
+        <PagesController
+          pages={MemberPages}
+          initPage={MemberPages.home}
+          buildTopNavigator={buildTopNav}
+          buildBottomNavigator={buildBottomNav}
+          onPageChanged={onPageChanged}
+        />
+      </LoginController>
+    </AuthProvider>
+  );
+};
+```
+
+目前透過 [LoginController.jsx](./src/client/demo-bootstrap/controllers/LoginController.jsx) 和  [PagesController.jsx](./src/client/demo-bootstrap/controllers/PagesController.jsx) 進行換頁操作
+
+## 各項功能說明(舊版:尚未升級Webpack 5之前)
 
 建議搭配我寫的一系列文章：Apps Script用Sheet生成動態網頁，分別查看說明：
 
