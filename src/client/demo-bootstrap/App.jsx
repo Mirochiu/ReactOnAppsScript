@@ -7,6 +7,7 @@ import { buildBottomNav } from './components/BottomNav';
 import { buildTopNav } from './components/TopNav';
 import LoginPage from './pages/LoginPage';
 import RegistPage from './pages/RegistPage';
+import SimpleLoading from './components/SimpleLoading';
 
 import './App.css';
 
@@ -21,15 +22,17 @@ const onPageChanged = ({ page, goPage, logout }) => {
 const App = () => {
   return (
     <AuthProvider>
-      <LoginController submitForm={<LoginPage />} registForm={<RegistPage />}>
-        <PagesController
-          pages={MemberPages}
-          initPage={MemberPages.home}
-          buildTopNavigator={buildTopNav}
-          buildBottomNavigator={buildBottomNav}
-          onPageChanged={onPageChanged}
-        />
-      </LoginController>
+      <SimpleLoading>
+        <LoginController submitForm={<LoginPage />} registForm={<RegistPage />}>
+          <PagesController
+            pages={MemberPages}
+            initPage={MemberPages.home}
+            buildTopNavigator={buildTopNav}
+            buildBottomNavigator={buildBottomNav}
+            onPageChanged={onPageChanged}
+          />
+        </LoginController>
+      </SimpleLoading>
     </AuthProvider>
   );
 };
