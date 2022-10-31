@@ -8,9 +8,11 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const GasPlugin = require('gas-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
-const DynamicCdnWebpackPlugin = require('dynamic-cdn-webpack-plugin');
-const moduleToCdn = require('module-to-cdn');
+const HtmlWebpackInlineSourcePlugin = require('@effortlessmotion/html-webpack-inline-source-plugin');
+const DynamicCdnWebpackPlugin = require('@effortlessmotion/dynamic-cdn-webpack-plugin');
+const moduleToCdn = require('@talend/module-to-cdn');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const { useCallback } = require('react');
 
 /*********************************
  *    set up environment variables
@@ -19,11 +21,12 @@ const dotenv = require('dotenv').config();
 
 const parsed = dotenv.error ? {} : dotenv.parsed;
 const envVars = parsed || {};
-const PORT = envVars.PORT || 3000;
+const PORT = envVars.PORT || 8001;
 envVars.NODE_ENV = process.env.NODE_ENV;
 envVars.PORT = PORT;
 
 const isProd = process.env.NODE_ENV === 'production';
+const publicPath = process.env.ASSET_PATH || '/';
 
 /*********************************
  *    define entrypoints
@@ -54,6 +57,7 @@ const clientEntrypoints = [
 // see "npm run setup:https" script in package.json
 const keyPath = path.resolve(__dirname, './certs/key.pem');
 const certPath = path.resolve(__dirname, './certs/cert.pem');
+const pfxPath = path.resolve(__dirname, './certs/cert.pfx'); // if needed for Windows
 
 /*********************************
  *    Declare settings
@@ -66,6 +70,7 @@ const copyFilesConfig = {
   entry: copyAppscriptEntry,
   output: {
     path: destination,
+    publicPath,
   },
   plugins: [
     new CopyWebpackPlugin({
@@ -89,7 +94,7 @@ const sharedClientAndServerConfig = {
 };
 
 // webpack settings used by all client entrypoints
-const clientConfig = {
+const clientConfig = ({ isDevClientWrapper }) => ({
   ...sharedClientAndServerConfig,
   mode: isProd ? 'production' : 'development',
   output: {
@@ -97,12 +102,19 @@ const clientConfig = {
     // this file will get added to the html template inline
     // and should be put in .claspignore so it is not pushed
     filename: 'main.js',
+    publicPath,
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
   },
   module: {
     rules: [
+      {
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false,
+        },
+      },
       // typescript config
       {
         test: /\.tsx?$/,
@@ -110,6 +122,14 @@ const clientConfig = {
         use: [
           {
             loader: 'babel-loader',
+            // only enable react-refresh for dev builds, and not when building the dev client "wrapper"
+            options: {
+              plugins: [
+                !isProd &&
+                  !isDevClientWrapper &&
+                  require.resolve('react-refresh/babel'),
+              ].filter(Boolean),
+            },
           },
           {
             loader: 'ts-loader',
@@ -121,6 +141,14 @@ const clientConfig = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
+          // only enable react-refresh for dev builds, and not when building the dev client "wrapper"
+          options: {
+            plugins: [
+              !isProd &&
+                !isDevClientWrapper &&
+                require.resolve('react-refresh/babel'),
+            ].filter(Boolean),
+          },
         },
       },
       // we could add support for scss here
@@ -130,7 +158,7 @@ const clientConfig = {
       },
     ],
   },
-};
+});
 
 // DynamicCdnWebpackPlugin settings
 // these settings help us load 'react', 'react-dom' and the packages defined below from a CDN
@@ -139,88 +167,80 @@ const DynamicCdnWebpackPluginConfig = {
   // set "verbose" to true to print console logs on CDN usage while webpack builds
   verbose: false,
   resolver: (packageName, packageVersion, options) => {
-    const packageSuffix = isProd ? '.min.js' : '.js';
     const moduleDetails = moduleToCdn(packageName, packageVersion, options);
-    if (moduleDetails) {
-      return moduleDetails;
+
+    // don't externalize react during development due to issue with react-refresh
+    // https://github.com/pmmmwh/react-refresh-webpack-plugin/issues/334
+    if (!isProd && packageName === 'react') {
+      return null;
     }
+
+    // define custom CDN configuration for new packages
     // "name" should match the package being imported
     // "var" is important to get right -- this should be the exposed global. Look up "webpack externals" for info.
     switch (packageName) {
-      case 'react-transition-group':
-        return {
-          name: packageName,
-          var: 'ReactTransitionGroup',
-          version: packageVersion,
-          url: `https://unpkg.com/react-transition-group@${packageVersion}/dist/react-transition-group${packageSuffix}`,
-        };
-      case 'react-bootstrap':
-        return {
-          name: packageName,
-          var: 'ReactBootstrap',
-          version: packageVersion,
-          url: `https://unpkg.com/react-bootstrap@${packageVersion}/dist/react-bootstrap${packageSuffix}`,
-        };
+      // return defaults/null depending if Dynamic CDN plugin finds package
       default:
-        return null;
+        return moduleDetails;
     }
   },
 };
 
 // webpack settings used by each client entrypoint defined at top
-const clientConfigs = clientEntrypoints.map(clientEntrypoint => {
+const clientConfigs = clientEntrypoints.map((clientEntrypoint) => {
+  const isDevClientWrapper = false;
   return {
-    ...clientConfig,
+    ...clientConfig({ isDevClientWrapper }),
     name: clientEntrypoint.name,
     entry: clientEntrypoint.entry,
     plugins: [
-      new webpack.DefinePlugin({
-        'process.env': JSON.stringify(envVars),
-      }),
+      !isProd && new ReactRefreshWebpackPlugin(),
       new HtmlWebpackPlugin({
         template: clientEntrypoint.template,
         filename: `${clientEntrypoint.filename}${isProd ? '' : '-impl'}.html`,
-        inlineSource: '^[^(//)]+.(js|css)$', // embed all js and css inline, exclude packages with '//' for dynamic cdn insertion
+        inlineSource: '^/.*(js|css)$', // embed all js and css inline, exclude packages from dynamic cdn insertion
+        scriptLoading: 'blocking',
+        inject: 'body',
       }),
       // add the generated js code to the html file inline
       new HtmlWebpackInlineSourcePlugin(),
       // this plugin allows us to add dynamically load packages from a CDN
       new DynamicCdnWebpackPlugin(DynamicCdnWebpackPluginConfig),
-    ],
+    ].filter(Boolean),
   };
 });
 
-const gasWebpackDevServerPath = require.resolve(
-  'google-apps-script-webpack-dev-server'
-);
-
 // webpack settings for devServer https://webpack.js.org/configuration/dev-server/
 const devServer = {
+  hot: true,
   port: PORT,
-  https: true,
-  // run our own route to serve the package google-apps-script-webpack-dev-server
-  before: app => {
-    // this '/gas/' path needs to match the path loaded in the iframe in dev/index.js
-    app.get('/gas/*', (req, res) => {
-      res.setHeader('Content-Type', 'text/html');
-      fs.createReadStream(gasWebpackDevServerPath).pipe(res);
-    });
-  },
+  server: 'https',
 };
 
 if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
   // use key and cert settings only if they are found
-  devServer.https = {
-    key: fs.readFileSync(keyPath),
-    cert: fs.readFileSync(certPath),
+  devServer.server = {
+    type: 'https',
+    options: { key: fs.readFileSync(keyPath), cert: fs.readFileSync(certPath) },
+  };
+}
+
+// If mkcert -install cannot be used on Windows machines (in pipeline, for example), the
+// script at test/generate-cert.ps1 can be used to create a .pfx cert
+if (fs.existsSync(pfxPath)) {
+  // use pfx file if it's found
+  devServer.server = {
+    type: 'https',
+    options: { pfx: fs.readFileSync(pfxPath), passphrase: 'abc123' },
   };
 }
 
 // webpack settings for the development client wrapper
-const devClientConfigs = clientEntrypoints.map(clientEntrypoint => {
+const devClientConfigs = clientEntrypoints.map((clientEntrypoint) => {
   envVars.FILENAME = clientEntrypoint.filename;
+  const isDevClientWrapper = true;
   return {
-    ...clientConfig,
+    ...clientConfig({ isDevClientWrapper }),
     name: `DEVELOPMENT: ${clientEntrypoint.name}`,
     entry: devDialogEntry,
     plugins: [
@@ -231,7 +251,9 @@ const devClientConfigs = clientEntrypoints.map(clientEntrypoint => {
         template: './dev/index.html',
         // this should match the html files we load in src/server/ui.js
         filename: `${clientEntrypoint.filename}.html`,
-        inlineSource: '^[^(//)]+.(js|css)$', // embed all js and css inline, exclude packages with '//' for dynamic cdn insertion
+        inlineSource: '^/.*(js|css)$', // embed all js and css inline, exclude packages from dynamic cdn insertion
+        scriptLoading: 'blocking',
+        inject: 'body',
       }),
       new HtmlWebpackInlineSourcePlugin(),
       new DynamicCdnWebpackPlugin({}),
@@ -251,6 +273,7 @@ const serverConfig = {
     filename: 'code.js',
     path: destination,
     libraryTarget: 'this',
+    publicPath,
   },
   resolve: {
     extensions: ['.ts', '.js', '.json'],
@@ -283,7 +306,6 @@ const serverConfig = {
     minimize: true,
     minimizer: [
       new TerserPlugin({
-        sourceMap: true,
         terserOptions: {
           // ecma 5 is needed to support Rhino "DEPRECATED_ES5" runtime
           // can use ecma 6 if V8 runtime is used
@@ -307,13 +329,12 @@ const serverConfig = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      // replace any env variables in client-side code like PORT and NODE_ENV with actual values
       'process.env': JSON.stringify(envVars),
-      'process.env.NODE_ENV': JSON.stringify(
-        isProd ? 'production' : 'development'
-      ),
     }),
-    new GasPlugin(),
+    new GasPlugin({
+      // removes need for assigning public server functions to "global"
+      autoGlobalExportsFiles: [serverEntry],
+    }),
   ],
 };
 

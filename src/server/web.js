@@ -1,12 +1,13 @@
 import { WEB_TITLE } from './settings';
-import handlers from './handlers';
+import getDefaultHandlers from './handlers';
 
-export function doGet(req) {
-  let { show, state, name } = req.parameter;
+export const doGet = (req) => {
+  let { show, name } = req.parameter;
+  const { state } = req.parameter;
   if (state != null) {
     show = 'oauth';
     name = {
-      state: state,
+      state,
       code: req.parameter.code,
       error: req.parameter.error,
       error_description: req.parameter.error_description,
@@ -14,10 +15,12 @@ export function doGet(req) {
   } else if (show == null) {
     show = 'default';
   }
-  const h = handlers(show);
+  const h = getDefaultHandlers(show);
   const output = h.func(name, h.pass);
   if (h.immediateRetrun) return output;
   output.setTitle(WEB_TITLE);
   output.addMetaTag('viewport', 'width=device-width, initial-scale=1');
   return output;
-}
+};
+
+export default doGet;

@@ -72,7 +72,11 @@ const loginByAccount = (name, password) => {
     throw new Error('你已經註冊了，但是還沒點擊確認信，請查看你的信箱!');
   if (password !== usrData[COLUMN_IDX_OF_PWD])
     throw new Error('帳號或密碼錯誤');
-  return { status: 201, message: '已成功登入', token: createToken({ name }) };
+  return {
+    status: 201,
+    message: '已成功登入',
+    token: createToken({ name }),
+  };
 };
 
 export function login(form) {
@@ -97,7 +101,7 @@ export function auth(token) {
   const nowTime = Date.now() / 1000;
   if (nowTime >= json.exp)
     throw new Error(`expired:${json.exp}, now:${nowTime}`);
-  const base64Encode = text =>
+  const base64Encode = (text) =>
     Utilities.base64EncodeWebSafe(text).replace(/=+$/, '');
   const computedSignature = base64Encode(
     Utilities.computeHmacSha256Signature(

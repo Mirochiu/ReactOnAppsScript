@@ -1,6 +1,6 @@
 {
   "root": true,
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "extends": [
     "airbnb-base",
     "plugin:prettier/recommended",
@@ -25,7 +25,6 @@
   },
   "rules": {
     "prettier/prettier": "error",
-    "react/prop-types": "warn",
     "camelcase": "warn",
     "import/prefer-default-export": "warn",
     "import/no-extraneous-dependencies": "warn",

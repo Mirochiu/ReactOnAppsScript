@@ -1,55 +1,60 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import PropTypes from 'prop-types';
-import Server from '../../utils/server';
+import { serverFunctions } from '../../utils/serverFunctions';
 
-const { serverFunctions } = Server;
+const NAME_OF_TOKEN = 'reactonappscript.user-token';
 
-const NAME_OF_TOKEN = 'user-token';
+const AuthContext = createContext({
+  authed: null,
+  login: () => {},
+  logout: () => {},
+  register: () => {},
+});
 
-const authContext = createContext();
-
-function useAuth() {
-  const [authed, setAuthed] = useState(false);
+const useAuthenticator = () => {
+  const [authed, setAuthed] = useState(null);
 
   useEffect(() => {
+    let mounted = true;
     const token = localStorage.getItem(NAME_OF_TOKEN);
-    serverFunctions.authLogin(token).then(() => setAuthed(true));
+    if (token) {
+      serverFunctions
+        .authLogin(token)
+        .then(() => mounted && setAuthed(true))
+        .catch(() => mounted && setAuthed(false));
+    } else {
+      setAuthed(false);
+    }
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  const login = form => {
-    return new Promise((res, rej) => {
-      serverFunctions
-        .loginUser(form)
-        .then(response => {
-          localStorage.setItem(NAME_OF_TOKEN, response.token);
-          setAuthed(true);
-          res(response);
-        })
-        .catch(rej);
+  const login = (form) =>
+    serverFunctions.loginUser(form).then((resp) => {
+      localStorage.setItem(NAME_OF_TOKEN, resp.token);
+      setAuthed(true);
+      return resp;
     });
-  };
 
-  const logout = () => {
-    return new Promise(res => {
+  const logout = () =>
+    new Promise((res) => {
       localStorage.removeItem(NAME_OF_TOKEN);
       setAuthed(false);
-      res();
+      res('done');
     });
-  };
 
-  return { authed, login, logout };
-}
+  const register = (form) => serverFunctions.register(form);
 
-export function AuthProvider({ children }) {
-  const auth = useAuth();
-
-  return <authContext.Provider value={auth}>{children}</authContext.Provider>;
-}
-
-AuthProvider.propTypes = {
-  children: PropTypes.element,
+  return { authed, login, logout, register };
 };
 
-export default function AuthConsumer() {
-  return useContext(authContext);
-}
+const useHook = () => useContext(AuthContext);
+
+export const AuthProvider = ({ children }) => {
+  const auth = useAuthenticator();
+
+  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
+};
+
+export default useHook;

@@ -1,6 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Form, Row, Col, Button } from 'react-bootstrap';
+import Form from 'react-bootstrap/Form';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import Button from 'react-bootstrap/Button';
 
 const FileForm = ({
   onSubmit,
@@ -12,7 +14,7 @@ const FileForm = ({
 }) => {
   return (
     <Form onSubmit={onSubmit}>
-      <Form.Group as={Row} className="mb-3" controlId="file_name">
+      <Form.Group as={Row} className="mb-3">
         <Form.Label column sm={2}>
           {titleName}
         </Form.Label>
@@ -20,14 +22,14 @@ const FileForm = ({
           <Form.Control
             type="text"
             name="the-name"
-            required="true"
+            required={true}
             onChange={onNameChange}
-            autocomplete="off"
+            autoComplete="off"
             list={nameListId}
           />
         </Col>
       </Form.Group>
-      <Form.Group as={Row} className="mb-3" controlId="file_chooser">
+      <Form.Group as={Row} className="mb-3">
         <Form.Label column sm={2}>
           {titleFile}
         </Form.Label>
@@ -36,7 +38,7 @@ const FileForm = ({
             type="file"
             name="the-file"
             accept="text/html"
-            required="true"
+            required={true}
           />
         </Col>
       </Form.Group>
@@ -47,15 +49,6 @@ const FileForm = ({
       </Row>
     </Form>
   );
-};
-
-FileForm.propTypes = {
-  onSubmit: PropTypes.func,
-  titleName: PropTypes.string,
-  titleFile: PropTypes.string,
-  titleSubmit: PropTypes.string,
-  onNameChange: PropTypes.func,
-  nameListId: PropTypes.string,
 };
 
 export default FileForm;

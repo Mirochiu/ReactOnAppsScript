@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row } from 'react-bootstrap';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
 import FileForm from '../components/FileForm';
-
-import Server from '../../utils/server';
-
-const { serverFunctions } = Server;
+import { serverFunctions } from '../../utils/serverFunctions';
 
 const ID_UPLOAD_NAME_CANDIDATES = 'html-name-candidates';
 
@@ -18,30 +16,29 @@ const UploadHtml = () => {
     const timer = setTimeout(() => {
       serverFunctions
         .searchByNameInUploadedHtml(name)
-        .then(response => {
+        .then((response) => {
           setCandidate(response);
         })
-        .catch(error => {
-          console.error(error);
+        .catch((error) => {
+          showText(`上傳失敗，錯誤訊息:${error.message}`);
         });
     }, 300);
     return () => clearTimeout(timer);
   }, [name]);
 
-  const onSubmit = event => {
+  const onSubmit = (event) => {
     event.preventDefault();
     showText('上傳中，請稍候...');
     serverFunctions
       .uploadHtmlFile(event.target)
-      .then(response => {
+      .then((response) => {
         showText('上傳成功');
         setLink({
           url: response.url,
           title: response.name,
         });
       })
-      .catch(error => {
-        console.error(error);
+      .catch((error) => {
         showText(`上傳失敗，錯誤訊息:${error.message}`);
       });
   };
@@ -67,6 +64,7 @@ const UploadHtml = () => {
       <Row>{msg}</Row>
       {link && (
         <Row>
+          上傳完成! 點擊以下連結可查看上傳完成的HTML
           <a href={link.url}>{link.title}</a>
         </Row>
       )}

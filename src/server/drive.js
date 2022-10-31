@@ -28,3 +28,5 @@ export function listFilesInDriveFolder() {
   }
   return fileList;
 }
+
+export default listFilesInDriveFolder;

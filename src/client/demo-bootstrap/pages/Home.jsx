@@ -1,21 +1,16 @@
 import React, { useState } from 'react';
-import { Container, Button, Alert } from 'react-bootstrap';
+import Container from 'react-bootstrap/Container';
+import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
 import { CSSTransition } from 'react-transition-group';
-
-// This is a wrapper for google.script.run that lets us use promises.
-import server from '../../utils/server';
-
-const { serverFunctions } = server;
+import { serverFunctions } from '../../utils/serverFunctions';
 
 const Home = () => {
   const [showBtn, setShowBtn] = useState(true);
   const [showUrl, setShowUrl] = useState();
 
   const getServerUrl = () => {
-    serverFunctions
-      .getServerUrl()
-      .then(setShowUrl)
-      .catch(alert);
+    serverFunctions.getServerUrl().then(setShowUrl).catch(alert);
   };
 
   return (
@@ -24,8 +19,9 @@ const Home = () => {
         <b>☀️ Bootstrap demo! ☀️</b>
       </p>
       <p>
-        This is a sample app that uses the <code>react-bootstrap</code> library
-        to help us build a simple React app.
+        This is a sample app that uses the
+        <code>react-bootstrap</code>
+        library to help us build a simple React app.
       </p>
       {showBtn && (
         <Button
@@ -38,7 +34,7 @@ const Home = () => {
         </Button>
       )}
       <CSSTransition
-        in={showUrl}
+        in={!!showUrl}
         timeout={300}
         classNames="alert"
         unmountOnExit

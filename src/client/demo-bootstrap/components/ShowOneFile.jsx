@@ -1,9 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
 
 const ShowOneFile = ({ file }) => {
   return (
-    <div className="col-12 col-sm-6 col-md-4">
+    <Col sm={6} md={4}>
       <div className="card p-5">
         <img
           className="card-img-top rounded bg-secondary bg-gradient"
@@ -16,17 +17,19 @@ const ShowOneFile = ({ file }) => {
             檔案大小:{file.size}位元組
             <br />
           </p>
-          <a className="btn btn-primary" href={file.url}>
+          <Button
+            variant="primary"
+            onClick={(e) => {
+              e.preventDefault();
+              window.top.location.href = file.url;
+            }}
+          >
             點此下載
-          </a>
+          </Button>
         </div>
       </div>
-    </div>
+    </Col>
   );
-};
-
-ShowOneFile.propTypes = {
-  file: PropTypes.object,
 };
 
 export default ShowOneFile;

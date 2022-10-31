@@ -15,7 +15,7 @@ export function setContentToSheet(name, content, sheetName) {
   }
 }
 
-const name2link = name => ({
+const name2link = (name) => ({
   name,
   url: `${SERVER_URL}?show=html&name=${name}`,
 });
@@ -43,9 +43,9 @@ export function seachHtmlName(name) {
     return sheet
       .getRange(1, 1 + COLUMN_IDX_OF_NAME, sheet.getLastRow(), 1)
       .getValues()
-      .filter(r => r && r[0] != null && r[0].length > 0)
-      .map(r => r[0].toLowerCase())
-      .filter(htmlName => htmlName.indexOf(target) > -1);
+      .filter((r) => r && r[0] != null && r[0].length > 0)
+      .map((r) => r[0].toLowerCase())
+      .filter((htmlName) => htmlName.indexOf(target) > -1);
   } catch (error) {
     // we do not record this error
   }
@@ -53,14 +53,14 @@ export function seachHtmlName(name) {
 }
 
 export function getLinkList() {
-  const validator = row => row && row[0] != null && row[0].length > 0;
+  const validator = (row) => row && row[0] != null && row[0].length > 0;
   try {
     const sheet = getContentSheet();
     return sheet
       .getRange(1, 1 + COLUMN_IDX_OF_NAME, sheet.getLastRow(), 1)
       .getValues()
       .filter(validator)
-      .map(e => name2link(e[0]));
+      .map((e) => name2link(e[0]));
   } catch (error) {
     Logger.log(`getLinkList error:${error.stack || error}`);
   }

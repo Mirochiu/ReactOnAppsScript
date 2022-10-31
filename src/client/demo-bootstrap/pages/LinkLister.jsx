@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Button } from 'react-bootstrap';
-import Server from '../../utils/server';
+import Container from 'react-bootstrap/Container';
+import Button from 'react-bootstrap/Button';
+import { serverFunctions } from '../../utils/serverFunctions';
 
-const { serverFunctions } = Server;
+const NOTHINGTODO = () => {};
 
 const LinkLister = () => {
   const [linkList, setlinkList] = useState(null);
-  const [showDelete, hasDeletePermission] = useState(false);
+  // TODO: check delete permission
+  const [showDelete] = useState(true);
 
   useEffect(() => {
-    serverFunctions
-      .getLinkList()
-      .then(setlinkList)
-      .catch(alert);
-    const token = localStorage.getItem('user-token');
-    serverFunctions.authLogin(token).then(() => hasDeletePermission(true));
+    serverFunctions.getLinkList().then(setlinkList).catch(alert);
   }, []);
 
-  const deleteLink = event => {
-    event.preventDefault();
-    const { name } = event.target;
-    const element = event.target;
-    serverFunctions.deleteContentFromSheet(name).then(response => {
-      if (response.deleted && element) element.parentNode.remove();
-    });
+  const deleteLink = (e) => {
+    e.preventDefault();
+    const { name } = e.target;
+    const item = e.target;
+    serverFunctions
+      .deleteContentFromSheet(name)
+      .then((resp) => {
+        if (resp.deleted && item) item.parentNode.remove();
+      })
+      .catch(NOTHINGTODO);
   };
 
   return (

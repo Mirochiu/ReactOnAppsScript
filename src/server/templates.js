@@ -19,7 +19,7 @@ const outputSuccess = ({ token = '', name = '', id = '', provider = '' }) => {
   return template.evaluate();
 };
 
-const logErrorAndOutput = error => {
+const logErrorAndOutput = (error) => {
   Logger.log('logErrorAndOutput', error);
   return outputFailure({
     error: error.message,

@@ -1,28 +1,26 @@
 import React, { useEffect } from 'react';
-import ReactDOM from 'react-dom';
-import server from '../src/client/utils/server';
-
-const { serverFunctions } = server;
+import { createRoot } from 'react-dom/client';
+import { serverFunctions } from '../src/client/utils/serverFunctions';
 
 const { FILENAME, PORT } = process.env;
 
 const DevServer = () => {
   const iframe = React.useRef(null);
   useEffect(() => {
-    const handleRequest = event => {
+    const handleRequest = (event) => {
       const request = event.data;
       const { type, functionName, id, args } = request;
 
       if (type !== 'REQUEST') return;
 
       serverFunctions[functionName](...args)
-        .then(response => {
+        .then((response) => {
           iframe.current.contentWindow.postMessage(
             { type: 'RESPONSE', id, status: 'SUCCESS', response },
             `https://localhost:${PORT}`
           );
         })
-        .catch(err => {
+        .catch((err) => {
           iframe.current.contentWindow.postMessage(
             {
               type: 'RESPONSE',
@@ -54,13 +52,12 @@ const DevServer = () => {
           position: 'absolute',
         }}
         ref={iframe}
-        // The "/gas/" path here must match the path where the custom dev server is being loaded.
-        // See webpack.config.js "devServer" "before" settings.
-        // Filename extension "-impl" must match webpack.config.js clientConfigs filename settings for development.
-        src={`https://localhost:${PORT}/gas/${FILENAME}-impl.html`}
+        src={`https://localhost:${PORT}/${FILENAME}-impl.html`}
       />
     </div>
   );
 };
 
-ReactDOM.render(<DevServer />, document.getElementById('index'));
+const container = document.getElementById('index');
+const root = createRoot(container);
+root.render(<DevServer />);

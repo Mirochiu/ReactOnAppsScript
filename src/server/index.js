@@ -2,6 +2,7 @@ import * as publicWebFunctions from './web';
 import * as driveFunctions from './drive';
 import * as userFunctions from './user';
 import * as contentFunctions from './content';
+import * as secretFunctions from './secrets';
 import { SERVER_URL } from './settings';
 
 // Expose public functions by attaching to `global`
@@ -15,3 +16,5 @@ global.getLinkList = contentFunctions.getLinkList;
 global.deleteContentFromSheet = contentFunctions.deleteContentByName;
 global.register = userFunctions.register;
 global.searchByNameInUploadedHtml = contentFunctions.seachHtmlName;
+global.getGoogleLoginURL = secretFunctions.getGoogleLoginURL;
+global.getLineLoginURL = secretFunctions.getLineLoginURL;

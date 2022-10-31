@@ -18,13 +18,13 @@ export const createJwt = ({ privateKey, expiresInHours, data = {} }) => {
   };
 
   // add user payload
-  Object.keys(data).forEach(function (key) {
+  Object.keys(data).forEach((key) => {
     payload[key] = data[key];
   });
 
   const base64Encode = (text, json = true) => {
-    const data = json ? JSON.stringify(text) : text;
-    return Utilities.base64EncodeWebSafe(data).replace(/=+$/, '');
+    const d = json ? JSON.stringify(text) : text;
+    return Utilities.base64EncodeWebSafe(d).replace(/=+$/, '');
   };
 
   const toSign = `${base64Encode(header)}.${base64Encode(payload)}`;

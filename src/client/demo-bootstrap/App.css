@@ -18,15 +18,3 @@ CSSTransitionGroup styling
   transform: scale(0.9);
   transition: opacity 300ms, transform 300ms;
 }
-.bottom-tab-nav {
-  border-top: solid 2px #EBEBEB;
-}
-.bottom-nav-link {
-  color: #55575b;
-}
-.bottom-nav-link.active {
-  color: #922c88;
-}
-.bottom-tab-label {
-  font-size: 12px;
-}

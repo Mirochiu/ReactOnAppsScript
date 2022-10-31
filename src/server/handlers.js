@@ -9,10 +9,10 @@ const Handlers = {
     func: templates.getDefault,
   },
   html: {
-    func: name => HtmlService.createHtmlOutput(getContentByName(name)),
+    func: (name) => HtmlService.createHtmlOutput(getContentByName(name)),
   },
   'html-source': {
-    func: name => {
+    func: (name) => {
       let content = '';
       try {
         content = getContentByName(name);
@@ -26,7 +26,7 @@ const Handlers = {
     immediateRetrun: true,
   },
   'download-html': {
-    func: name => {
+    func: (name) => {
       let content = '';
       try {
         content = getContentByName(name);
@@ -47,7 +47,7 @@ const Handlers = {
     func: confirmOpenIdBinding,
   },
   oauth: {
-    func: arg => {
+    func: (arg) => {
       const { state } = arg;
       if (isLineState(state)) return LineOAuth(arg);
       if (isGoogleState(state)) return GoogleOAuth(arg);
@@ -59,6 +59,8 @@ const Handlers = {
   },
 };
 
-export default function(show) {
+const getDefaultHandlers = (show) => {
   return Handlers[show] || Handlers.default;
-}
+};
+
+export default getDefaultHandlers;
