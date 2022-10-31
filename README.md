@@ -4,6 +4,10 @@
 
 使用MIT協議釋出本專案，由於專案逐步建構中，若有建議歡迎提出。
 
+## Demo
+
+![](./resources/React-on-Apps-Script-Demo.gif)
+
 ## 2022-10-31 新版:升級Webpack 5
 
 !!!! BREAKING CHANGE !!!!
