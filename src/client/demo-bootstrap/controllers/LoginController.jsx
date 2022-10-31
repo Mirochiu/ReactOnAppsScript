@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import useAuth from '../hooks/useAuth';
 
+const NAME_OF_PAGE = 'reactonappscript.page';
+
 const LoginController = ({ submitForm, registForm, children }) => {
   const { authed, login, register } = useAuth();
   const [isSubmiting, setSubmiting] = useState(null);
@@ -15,6 +17,11 @@ const LoginController = ({ submitForm, registForm, children }) => {
 
   if (authed) {
     if (children) {
+      const lastPageAction = sessionStorage.getItem(NAME_OF_PAGE);
+      if (lastPageAction) {
+        console.debug('last page action', lastPageAction);
+        return React.cloneElement(children, { lastPageAction });
+      }
       return React.cloneElement(children);
     }
 
