@@ -8,7 +8,7 @@
     <p>歡迎您:<?= loginName ?>使用<?= loginBy ?> 登入</p>
     <p>請點一下<a href="exec">這裡</a>回首頁</p>
     <script>
-      localStorage.setItem('user-token', <?= loginToken ?>);
+      localStorage.setItem('reactonappscript.user-token', <?= loginToken ?>);
       google.script.history.replace(null, '', ''); // remove params and hash
       // remove all scripts
       document.querySelectorAll('script').forEach(function (s) {
