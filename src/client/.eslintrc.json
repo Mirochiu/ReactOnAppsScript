@@ -28,7 +28,8 @@
     "camelcase": "warn",
     "import/prefer-default-export": "warn",
     "import/no-extraneous-dependencies": "warn",
-    "prefer-object-spread": "warn"
+    "prefer-object-spread": "warn",
+    "react/prop-types": "0"
   },
   "settings": {
     "react": {
