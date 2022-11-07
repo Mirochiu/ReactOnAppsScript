@@ -39,6 +39,7 @@ const LoginController = ({ submitForm, registForm, children }) => {
     const onRegister = (e) => {
       e.preventDefault();
       setSubmiting(true);
+      setErrorMsg(null);
       setHintMsg('註冊中...');
       register(e.target)
         .then((resp) => {
@@ -66,6 +67,7 @@ const LoginController = ({ submitForm, registForm, children }) => {
   const onLogin = (e) => {
     e.preventDefault();
     setSubmiting(true);
+    setErrorMsg(null);
     setHintMsg('登入中，請稍候...');
     login(e.target)
       .then(() => {
