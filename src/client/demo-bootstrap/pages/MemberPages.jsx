@@ -3,13 +3,11 @@ import {
   BsHouseDoorFill,
   BsListUl,
   BsFillGridFill,
-  BsFillCloudUploadFill,
   BsDoorOpenFill,
 } from 'react-icons/bs';
 import Home from './Home';
 import LinkLister from './LinkLister';
 import DirveLister from './DirveLister';
-import UploadHtml from './UploadHtml';
 
 const MemberPages = {
   home: {
@@ -26,15 +24,9 @@ const MemberPages = {
   },
   drive_lister: {
     action: 'drive-lister',
-    label: 'Drive檔案列表',
+    label: '檔案列表',
     icon: <BsFillGridFill />,
     comp: <DirveLister />,
-  },
-  upload_html: {
-    action: 'upload-html',
-    label: '上傳HTML',
-    icon: <BsFillCloudUploadFill />,
-    comp: <UploadHtml />,
   },
   logout: {
     action: 'logout',

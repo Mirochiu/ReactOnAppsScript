@@ -6,11 +6,12 @@ import { serverFunctions } from '../../utils/serverFunctions';
 
 const ID_UPLOAD_NAME_CANDIDATES = 'html-name-candidates';
 
-const UploadHtml = () => {
+const UploadHtml = ({ goBack = () => {} }) => {
   const [msg, showText] = useState(null);
   const [link, setLink] = useState(null);
   const [name, setName] = useState('');
   const [nameCandidates, setCandidate] = useState([]);
+  const [isUploading, setUploading] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -28,6 +29,7 @@ const UploadHtml = () => {
 
   const onSubmit = (event) => {
     event.preventDefault();
+    setUploading(true);
     showText('上傳中，請稍候...');
     serverFunctions
       .uploadHtmlFile(event.target)
@@ -40,6 +42,9 @@ const UploadHtml = () => {
       })
       .catch((error) => {
         showText(`上傳失敗，錯誤訊息:${error.message}`);
+      })
+      .finally(() => {
+        setUploading(false);
       });
   };
 
@@ -53,6 +58,9 @@ const UploadHtml = () => {
         nameListId={
           nameCandidates.length > 0 ? ID_UPLOAD_NAME_CANDIDATES : null
         }
+        isSubmiting={isUploading}
+        cancelTitle={link ? '返回' : '取消'}
+        onCancel={goBack}
       />
       {nameCandidates.length > 0 && (
         <datalist id={ID_UPLOAD_NAME_CANDIDATES}>
