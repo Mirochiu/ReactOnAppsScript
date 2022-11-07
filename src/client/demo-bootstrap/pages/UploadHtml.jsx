@@ -72,7 +72,7 @@ const UploadHtml = ({ goBack = () => {} }) => {
       <Row>{msg}</Row>
       {link && (
         <Row>
-          上傳完成! 點擊以下連結可查看上傳完成的HTML
+          上傳完成! 點擊以下連結可查看HTML
           <a href={link.url}>{link.title}</a>
         </Row>
       )}

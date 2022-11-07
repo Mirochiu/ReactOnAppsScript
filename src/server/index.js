@@ -9,6 +9,7 @@ import { SERVER_URL } from './settings';
 global.doGet = publicWebFunctions.doGet;
 global.getServerUrl = () => SERVER_URL;
 global.uploadHtmlFile = contentFunctions.uploadHtmlFile;
+global.uploadImageFile = driveFunctions.uploadImageFile;
 global.listFilesInDriveFolder = driveFunctions.listFilesInDriveFolder;
 global.loginUser = userFunctions.login;
 global.authLogin = userFunctions.auth;
