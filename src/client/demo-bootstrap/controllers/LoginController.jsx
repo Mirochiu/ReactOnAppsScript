@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import useAuth from '../hooks/useAuth';
+import { reload } from '../utils/reloader';
 
 const NAME_OF_PAGE = 'reactonappscript.page';
 
@@ -72,7 +73,7 @@ const LoginController = ({ submitForm, registForm, children }) => {
     login(e.target)
       .then(() => {
         e.target.reset();
-        // console.debug('logined');
+        reload();
       })
       .catch((err) => setErrorMsg(`登入失敗:${err.message}`))
       .finally(() => {
