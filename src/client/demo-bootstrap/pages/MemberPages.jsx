@@ -3,12 +3,14 @@ import {
   BsHouseDoorFill,
   BsListUl,
   BsFillGridFill,
+  BsAward,
   BsDoorOpenFill,
 } from 'react-icons/bs';
 import Home from './Home';
 import LinkLister from './LinkLister';
 import DirveLister from './DirveLister';
 import CartIcon from '../components/CartIcon';
+import SingleProduct from './SingleProuct';
 
 const MemberPages = {
   home: {
@@ -28,6 +30,12 @@ const MemberPages = {
     label: '檔案列表',
     icon: <BsFillGridFill />,
     comp: <DirveLister />,
+  },
+  single_product: {
+    action: 'single_product',
+    label: '主打產品',
+    icon: <BsAward />,
+    comp: <SingleProduct productId="12340" />,
   },
   cart: {
     action: 'show-cart',
