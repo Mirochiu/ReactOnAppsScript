@@ -5,14 +5,24 @@ import Nav from 'react-bootstrap/Nav';
 import Col from 'react-bootstrap/Col';
 import { BsBootstrapFill } from 'react-icons/bs';
 
-const ClickableIcon = ({ icon, text = '', onClick = () => {} }) => {
+const ClickableIcon = ({
+  customizedIcon,
+  icon,
+  text = '',
+  onClick = () => {},
+}) => {
+  const iconRender = () => {
+    if (customizedIcon) return customizedIcon;
+    return (
+      <Col>
+        {icon} {text}
+      </Col>
+    );
+  };
+
   return (
     <Nav.Link onClick={onClick}>
-      <Nav.Item>
-        <Col>
-          {icon} {text}
-        </Col>
-      </Nav.Item>
+      <Nav.Item>{iconRender()}</Nav.Item>
     </Nav.Link>
   );
 };
@@ -37,6 +47,7 @@ const TopNav = ({ onPageChanged = () => {}, pageList = [] }) => {
                 key={`top-icon-${idx}`}
                 icon={page.icon}
                 text={page.label}
+                customizedIcon={page.customizedIcon}
                 onClick={getHandler(page)}
               />
             ))}

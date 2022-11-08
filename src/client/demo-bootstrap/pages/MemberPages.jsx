@@ -8,6 +8,7 @@ import {
 import Home from './Home';
 import LinkLister from './LinkLister';
 import DirveLister from './DirveLister';
+import CartIcon from '../components/CartIcon';
 
 const MemberPages = {
   home: {
@@ -27,6 +28,10 @@ const MemberPages = {
     label: '檔案列表',
     icon: <BsFillGridFill />,
     comp: <DirveLister />,
+  },
+  cart: {
+    action: 'show-cart',
+    customizedIcon: <CartIcon />,
   },
   logout: {
     action: 'logout',

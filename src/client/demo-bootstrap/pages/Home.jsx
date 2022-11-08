@@ -4,6 +4,8 @@ import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import { CSSTransition } from 'react-transition-group';
 import { serverFunctions } from '../../utils/serverFunctions';
+import ProductList from '../components/ProductList';
+import ProductData from '../../../../json/ProductData.json';
 
 const Home = () => {
   const [showBtn, setShowBtn] = useState(true);
@@ -23,6 +25,7 @@ const Home = () => {
         <code>react-bootstrap</code>
         library to help us build a simple React app.
       </p>
+
       {showBtn && (
         <Button
           className="border-0 mx-2"
@@ -48,6 +51,7 @@ const Home = () => {
           <Button onClick={() => setShowUrl('')}>Close</Button>
         </Alert>
       </CSSTransition>
+      <ProductList productData={ProductData} />
     </Container>
   );
 };
