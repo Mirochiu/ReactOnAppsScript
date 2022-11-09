@@ -17,7 +17,7 @@ const Handlers = {
       try {
         content = getContentByName(name);
       } catch (error) {
-        console.error(`找不到${name}`);
+        Logger.log(`找不到${name}`);
       }
       return ContentService.createTextOutput(content).setMimeType(
         ContentService.MimeType.TEXT
@@ -31,7 +31,7 @@ const Handlers = {
       try {
         content = getContentByName(name);
       } catch (error) {
-        console.error(`找不到${name}`);
+        Logger.log(`找不到${name}`);
       }
       return ContentService.createTextOutput(content)
         .setMimeType(ContentService.MimeType.TEXT)
