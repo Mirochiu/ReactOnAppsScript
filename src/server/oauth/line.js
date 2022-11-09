@@ -3,9 +3,9 @@ import { loginByOAuth } from '../user';
 import { getFunForCommonOAuth } from './common';
 import templates from '../templates';
 
-export const checkState = state => state === config.loginState;
+export const checkState = (state) => state === config.loginState;
 
-const OAuth = getFunForCommonOAuth(config, oauthLogin => {
+const OAuth = getFunForCommonOAuth(config, (oauthLogin) => {
   const ourLogin = loginByOAuth(oauthLogin.sub, config.providerName);
   return templates.getSuccess({
     token: ourLogin.token,

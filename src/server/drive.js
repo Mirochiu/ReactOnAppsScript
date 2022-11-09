@@ -47,7 +47,7 @@ function getTypeAndData(dataURL, name) {
     type: mimeType,
     blob: Utilities.newBlob(data, mimeType, name),
   };
-};
+}
 
 export function uploadImageFile(form) {
   User.validateUploadPermission();

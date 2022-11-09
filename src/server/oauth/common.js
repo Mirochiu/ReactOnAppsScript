@@ -1,8 +1,8 @@
 import { decodeJwt } from '../jwt';
 import Templates from '../templates';
 
-const getFuncForFetchToken = config => {
-  return code => {
+const getFuncForFetchToken = (config) => {
+  return (code) => {
     const response = UrlFetchApp.fetch(config.tokenUrl, {
       contentType: 'application/x-www-form-urlencoded',
       method: 'post',
@@ -18,7 +18,7 @@ const getFuncForFetchToken = config => {
   };
 };
 
-const parseLogin = json => {
+const parseLogin = (json) => {
   const user = decodeJwt(json.id_token);
   const nowTime = Date.now();
   if (user.exp > nowTime)
@@ -28,16 +28,19 @@ const parseLogin = json => {
 
 export const getFunForCommonOAuth = (config, callback) => {
   const fetchToken = getFuncForFetchToken(config);
+  // eslint-disable-next-line camelcase
   return ({ state, code, error, error_description }) => {
     if (error)
       return Templates.getFailure({
         error,
+        // eslint-disable-next-line camelcase
         desc: error_description,
         provider: config.providerName,
       });
     if (!state || state !== config.loginState || !code)
       return Templates.getFailure({
         error,
+        // eslint-disable-next-line camelcase
         desc: error_description,
         provider: config.providerName,
       });
