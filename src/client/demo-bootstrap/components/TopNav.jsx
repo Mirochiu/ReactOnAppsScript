@@ -2,7 +2,6 @@ import React from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
-import Col from 'react-bootstrap/Col';
 import { BsBootstrapFill } from 'react-icons/bs';
 
 const ClickableIcon = ({
@@ -14,9 +13,10 @@ const ClickableIcon = ({
   const iconRender = () => {
     if (customizedIcon) return customizedIcon;
     return (
-      <Col>
-        {icon} {text}
-      </Col>
+      <div className="d-flex align-items-center">
+        {icon}
+        {text}
+      </div>
     );
   };
 
@@ -41,7 +41,7 @@ const TopNav = ({ onPageChanged = () => {}, pageList = [] }) => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="me-auto">
+          <Nav className="me-auto align-items-start align-items-lg-center">
             {pageList.map((page, idx) => (
               <ClickableIcon
                 key={`top-icon-${idx}`}

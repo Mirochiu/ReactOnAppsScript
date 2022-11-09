@@ -1,7 +1,6 @@
 import React from 'react';
 import { BsStarFill, BsStar, BsStarHalf, BsCartFill } from 'react-icons/bs';
 import Badge from 'react-bootstrap/Badge';
-import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -21,19 +20,17 @@ const RightTopBadge = ({ text = '特價' }) => {
 
 const ProductBtn = ({ title, children }) => {
   return (
-    <div className="text-center">
-      <Button variant="outline-primary">
-        {children}
-        {title}
-      </Button>
+    <div className="btn btn-outline-primary d-inline-flex justify-content-center align-items-center">
+      {children}
+      {title}
     </div>
   );
 };
 
-const AddCartBtn = (props) => {
+export const AddCartBtn = (props) => {
   return (
     <ProductBtn {...props} title="加到購物車">
-      <BsCartFill />
+      <BsCartFill className="me-1" />
     </ProductBtn>
   );
 };
@@ -100,7 +97,7 @@ const ProductCard = ({ data }) => {
             />
           </div>
         </Card.Body>
-        <Card.Footer className="p-4 pt-0 border-top-0 bg-transparent">
+        <Card.Footer className="p-4 pt-0 border-top-0 bg-transparent text-center">
           {Array.isArray(priceList) ? (
             <OptionsBtn priceList={priceList} />
           ) : (

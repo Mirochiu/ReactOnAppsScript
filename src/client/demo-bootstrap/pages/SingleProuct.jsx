@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import ProductList from '../components/ProductList';
+import ProductList, { AddCartBtn } from '../components/ProductList';
 
 const RelatedProducts = [
   {
@@ -99,10 +99,7 @@ const SingleProduct = ({ productId }) => {
                   value="1"
                   style={{ 'max-width': '3rem' }}
                 />
-                <Button variant="outline-primary" className="flex-shrink-0">
-                  <BsCartFill className="me-1" />
-                  加到購物車
-                </Button>
+                <AddCartBtn />
               </div>
             </Col>
           </Row>
