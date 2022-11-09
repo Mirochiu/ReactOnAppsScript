@@ -20,7 +20,7 @@ const outputSuccess = ({ token = '', name = '', id = '', provider = '' }) => {
 };
 
 const logErrorAndOutput = (error) => {
-  Logger.log('logErrorAndOutput', error);
+  Logger.log(`logErrorAndOutput ${error.message}`);
   return outputFailure({
     error: error.message,
     desc: JSON.stringify(error),

@@ -23,12 +23,12 @@ const createToken = ({ name, openId }) => {
 };
 
 export const loginByOAuth = (uid, from) => {
-  Logger.log('loginByOAuth', uid, from);
+  Logger.log(`loginByOAuth ${uid} from ${from}`);
   const sheet = getUserSheet();
   // TODO: finding uid in column should derived from 'from'
   const rowIdx = findIndexInColumn(uid, COLUMN_IDX_OF_NAME, sheet);
   if (rowIdx < 0) {
-    Logger.log('new account', uid, from);
+    Logger.log(`new account ${uid} from ${from}`);
     const newAccount = [];
     newAccount[COLUMN_IDX_OF_NAME] = uid;
     newAccount[COLUMN_IDX_OF_CONFIRMED] = new Date();
@@ -173,14 +173,14 @@ function handleConfirm(token) {
   const sheet = getUserSheet();
   const rowIdx = findIndexInColumn(json.iss, COLUMN_IDX_OF_NAME, sheet);
   if (rowIdx < 0) {
-    Logger.log(`${json.iss} '尚未註冊`);
+    Logger.log(`用戶${json.iss}尚未註冊`);
     throw new Error('尚未註冊');
   }
   const range = sheet.getRange(1 + rowIdx, 1 + COLUMN_IDX_OF_ACCESSTOKEN, 1, 2);
   const [accessToken, confirmed] = range.getValues()[0];
   if (confirmed) return { status: 200, message: '註冊已確認' };
   if (token !== accessToken) {
-    Logger.log('token!=', token, accessToken);
+    Logger.log(`token不吻合 ${token} != ${accessToken}`);
     throw new Error('確認失敗');
   }
   range.setValues([[accessToken, new Date()]]);
@@ -194,7 +194,7 @@ export function confirmRegistration(token) {
     handleConfirm(token);
     content = '註冊確認成功';
   } catch (error) {
-    Logger.log(error.stack);
+    Logger.log(`註冊確認失敗${error.stack}`);
     content = `註冊確認失敗 ${error.message}`;
   }
   return HtmlService.createHtmlOutput(content);
@@ -224,17 +224,17 @@ function handleOpenIdConfirm(token) {
   try {
     json = decodeJwt(token);
   } catch (error) {
-    Logger.log(`轉換失敗${error.stack}`);
+    Logger.log(`解碼JWT失敗${error.stack}`);
     throw new Error('榜定資訊錯誤');
   }
   if (!json.openId) {
-    Logger.log(`not found Open ID ${JSON.stringify(json)}`);
+    Logger.log(`找不到OpenID ${JSON.stringify(json)}`);
     throw new Error('無法榜定未知的使用者ID');
   }
   const sheet = getUserSheet();
   const rowIdx = findIndexInColumn(json.iss, COLUMN_IDX_OF_NAME, sheet);
   if (rowIdx < 0) {
-    Logger.log(`${json.iss} '尚未註冊`);
+    Logger.log(`用戶${json.iss}尚未註冊`);
     throw new Error('尚未註冊');
   }
   let providerColumnIdx = -1;
@@ -250,7 +250,7 @@ function handleOpenIdConfirm(token) {
   const tokenRange = sheet.getRange(1 + rowIdx, 1 + providerColumnIdx);
   const accessToken = tokenRange.getValue();
   if (token !== accessToken) {
-    Logger.log('bind-token!=', token, accessToken);
+    Logger.log(`榜定token不同 ${token} != ${accessToken}`);
     throw new Error('榜定失敗');
   }
   tokenRange.setValue(json.openId.id);
@@ -269,7 +269,7 @@ export function confirmOpenIdBinding(token) {
       provider: openId.provider,
     });
   } catch (error) {
-    Logger.log(error.stack);
+    Logger.log(`榜定失敗${error.stack}`);
     return templates.getFailure({
       error: '榜定失敗',
       desc: `${error.message}`,
