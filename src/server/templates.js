@@ -1,12 +1,19 @@
 import { SERVER_URL } from './settings';
 
+export const postProc = (evaluatedTemplate) => {
+  if (process.env.FAVICON_URL) {
+    evaluatedTemplate.setFaviconUrl(process.env.FAVICON_URL);
+  }
+  return evaluatedTemplate;
+};
+
 const outputFailure = ({ error = '', desc = '', provider = '' }) => {
   const template = HtmlService.createTemplateFromFile('failure');
   template.baseUrl = SERVER_URL;
   template.error = error;
   template.error_description = desc;
   template.loginBy = provider;
-  return template.evaluate();
+  return postProc(template.evaluate());
 };
 
 const outputSuccess = ({ token = '', name = '', id = '', provider = '' }) => {
@@ -16,7 +23,7 @@ const outputSuccess = ({ token = '', name = '', id = '', provider = '' }) => {
   template.loginName = name;
   template.loginUid = id;
   template.loginBy = provider;
-  return template.evaluate();
+  return postProc(template.evaluate());
 };
 
 const logErrorAndOutput = (error) => {
@@ -39,11 +46,11 @@ const googleBinding = ({
   template.bindName = bindName;
   template.bindUid = bindId;
   template.loginBy = provider;
-  return template.evaluate();
+  return postProc(template.evaluate());
 };
 
 const defaultPage = () =>
-  HtmlService.createTemplateFromFile('index.html').evaluate();
+  postProc(HtmlService.createTemplateFromFile('index.html').evaluate());
 
 export default {
   logError: logErrorAndOutput,

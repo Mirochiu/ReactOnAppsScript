@@ -2,14 +2,15 @@ import { getContentByName } from './content';
 import { confirmRegistration, confirmOpenIdBinding } from './user';
 import LineOAuth, { checkState as isLineState } from './oauth/line';
 import GoogleOAuth, { checkState as isGoogleState } from './oauth/google';
-import templates from './templates';
+import templates, { postProc } from './templates';
 
 const Handlers = {
   default: {
     func: templates.getDefault,
   },
   html: {
-    func: (name) => HtmlService.createHtmlOutput(getContentByName(name)),
+    func: (name) =>
+      postProc(HtmlService.createHtmlOutput(getContentByName(name))),
   },
   'html-source': {
     func: (name) => {
