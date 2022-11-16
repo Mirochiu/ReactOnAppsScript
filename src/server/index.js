@@ -16,6 +16,6 @@ global.authLogin = userFunctions.auth;
 global.getLinkList = contentFunctions.getLinkList;
 global.deleteContentFromSheet = contentFunctions.deleteContentByName;
 global.register = userFunctions.register;
-global.searchByNameInUploadedHtml = contentFunctions.seachHtmlName;
+global.searchByNameInUploadedHtml = contentFunctions.searchHtmlName;
 global.getGoogleLoginURL = secretFunctions.getGoogleLoginURL;
 global.getLineLoginURL = secretFunctions.getLineLoginURL;

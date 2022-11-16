@@ -35,7 +35,7 @@ export function uploadHtmlFile(form) {
 }
 
 // TODO: limit the length of output
-export function seachHtmlName(name) {
+export function searchHtmlName(name) {
   if (typeof name !== 'string' || name.length < 1) return [];
   const target = name.toLowerCase();
   try {
