@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import { CSSTransition } from 'react-transition-group';
 import { serverFunctions } from '../../utils/serverFunctions';
 import ProductList from '../components/ProductList';
-import ProductData from '../../../../json/ProductData.json';
 
 const Home = () => {
   const [showBtn, setShowBtn] = useState(true);
@@ -14,6 +13,23 @@ const Home = () => {
   const getServerUrl = () => {
     serverFunctions.getServerUrl().then(setShowUrl).catch(alert);
   };
+
+  const [productData, setProductData] = useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+    serverFunctions
+      .getAllProducts()
+      .then((data) => {
+        if (mounted) setProductData(data);
+      })
+      .catch((err) => {
+        console.error(err.message);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <Container>
@@ -51,7 +67,7 @@ const Home = () => {
           <Button onClick={() => setShowUrl('')}>Close</Button>
         </Alert>
       </CSSTransition>
-      <ProductList productData={ProductData} />
+      <ProductList productData={productData} />
     </Container>
   );
 };

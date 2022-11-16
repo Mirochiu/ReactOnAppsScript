@@ -3,6 +3,7 @@ import * as driveFunctions from './drive';
 import * as userFunctions from './user';
 import * as contentFunctions from './content';
 import * as secretFunctions from './secrets';
+import * as productFunctions from './products';
 import { SERVER_URL } from './settings';
 
 // Expose public functions by attaching to `global`
@@ -19,3 +20,5 @@ global.register = userFunctions.register;
 global.searchByNameInUploadedHtml = contentFunctions.searchHtmlName;
 global.getGoogleLoginURL = secretFunctions.getGoogleLoginURL;
 global.getLineLoginURL = secretFunctions.getLineLoginURL;
+global.getAllProducts = productFunctions.getAllProducts;
+global.getProductById = productFunctions.getProductById;

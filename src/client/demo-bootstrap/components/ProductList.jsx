@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
+import Spinner from 'react-bootstrap/Spinner';
 
 const RightTopBadge = ({ text = '特價' }) => {
   return (
@@ -110,12 +111,21 @@ const ProductCard = ({ data }) => {
 };
 
 const ProductList = ({ productData }) => {
+  const ShowSpinnerWhen = ({ loadingVar }) => {
+    if (loadingVar == null) {
+      return <Spinner animation="border" size="lg" role="status" />;
+    }
+    if (loadingVar.length === 0) {
+      return <span className="text-center">還沒有設定產品</span>;
+    }
+    return loadingVar.map((data, idx) => (
+      <ProductCard key={`prodcuct-${idx}`} data={data} />
+    ));
+  };
   return (
     <Container className="px-4 px-lg-5 mt-5">
       <Row xs={2} md={3} xl={4} className="gx-4 gx-lg-5 justify-content-center">
-        {productData.map((data, idx) => (
-          <ProductCard key={`prodcuct-${idx}`} data={data} />
-        ))}
+        <ShowSpinnerWhen loadingVar={productData} />
       </Row>
     </Container>
   );
