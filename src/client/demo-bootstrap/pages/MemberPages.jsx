@@ -11,6 +11,7 @@ import LinkLister from './LinkLister';
 import DirveLister from './DirveLister';
 import CartIcon from '../components/CartIcon';
 import SingleProduct from './SingleProuct';
+import ShopCartPage from './ShopCartPage';
 
 const MemberPages = {
   home: {
@@ -20,13 +21,13 @@ const MemberPages = {
     comp: <Home />,
   },
   link_lister: {
-    action: 'link-lister',
+    action: 'link_lister',
     label: '連結列表',
     icon: <BsListUl />,
     comp: <LinkLister />,
   },
   drive_lister: {
-    action: 'drive-lister',
+    action: 'drive_lister',
     label: '檔案列表',
     icon: <BsFillGridFill />,
     comp: <DirveLister />,
@@ -37,9 +38,10 @@ const MemberPages = {
     icon: <BsAward />,
     comp: <SingleProduct productId="12340" />,
   },
-  cart: {
-    action: 'show-cart',
+  shop_cart: {
+    action: 'shop_cart',
     customizedIcon: <CartIcon />,
+    comp: <ShopCartPage />,
   },
   logout: {
     action: 'logout',
