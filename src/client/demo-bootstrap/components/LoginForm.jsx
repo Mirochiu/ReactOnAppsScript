@@ -4,6 +4,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
+import InputGroup from 'react-bootstrap/InputGroup';
+import { FaUnlock, FaUnlockAlt } from 'react-icons/fa';
+import { MdContactMail } from 'react-icons/md';
 
 const LoginForm = ({
   onSubmit,
@@ -20,37 +23,58 @@ const LoginForm = ({
   };
   return (
     <Form onSubmit={onSubmit}>
-      <Form.Group className="form-floating">
-        <Form.Control
-          type="text"
-          name="username"
-          placeholder="輸入帳號(email)"
-          autoComplete="username"
-          required={true}
-        />
-        <Form.Label>輸入帳號(email)</Form.Label>
-      </Form.Group>
-      <Form.Group className="form-floating">
-        <Form.Control
-          type="password"
-          name="password"
-          placeholder="輸入密碼"
-          autoComplete="current-password"
-          required={true}
-        />
-        <Form.Label>輸入密碼</Form.Label>
-      </Form.Group>
+      <Row className="mb-3">
+        <InputGroup>
+          <InputGroup.Text>
+            <MdContactMail />
+          </InputGroup.Text>
+          <Form.Floating>
+            <Form.Control
+              type="text"
+              name="username"
+              placeholder="輸入帳號(email)"
+              autoComplete="username"
+              required={true}
+            />
+            <Form.Label>輸入帳號(email)</Form.Label>
+          </Form.Floating>
+        </InputGroup>
+      </Row>
+      <Row className="mb-3">
+        <InputGroup>
+          <InputGroup.Text>
+            <FaUnlock />
+          </InputGroup.Text>
+          <Form.Floating>
+            <Form.Control
+              type="password"
+              name="password"
+              placeholder="輸入密碼"
+              autoComplete="current-password"
+              required={true}
+            />
+            <Form.Label>輸入密碼</Form.Label>
+          </Form.Floating>
+        </InputGroup>
+      </Row>
       {confirmPassword && (
-        <Form.Group className="form-floating">
-          <Form.Control
-            type="password"
-            name="confim-password"
-            placeholder="再次輸入密碼"
-            autoComplete="current-password"
-            required={true}
-          />
-          <Form.Label>再次輸入密碼</Form.Label>
-        </Form.Group>
+        <Row className="mb-3">
+          <InputGroup>
+            <InputGroup.Text>
+              <FaUnlockAlt />
+            </InputGroup.Text>
+            <Form.Floating>
+              <Form.Control
+                type="password"
+                name="confim-password"
+                placeholder="再次輸入密碼"
+                autoComplete="current-password"
+                required={true}
+              />
+              <Form.Label>再次輸入密碼</Form.Label>
+            </Form.Floating>
+          </InputGroup>
+        </Row>
       )}
       <Row className="mt-3 mb-3">
         <Col>
