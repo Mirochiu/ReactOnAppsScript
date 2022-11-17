@@ -1,5 +1,6 @@
 import React from 'react';
 import Spinner from 'react-bootstrap/Spinner';
+import Container from 'react-bootstrap/Container';
 import useAuth from '../hooks/useAuth';
 
 const SimpleLoading = ({ children }) => {
@@ -7,9 +8,19 @@ const SimpleLoading = ({ children }) => {
 
   if (authed == null) {
     return (
-      <Spinner animation="border" variant="warning" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </Spinner>
+      <Container
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          height: '100vh',
+        }}
+      >
+        <Spinner animation="border" variant="warning" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </Container>
     );
   }
 
