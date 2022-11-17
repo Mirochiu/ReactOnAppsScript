@@ -1,23 +1,31 @@
 import { SHEET_URL } from './settings';
 
-export function getSheetInUrl(url, name, option = {}) {
+export function getSheetInUrl(url, name, options = {}) {
   if (
     typeof url !== 'string' ||
-    typeof name !== 'string' ||
-    typeof option !== 'object'
+    (name != null && typeof name !== 'string') ||
+    typeof options !== 'object'
   ) {
     throw new TypeError(
-      'params of getSheetInUrl() should be string,string[,object]'
+      'params of getSheetInUrl() should be string,string|null[,object]'
     );
   }
+
   const book = SpreadsheetApp.openByUrl(url);
-  if (!name && option.fallbackToFirst) {
-    return book.getSheets()[0];
+  if (!name) {
+    if (options.fallbackToFirst) {
+      return book.getSheets()[0];
+    }
+    return null;
   }
-  let sheet = book.getSheetByName(name);
+
+  const sheet = book.getSheetByName(name);
   if (!sheet) {
-    if (option.autoCreate) {
-      sheet = book.insertSheet(name);
+    if (options.autoCreate) {
+      return book.insertSheet(name);
+    }
+    if (options.fallbackToFirst) {
+      return book.getSheets()[0];
     }
   }
   return sheet;
