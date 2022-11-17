@@ -33,7 +33,11 @@ export function getProductById(prodId) {
     throw new Error(`找不到產品${prodId}的內容`);
   }
   const prods = sheet
-    .getRange(1 + rowIdx, 1 + COLUMN_IDX_OF_PRODUCT_ID, 1)
+    .getRange(
+      1 + rowIdx,
+      1 + COLUMN_IDX_OF_PRODUCT_ID,
+      1,
+      sheet.getLastColumn())
     .getValues()
     .filter(rowValidator)
     .map(row2product);

@@ -36,18 +36,6 @@ const RelatedProducts = [
   },
 ];
 
-const getProductDetails = ({ productId }) => ({
-  id: productId,
-  name: 'Shop item template',
-  fullImgUrl: 'https://dummyimage.com/600x700/dee2e6/6c757d.jpg',
-  orgPrice: 45,
-  price: 40,
-  detail: `所以說，現在，解決很棒的產品的問題，是非常非常重要的。 所以，很棒的產品，發生了會如何，不發生又會如何。
-    所謂很棒的產品，關鍵是很棒的產品需要如何寫。很棒的產品真的是很值得探究，了解清楚很棒的產品到底是一種怎麽樣的存在，是解決一切問題的關鍵。
-    我認為，而這些並不是完全重要，更加重要的問題是，本人也是經過了深思熟慮，在每個日日夜夜思考這個問題。既然是這樣，至於為什麼要思考很棒的產品呢？
-    其實是有更深層的原因，要想清楚，很棒的產品，到底是一種怎麽樣的存在。`,
-});
-
 const PricePanel = ({ price, orgPrice, priceList }) => {
   if (Array.isArray(priceList)) {
     const Max = Math.max(...priceList);
@@ -65,18 +53,6 @@ const PricePanel = ({ price, orgPrice, priceList }) => {
   );
 };
 
-// const ShowSpinnerWhen = ({ loadingVar }) => {
-//   if (loadingVar == null) {
-//     return <Spinner animation="border" size="lg" role="status" />;
-//   }
-//   if (loadingVar.length === 0) {
-//     return <span className="text-center">還沒有設定產品</span>;
-//   }
-//   return loadingVar.map((data, idx) => (
-//     <ProductCard key={`prodcuct-${idx}`} data={data} />
-//   ));
-// };
-
 const SingleProduct = ({ productId }) => {
   const [prodcuct, setProductData] = useState({});
 
@@ -85,7 +61,6 @@ const SingleProduct = ({ productId }) => {
     serverFunctions
       .getProductById(productId)
       .then((data) => {
-        console.debug('single', data);
         if (mounted) setProductData(data);
       })
       .catch((err) => {
