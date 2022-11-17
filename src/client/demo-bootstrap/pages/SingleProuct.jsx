@@ -5,6 +5,9 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ProductList, { AddCartBtn } from '../components/ProductList';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { serverFunctions } from '../../utils/serverFunctions';
 
 const RelatedProducts = [
   {
@@ -62,7 +65,37 @@ const PricePanel = ({ price, orgPrice, priceList }) => {
   );
 };
 
+// const ShowSpinnerWhen = ({ loadingVar }) => {
+//   if (loadingVar == null) {
+//     return <Spinner animation="border" size="lg" role="status" />;
+//   }
+//   if (loadingVar.length === 0) {
+//     return <span className="text-center">還沒有設定產品</span>;
+//   }
+//   return loadingVar.map((data, idx) => (
+//     <ProductCard key={`prodcuct-${idx}`} data={data} />
+//   ));
+// };
+
 const SingleProduct = ({ productId }) => {
+  const [prodcuct, setProductData] = useState({});
+
+  useEffect(() => {
+    let mounted = true;
+    serverFunctions
+      .getProductById(productId)
+      .then((data) => {
+        console.debug('single', data);
+        if (mounted) setProductData(data);
+      })
+      .catch((err) => {
+        console.error(err.message);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, [productId]);
+
   const {
     id,
     name,
@@ -71,7 +104,8 @@ const SingleProduct = ({ productId }) => {
     detail,
     fullImgUrl,
     fullImgAlt = '...',
-  } = getProductDetails({ productId });
+  } = prodcuct;
+
   return (
     <>
       <section>
