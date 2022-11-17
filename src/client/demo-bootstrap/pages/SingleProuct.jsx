@@ -1,13 +1,11 @@
-import React from 'react';
-import { BsCartFill } from 'react-icons/bs';
-import Button from 'react-bootstrap/Button';
+import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ProductList, { AddCartBtn } from '../components/ProductList';
-import { useEffect } from 'react';
-import { useState } from 'react';
 import { serverFunctions } from '../../utils/serverFunctions';
+import LoadingState from '../components/LoadingState';
+import ChangableAmount from '../components/ChangableAmount';
 
 const RelatedProducts = [
   {
@@ -54,7 +52,8 @@ const PricePanel = ({ price, orgPrice, priceList }) => {
 };
 
 const SingleProduct = ({ productId }) => {
-  const [prodcuct, setProductData] = useState({});
+  const [productData, setProductData] = useState(null);
+  const [orderAmount, setOrderAmount] = useState(1);
 
   useEffect(() => {
     let mounted = true;
@@ -79,41 +78,55 @@ const SingleProduct = ({ productId }) => {
     detail,
     fullImgUrl,
     fullImgAlt = '...',
-  } = prodcuct;
+  } = productData || {};
 
   return (
-    <>
-      <section>
-        <Container className="px-4 px-lg-5 my-5">
-          <Row className="gx-4 gx-lg-5 align-items-center">
-            <Col md={6}>
-              <img
-                className="card-img-top mb-5 mb-md-0"
-                src={fullImgUrl}
-                alt={fullImgAlt}
+    <Container className="px-4 px-lg-5 my-5">
+      <Row className="gx-4 gx-lg-5 align-items-center">
+        <Col md={6}>
+          <LoadingState done={productData}>
+            <img
+              className="card-img-top mb-5 mb-md-0"
+              src={fullImgUrl}
+              alt={fullImgAlt}
+            />
+          </LoadingState>
+        </Col>
+        <Col md={6}>
+          <div className="small mb-1">產品序號: {id || productId}</div>
+          <h1 className="display-5 fw-bolder">
+            <LoadingState done={productData}>{name}</LoadingState>
+          </h1>
+          <div className="fs-5 mb-5">
+            <LoadingState done={productData}>
+              <PricePanel orgPrice={orgPrice} price={price} />
+            </LoadingState>
+          </div>
+          <p className="lead">
+            <LoadingState done={productData}>{detail}</LoadingState>
+          </p>
+          <Row>
+            <Col>
+              <ChangableAmount
+                amount={orderAmount}
+                onIncrement={() => setOrderAmount((v) => v + 1)}
+                onDecrement={() => setOrderAmount((v) => (v <= 1 ? 1 : v - 1))}
               />
             </Col>
-            <Col md={6}>
-              <div className="small mb-1">產品序號: {id}</div>
-              <h1 className="display-5 fw-bolder">{name}</h1>
-              <div className="fs-5 mb-5">
-                <PricePanel orgPrice={orgPrice} price={price} />
-              </div>
-              <p className="lead">{detail}</p>
-              <div className="d-flex">
-                <input
-                  className="form-control text-center me-3"
-                  id="inputQuantity"
-                  type="num"
-                  value="1"
-                  style={{ 'max-width': '3rem' }}
-                />
-                <AddCartBtn />
-              </div>
+            <Col>
+              <AddCartBtn />
             </Col>
           </Row>
-        </Container>
-      </section>
+        </Col>
+      </Row>
+    </Container>
+  );
+};
+
+const SingleProductPage = ({ productId }) => {
+  return (
+    <>
+      <SingleProduct productId={productId} />
       <section className="py-2 bg-light">
         <Container className="px-4 px-lg-5 mt-5">
           <h2 className="fw-bolder mb-4">相關產品</h2>
@@ -124,4 +137,4 @@ const SingleProduct = ({ productId }) => {
   );
 };
 
-export default SingleProduct;
+export default SingleProductPage;

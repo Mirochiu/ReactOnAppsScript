@@ -119,32 +119,36 @@ const ProductCard = ({ data }) => {
   );
 };
 
-const ShowSpinnerWhen = ({ loadingVar }) => {
-  if (loadingVar == null) {
-    return <Spinner animation="border" size="lg" role="status" />;
-  }
-  if (loadingVar.length === 0) {
+const ProductList = ({ list }) => {
+  if (!Array.isArray(list)) return null;
+  if (list.length === 0) {
     return <span className="text-center">還沒有設定產品</span>;
   }
-  return loadingVar.map((data, idx) => (
-    <ProductCard key={`prodcuct-${idx}`} data={data} />
-  ));
+  return (
+    <Row
+      xs={1}
+      sm={2}
+      md={3}
+      xl={4}
+      className="gx-4 gx-lg-5 justify-content-center"
+    >
+      {list.map((data, idx) => (
+        <ProductCard key={`prodcuct-${idx}`} data={data} />
+      ))}
+    </Row>
+  );
 };
 
-const ProductList = ({ productData }) => {
+const ProductListContainer = ({ productData }) => {
   return (
-    <Container className="px-4 px-lg-5 mt-5">
-      <Row
-        xs={1}
-        sm={2}
-        md={3}
-        xl={4}
-        className="gx-4 gx-lg-5 justify-content-center"
-      >
-        <ShowSpinnerWhen loadingVar={productData} />
-      </Row>
+    <Container className="px-4 px-lg-5 mt-5 text-center">
+      {productData ? (
+        <ProductList list={productData} />
+      ) : (
+        <Spinner animation="border" role="status" />
+      )}
     </Container>
   );
 };
 
-export default ProductList;
+export default ProductListContainer;

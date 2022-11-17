@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { BsCartFill, BsPlus, BsDash } from 'react-icons/bs';
+import { BsCartFill } from 'react-icons/bs';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
+import ChangableAmount from '../components/ChangableAmount';
 
 const ProductsInCart = [
   {
@@ -38,6 +37,8 @@ const PricePanel = ({ price, orgPrice }) => {
   );
 };
 
+
+
 const ShowProduct = ({
   id,
   name,
@@ -59,28 +60,11 @@ const ShowProduct = ({
           <PricePanel price={price} orgPrice={orgPrice} />
         </Col>
         <Col xs="8" md={4} lg={3} className="mb-3 ms-auto">
-          <InputGroup>
-            <Button
-              variant="light"
-              className="border-dark"
-              onClick={() => onAmountChange({ id, change: 'minus' })}
-            >
-              <BsDash />
-            </Button>
-            <Form.Control
-              readOnly={true}
-              type="text"
-              value={amount || 0}
-              className="border-dark text-center"
-            />
-            <Button
-              variant="light"
-              className="border-dark"
-              onClick={() => onAmountChange({ id, change: 'plus' })}
-            >
-              <BsPlus />
-            </Button>
-          </InputGroup>
+          <ChangableAmount
+            amount={amount}
+            onIncrement={() => onAmountChange({ id, change: 'plus' })}
+            onDecrement={() => onAmountChange({ id, change: 'minus' })}
+          />
         </Col>
       </Row>
     </div>
