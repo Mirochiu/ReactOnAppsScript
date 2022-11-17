@@ -6,6 +6,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 const RightTopBadge = ({ text = '特價' }) => {
   return (
@@ -19,25 +22,31 @@ const RightTopBadge = ({ text = '特價' }) => {
   );
 };
 
-const ProductBtn = ({ title, children }) => {
+export const AddCartBtn = () => {
   return (
     <div className="btn btn-outline-primary d-inline-flex justify-content-center align-items-center">
-      {children}
-      {title}
+      <BsCartFill className="me-1" />
+      <span className="d-none d-sm-block">加到購物車</span>
+      <span className="d-sm-none">選購</span>
     </div>
   );
 };
 
-export const AddCartBtn = (props) => {
+const OptionsBtn = ({ priceList }) => {
   return (
-    <ProductBtn {...props} title="加到購物車">
-      <BsCartFill className="me-1" />
-    </ProductBtn>
+    <Dropdown as={ButtonGroup}>
+      <Button variant="outline-primary">
+        <span className="d-none d-sm-block">選擇價格</span>
+        <span className="d-sm-none">選購</span>
+      </Button>
+      <Dropdown.Toggle split variant="outline-primary" />
+      <Dropdown.Menu>
+        {priceList.map((price, idx) => (
+          <Dropdown.Item key={`price-list-${idx}`}>$ {price}</Dropdown.Item>
+        ))}
+      </Dropdown.Menu>
+    </Dropdown>
   );
-};
-
-const OptionsBtn = (props) => {
-  return <ProductBtn {...props} title="選擇價格" />;
 };
 
 const ShowStars = ({ stars }) => {
@@ -110,21 +119,28 @@ const ProductCard = ({ data }) => {
   );
 };
 
+const ShowSpinnerWhen = ({ loadingVar }) => {
+  if (loadingVar == null) {
+    return <Spinner animation="border" size="lg" role="status" />;
+  }
+  if (loadingVar.length === 0) {
+    return <span className="text-center">還沒有設定產品</span>;
+  }
+  return loadingVar.map((data, idx) => (
+    <ProductCard key={`prodcuct-${idx}`} data={data} />
+  ));
+};
+
 const ProductList = ({ productData }) => {
-  const ShowSpinnerWhen = ({ loadingVar }) => {
-    if (loadingVar == null) {
-      return <Spinner animation="border" size="lg" role="status" />;
-    }
-    if (loadingVar.length === 0) {
-      return <span className="text-center">還沒有設定產品</span>;
-    }
-    return loadingVar.map((data, idx) => (
-      <ProductCard key={`prodcuct-${idx}`} data={data} />
-    ));
-  };
   return (
     <Container className="px-4 px-lg-5 mt-5">
-      <Row xs={2} md={3} xl={4} className="gx-4 gx-lg-5 justify-content-center">
+      <Row
+        xs={1}
+        sm={2}
+        md={3}
+        xl={4}
+        className="gx-4 gx-lg-5 justify-content-center"
+      >
         <ShowSpinnerWhen loadingVar={productData} />
       </Row>
     </Container>
