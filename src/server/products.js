@@ -23,6 +23,7 @@ const row2product = (r) => ({
   priceList: cssDefVal(r[6]),
   stars: defVal(r[7]),
   detail: defVal(r[8], ''),
+  thumbnailUrl: defVal(r[9], ''),
 });
 
 export function getProductById(prodId) {
@@ -37,7 +38,8 @@ export function getProductById(prodId) {
       1 + rowIdx,
       1 + COLUMN_IDX_OF_PRODUCT_ID,
       1,
-      sheet.getLastColumn())
+      sheet.getLastColumn()
+    )
     .getValues()
     .filter(rowValidator)
     .map(row2product);

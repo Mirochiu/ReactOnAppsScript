@@ -1,14 +1,13 @@
 import React from 'react';
-import { BsStarFill, BsStar, BsStarHalf, BsCartFill } from 'react-icons/bs';
 import Badge from 'react-bootstrap/Badge';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
-import Spinner from 'react-bootstrap/Spinner';
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Dropdown from 'react-bootstrap/Dropdown';
+import LoadingState from '../components/LoadingState';
+import PricePanel from './PricePanel';
+import ShowStars from './ShowStars';
+import AddCartBtn from './AddCartBtn';
 
 const RightTopBadge = ({ text = '特價' }) => {
   return (
@@ -22,67 +21,9 @@ const RightTopBadge = ({ text = '特價' }) => {
   );
 };
 
-export const AddCartBtn = () => {
-  return (
-    <div className="btn btn-outline-primary d-inline-flex justify-content-center align-items-center">
-      <BsCartFill className="me-1" />
-      <span className="d-none d-sm-block">加到購物車</span>
-      <span className="d-sm-none">選購</span>
-    </div>
-  );
-};
-
-const OptionsBtn = ({ priceList }) => {
-  return (
-    <Dropdown as={ButtonGroup}>
-      <Button variant="outline-primary">
-        <span className="d-none d-sm-block">選擇價格</span>
-        <span className="d-sm-none">選購</span>
-      </Button>
-      <Dropdown.Toggle split variant="outline-primary" />
-      <Dropdown.Menu>
-        {priceList.map((price, idx) => (
-          <Dropdown.Item key={`price-list-${idx}`}>$ {price}</Dropdown.Item>
-        ))}
-      </Dropdown.Menu>
-    </Dropdown>
-  );
-};
-
-const ShowStars = ({ stars }) => {
-  if (!stars) return null;
-  return (
-    <div className="d-flex justify-content-center small text-warning mb-2">
-      {[0, 1, 2, 3, 4].map((lv, idx) => {
-        const d = stars - lv;
-        const k = `star-${idx}`;
-        if (d >= 1) return <BsStarFill key={k} />;
-        if (d >= 0.5) return <BsStarHalf key={k} />;
-        return <BsStar key={k} />;
-      })}
-    </div>
-  );
-};
-
-const PricePanel = ({ price, orgPrice, priceList }) => {
-  if (Array.isArray(priceList)) {
-    const Max = Math.max(...priceList);
-    const Min = Math.min(...priceList);
-    return `$${Min} - ${Max}`;
-  }
-  if (!price) return null;
-  return (
-    <>
-      {orgPrice ? (
-        <span className="text-muted text-decoration-line-through">{`$${orgPrice}`}</span>
-      ) : null}
-      {`$${price}`}
-    </>
-  );
-};
-
 const ProductCard = ({ data }) => {
   const {
+    id,
     imgUrl,
     name,
     price,
@@ -108,11 +49,7 @@ const ProductCard = ({ data }) => {
           </div>
         </Card.Body>
         <Card.Footer className="p-4 pt-0 border-top-0 bg-transparent text-center">
-          {Array.isArray(priceList) ? (
-            <OptionsBtn priceList={priceList} />
-          ) : (
-            <AddCartBtn />
-          )}
+          <AddCartBtn priceList={priceList} productId={id} />
         </Card.Footer>
       </Card>
     </Col>
@@ -142,11 +79,9 @@ const ProductList = ({ list }) => {
 const ProductListContainer = ({ productData }) => {
   return (
     <Container className="px-4 px-lg-5 mt-5 text-center">
-      {productData ? (
+      <LoadingState done={productData}>
         <ProductList list={productData} />
-      ) : (
-        <Spinner animation="border" role="status" />
-      )}
+      </LoadingState>
     </Container>
   );
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import { AuthProvider } from './hooks/useAuth';
+import { CartProvider } from './hooks/useCart';
 import LoginController from './controllers/LoginController';
 import PagesController from './controllers/PagesController';
 import MemberPages from './pages/MemberPages';
@@ -23,15 +24,20 @@ const App = () => {
   return (
     <AuthProvider>
       <SimpleLoading>
-        <LoginController submitForm={<LoginPage />} registForm={<RegistPage />}>
-          <PagesController
-            pages={MemberPages}
-            initPage={MemberPages.home}
-            buildTopNavigator={buildTopNav}
-            buildBottomNavigator={buildBottomNav}
-            onPageChanged={onPageChanged}
-          />
-        </LoginController>
+        <CartProvider>
+          <LoginController
+            submitForm={<LoginPage />}
+            registForm={<RegistPage />}
+          >
+            <PagesController
+              pages={MemberPages}
+              initPage={MemberPages.home}
+              buildTopNavigator={buildTopNav}
+              buildBottomNavigator={buildBottomNav}
+              onPageChanged={onPageChanged}
+            />
+          </LoginController>
+        </CartProvider>
       </SimpleLoading>
     </AuthProvider>
   );

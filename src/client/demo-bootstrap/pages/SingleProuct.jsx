@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import ProductList, { AddCartBtn } from '../components/ProductList';
+import ProductList from '../components/ProductList';
 import { serverFunctions } from '../../utils/serverFunctions';
 import LoadingState from '../components/LoadingState';
 import ChangableAmount from '../components/ChangableAmount';
+import PricePanel from '../components/PricePanel';
+import ShowStars from '../components/ShowStars';
+import AddCartBtn from '../components/AddCartBtn';
 
 const RelatedProducts = [
   {
@@ -34,23 +37,6 @@ const RelatedProducts = [
   },
 ];
 
-const PricePanel = ({ price, orgPrice, priceList }) => {
-  if (Array.isArray(priceList)) {
-    const Max = Math.max(...priceList);
-    const Min = Math.min(...priceList);
-    return `$${Min} - ${Max}`;
-  }
-  if (!price) return null;
-  return (
-    <>
-      {orgPrice ? (
-        <span className="text-decoration-line-through">{`$${orgPrice}`}</span>
-      ) : null}
-      {`$${price}`}
-    </>
-  );
-};
-
 const SingleProduct = ({ productId }) => {
   const [productData, setProductData] = useState(null);
   const [orderAmount, setOrderAmount] = useState(1);
@@ -76,12 +62,13 @@ const SingleProduct = ({ productId }) => {
     price,
     orgPrice,
     detail,
+    stars,
     fullImgUrl,
     fullImgAlt = '...',
   } = productData || {};
 
   return (
-    <Container className="px-4 px-lg-5 my-5">
+    <div className="px-4 px-lg-5 my-5">
       <Row className="gx-4 gx-lg-5 align-items-center">
         <Col md={6}>
           <LoadingState done={productData}>
@@ -99,6 +86,12 @@ const SingleProduct = ({ productId }) => {
           </h1>
           <div className="fs-5 mb-5">
             <LoadingState done={productData}>
+              {stars ? (
+                <p>
+                  用戶評價:
+                  <ShowStars stars={stars} />
+                </p>
+              ) : null}
               <PricePanel orgPrice={orgPrice} price={price} />
             </LoadingState>
           </div>
@@ -114,26 +107,30 @@ const SingleProduct = ({ productId }) => {
               />
             </Col>
             <Col>
-              <AddCartBtn />
+              <AddCartBtn
+                productId={id}
+                amount={orderAmount}
+                onClickDone={() => setOrderAmount(1)}
+              />
             </Col>
           </Row>
         </Col>
       </Row>
-    </Container>
+    </div>
   );
 };
 
 const SingleProductPage = ({ productId }) => {
   return (
-    <>
+    <Container>
       <SingleProduct productId={productId} />
       <section className="py-2 bg-light">
-        <Container className="px-4 px-lg-5 mt-5">
+        <div className="px-4 px-lg-5 mt-5">
           <h2 className="fw-bolder mb-4">相關產品</h2>
           <ProductList productData={RelatedProducts}></ProductList>
-        </Container>
+        </div>
       </section>
-    </>
+    </Container>
   );
 };
 

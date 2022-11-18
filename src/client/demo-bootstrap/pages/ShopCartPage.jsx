@@ -5,65 +5,40 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ChangableAmount from '../components/ChangableAmount';
+import PricePanel from '../components/PricePanel';
+import useCart from '../hooks/useCart';
+import { serverFunctions } from '../../utils/serverFunctions';
+import LoadingState from '../components/LoadingState';
 
-const ProductsInCart = [
-  {
-    id: 11232,
-    imgUrl: 'https://dummyimage.com/115x135/dee2e6/6c757d.png',
-    name: 'iPhone 14 1TB Black',
-    price: 27900,
-    amount: 1,
-  },
-  {
-    id: 190301,
-    imgUrl: 'https://dummyimage.com/115x135/dee2e6/6c757d.png',
-    name: 'iPhone 14 Case - Black',
-    orgPrice: 320,
-    price: 240,
-    stars: 5,
-    amount: 3,
-  },
-];
-
-const PricePanel = ({ price, orgPrice }) => {
-  if (!price) return null;
-  return (
-    <>
-      {orgPrice ? (
-        <span className="text-muted text-decoration-line-through">{`$${orgPrice}`}</span>
-      ) : null}
-      {` $${price}`}
-    </>
-  );
-};
-
-
-
-const ShowProduct = ({
-  id,
-  name,
-  imgUrl,
-  imgAlt = '...',
-  price,
-  orgPrice,
-  amount,
-  onAmountChange = () => {},
+const ProductInCart = ({
+  product,
+  onIncrement = () => {},
+  onDecrement = () => {},
 }) => {
+  const {
+    name,
+    thumbnailUrl,
+    imgAlt = '...',
+    price,
+    orgPrice,
+    amount,
+    option,
+  } = product;
   return (
     <div className="cart-item mb-2">
       <Row>
         <Col className="mx-auto">
-          <img src={imgUrl} alt={imgAlt} />
+          <img src={thumbnailUrl} alt={imgAlt} />
         </Col>
         <Col>{name}</Col>
         <Col className="text-end">
-          <PricePanel price={price} orgPrice={orgPrice} />
+          <PricePanel price={price || option} orgPrice={orgPrice} />
         </Col>
         <Col xs="8" md={4} lg={3} className="mb-3 ms-auto">
           <ChangableAmount
             amount={amount}
-            onIncrement={() => onAmountChange({ id, change: 'plus' })}
-            onDecrement={() => onAmountChange({ id, change: 'minus' })}
+            onIncrement={() => onIncrement({ target: product })}
+            onDecrement={() => onDecrement({ target: product })}
           />
         </Col>
       </Row>
@@ -71,49 +46,60 @@ const ShowProduct = ({
   );
 };
 
-const PRICE_INFO_INIT = {
-  price: 0,
-  tax: 0,
-  total: 0,
+const ChartList = ({ list, onAmountChange }) => {
+  if (!Array.isArray(list)) return null;
+  return list.map((product, idx) => (
+    <ProductInCart
+      key={`prod-in-cart-${idx}`}
+      product={product}
+      onIncrement={(e) => onAmountChange({ ...e, change: 'plus' })}
+      onDecrement={(e) => onAmountChange({ ...e, change: 'minus' })}
+    />
+  ));
 };
 
 const ShopCartPage = () => {
-  const [itemList, setItemInCart] = useState(ProductsInCart);
-  const [priceInfo, setPriceInfo] = useState(PRICE_INFO_INIT);
-
-  const handleAmountChange = ({ id, change }) => {
-    setItemInCart((prev) => {
-      const targetIdx = prev.findIndex((obj) => obj.id === id);
-      if (targetIdx === -1) {
-        return prev; // not found target
-      }
-
-      const copyObj = { ...prev[targetIdx] }; // copy by spread operator
-      switch (change) {
-        case 'minus':
-          if (copyObj.amount >= 1) copyObj.amount -= 1;
-          break;
-        case 'plus':
-          copyObj.amount += 1;
-          break;
-        default:
-      }
-
-      return [
-        ...prev.slice(0, targetIdx),
-        copyObj,
-        ...prev.slice(targetIdx + 1),
-      ];
-    });
-  };
+  const { cartList, add, remove } = useCart();
+  const [itemList, setItemInCart] = useState(null);
+  const [priceInfo, setPriceInfo] = useState(null);
 
   useEffect(() => {
-    const TAX = 0.5;
+    let mounted = true;
+    if (!cartList) {
+      setItemInCart([]);
+      return () => {};
+    }
+    Promise.all(
+      cartList.map((ordered) =>
+        serverFunctions.getProductById(ordered.id).then((data) => {
+          return {
+            ...data,
+            option: ordered.option,
+            amount: ordered.amount,
+          };
+        })
+      )
+    )
+      .then((results) => {
+        if (mounted) setItemInCart(results);
+      })
+      .catch((err) => console.error(err.message));
+    return () => {
+      mounted = false;
+    };
+  }, [cartList]);
 
-    const list = itemList;
-    const price = list.reduce((acc, cur) => acc + cur.amount * cur.price, 0);
+  useEffect(() => {
+    if (!itemList) {
+      setPriceInfo(null);
+      return;
+    }
+    const TAX = 0.05;
+    const price = itemList.reduce(
+      (acc, cur) => acc + cur.amount * (cur.price || cur.option),
+      0
+    );
     const priceWithTax = Math.round(price * (1 + TAX) + 0.5);
-
     setPriceInfo({
       price,
       tax: priceWithTax - price,
@@ -125,16 +111,15 @@ const ShopCartPage = () => {
     <Container className="px-4 px-lg-5 my-5">
       <h1 className="col-md-12 col-lg-10 fw-bolder mx-auto">我的購物清單</h1>
       <Row className="col-md-12 col-lg-10 mx-auto">
-        {itemList.map((product, idx) => {
-          const key = `prod-in-cart-${idx}`;
-          return (
-            <ShowProduct
-              {...product}
-              onAmountChange={handleAmountChange}
-              key={key}
-            />
-          );
-        })}
+        <LoadingState done={itemList}>
+          <ChartList
+            list={itemList}
+            onAmountChange={({ target, change }) => {
+              if (change === 'minus') remove(target.id, 1, target.option);
+              else if (change === 'plus') add(target.id, 1, target.option);
+            }}
+          />
+        </LoadingState>
         <div className="cart-item">
           <Row>
             <Col xs={8}>
@@ -143,9 +128,24 @@ const ShopCartPage = () => {
               <h5>總付款金額:</h5>
             </Col>
             <Col xs={4} className="text-end">
-              <h5>${priceInfo.price}</h5>
-              <h5>${priceInfo.tax}</h5>
-              <h5>${priceInfo.total}</h5>
+              <h5>
+                <LoadingState
+                  done={priceInfo}
+                  then={(data) => `$${data.price}`}
+                />
+              </h5>
+              <h5>
+                <LoadingState
+                  done={priceInfo}
+                  then={(data) => `$${data.tax}`}
+                />
+              </h5>
+              <h5>
+                <LoadingState
+                  done={priceInfo}
+                  then={(data) => `$${data.total}`}
+                />
+              </h5>
             </Col>
           </Row>
         </div>
