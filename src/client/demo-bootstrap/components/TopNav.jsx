@@ -2,12 +2,11 @@ import React from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
-import { BsBootstrapFill } from 'react-icons/bs';
 
 const ClickableIcon = ({
   customizedIcon,
   icon,
-  text = '',
+  label = '',
   onClick = () => {},
 }) => {
   const iconRender = () => {
@@ -15,7 +14,7 @@ const ClickableIcon = ({
     return (
       <div className="d-flex align-items-center">
         {icon}
-        {text}
+        {label}
       </div>
     );
   };
@@ -37,17 +36,24 @@ const TopNav = ({ onPageChanged = () => {}, pageList = [] }) => {
     <Navbar collapseOnSelect expand="lg" bg="primary" variant="dark">
       <Container>
         <Navbar.Brand>
-          <BsBootstrapFill size={32} /> React on AppScript
+          <img
+            className="me-3"
+            src="https://storage.googleapis.com/react-on-apps-script/website-logo.png"
+            alt="Website-Logo"
+            width={32}
+            height={32}
+            style={{ filter: 'drop-shadow(2px 2px 2px #222)' }}
+            // https://developer.mozilla.org/en-US/docs/Web/CSS/filter#drop-shadow()
+          />
+          React on AppScript
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="me-auto align-items-start align-items-lg-center">
+          <Nav className="align-items-start align-items-lg-center">
             {pageList.map((page, idx) => (
               <ClickableIcon
+                {...page}
                 key={`top-icon-${idx}`}
-                icon={page.icon}
-                text={page.label}
-                customizedIcon={page.customizedIcon}
                 onClick={getHandler(page)}
               />
             ))}
