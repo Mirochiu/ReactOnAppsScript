@@ -8,6 +8,7 @@ const AuthContext = createContext({
   login: () => {},
   logout: () => {},
   register: () => {},
+  getToken: () => '',
 });
 
 const useAuthenticator = () => {
@@ -46,7 +47,9 @@ const useAuthenticator = () => {
 
   const register = (form) => serverFunctions.register(form);
 
-  return { authed, login, logout, register };
+  const getToken = () => localStorage.getItem(NAME_OF_TOKEN);
+
+  return { authed, login, logout, register, getToken };
 };
 
 const useHook = () => useContext(AuthContext);
