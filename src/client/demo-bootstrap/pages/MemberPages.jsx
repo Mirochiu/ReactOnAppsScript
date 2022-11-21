@@ -5,6 +5,7 @@ import {
   BsFillGridFill,
   BsAward,
   BsDoorOpenFill,
+  BsWrench,
 } from 'react-icons/bs';
 import Home from './Home';
 import LinkLister from './LinkLister';
@@ -12,6 +13,7 @@ import DirveLister from './DirveLister';
 import CartIcon from '../components/CartIcon';
 import SingleProduct from './SingleProuct';
 import ShopCartPage from './ShopCartPage';
+import Dashboard from './Dashboard';
 
 const MemberPages = {
   home: {
@@ -42,6 +44,12 @@ const MemberPages = {
     action: 'shop_cart',
     customizedIcon: <CartIcon />,
     comp: <ShopCartPage />,
+  },
+  adming: {
+    action: 'dashboard',
+    label: '儀表板',
+    icon: <BsWrench />,
+    comp: <Dashboard />,
   },
   logout: {
     action: 'logout',

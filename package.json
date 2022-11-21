@@ -27,7 +27,9 @@
     "serverless",
     "google-apps-script",
     "google-sheets",
-    "google-drive"
+    "google-drive",
+    "chart.js",
+    "datatables"
   ],
   "author": "Chiu, Yung-Hsiang",
   "license": "MIT",
@@ -35,6 +37,9 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
+    "chart.js": "^2.9.4",
+    "datatables.net": "^1.13.1",
+    "datatables.net-dt": "^1.13.1",
     "gas-client": "^1.0.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.5.0",

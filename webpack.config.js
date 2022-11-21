@@ -206,6 +206,9 @@ const clientConfigs = clientEntrypoints.map((clientEntrypoint) => {
       new HtmlWebpackInlineSourcePlugin(),
       // this plugin allows us to add dynamically load packages from a CDN
       new DynamicCdnWebpackPlugin(DynamicCdnWebpackPluginConfig),
+      new webpack.optimize.LimitChunkCountPlugin({
+        maxChunks: 1,
+      }),
     ].filter(Boolean),
   };
 });
