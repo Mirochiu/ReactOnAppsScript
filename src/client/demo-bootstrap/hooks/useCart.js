@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import LocalStorage from '../utils/LocalStorage';
 
 const NAME_OF_CART = 'reactonappscript.user-cart';
 
@@ -11,7 +12,7 @@ const context = createContext({
 
 const initCart = () => {
   const [cartList, setCartList] = useState(() => {
-    const jsonString = localStorage.getItem(NAME_OF_CART);
+    const jsonString = LocalStorage.getItem(NAME_OF_CART);
     try {
       const array = JSON.parse(jsonString);
       if (!Array.isArray(array)) {
@@ -25,7 +26,7 @@ const initCart = () => {
 
   useEffect(() => {
     if (Array.isArray(cartList)) {
-      localStorage.setItem(NAME_OF_CART, JSON.stringify(cartList));
+      LocalStorage.setItem(NAME_OF_CART, JSON.stringify(cartList));
     }
   }, [cartList]);
 

@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
-import { useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
+import SessionStorage from '../utils/SessionStorage';
 
 const NAME_OF_PAGE = 'reactonappscript.page';
 
@@ -27,8 +27,8 @@ const PagesController = ({
       console.debug('lastPageAction', lastPageAction);
       const targetPair = Object.entries(pages).find((pair) => {
         const [key, page] = pair;
-        console.debug(key, page, page.action == lastPageAction);
-        return page.action == lastPageAction;
+        console.debug(key, page, page.action === lastPageAction);
+        return page.action === lastPageAction;
       });
       if (targetPair) {
         console.debug('found lastPage', targetPair[1]);
@@ -44,10 +44,10 @@ const PagesController = ({
     // save current page
     const action = curPage?.action;
     if (action) {
-      sessionStorage.setItem(NAME_OF_PAGE, action);
+      SessionStorage.setItem(NAME_OF_PAGE, action);
       console.debug('save page', action);
     }
-  }, [curPage])
+  }, [curPage]);
 
   const TopNav = useMemo(
     () =>

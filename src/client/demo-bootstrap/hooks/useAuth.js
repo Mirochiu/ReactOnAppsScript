@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { serverFunctions } from '../../utils/serverFunctions';
+import LocalStorage from '../utils/LocalStorage';
 
 const NAME_OF_TOKEN = 'reactonappscript.user-token';
 
@@ -16,7 +17,7 @@ const useAuthenticator = () => {
 
   useEffect(() => {
     let mounted = true;
-    const token = localStorage.getItem(NAME_OF_TOKEN);
+    const token = LocalStorage.getItem(NAME_OF_TOKEN);
     if (token) {
       serverFunctions
         .authLogin(token)
@@ -33,21 +34,21 @@ const useAuthenticator = () => {
 
   const login = (form) =>
     serverFunctions.loginUser(form).then((resp) => {
-      localStorage.setItem(NAME_OF_TOKEN, resp.token);
+      LocalStorage.setItem(NAME_OF_TOKEN, resp.token);
       setAuthed(true);
       return resp;
     });
 
   const logout = () =>
     new Promise((res) => {
-      localStorage.removeItem(NAME_OF_TOKEN);
+      LocalStorage.removeItem(NAME_OF_TOKEN);
       setAuthed(false);
       res('done');
     });
 
   const register = (form) => serverFunctions.register(form);
 
-  const getToken = () => localStorage.getItem(NAME_OF_TOKEN);
+  const getToken = () => LocalStorage.getItem(NAME_OF_TOKEN);
 
   return { authed, login, logout, register, getToken };
 };

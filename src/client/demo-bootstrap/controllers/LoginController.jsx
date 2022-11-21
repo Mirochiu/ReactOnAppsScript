@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import useAuth from '../hooks/useAuth';
 import { reload } from '../utils/reloader';
+import SessionStorage from '../utils/SessionStorage';
 
 const NAME_OF_PAGE = 'reactonappscript.page';
 
@@ -18,7 +19,7 @@ const LoginController = ({ submitForm, registForm, children }) => {
 
   if (authed) {
     if (children) {
-      const lastPageAction = sessionStorage.getItem(NAME_OF_PAGE);
+      const lastPageAction = SessionStorage.getItem(NAME_OF_PAGE);
       if (lastPageAction) {
         console.debug('last page action', lastPageAction);
         return React.cloneElement(children, { lastPageAction });
@@ -73,7 +74,9 @@ const LoginController = ({ submitForm, registForm, children }) => {
     login(e.target)
       .then(() => {
         e.target.reset();
-        reload();
+        if (SessionStorage.allowReloading) {
+          reload();
+        }
       })
       .catch((err) => setErrorMsg(`登入失敗:${err.message}`))
       .finally(() => {
