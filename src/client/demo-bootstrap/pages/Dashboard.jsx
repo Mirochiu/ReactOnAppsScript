@@ -3,6 +3,8 @@ import { FaAngleRight, FaChartArea, FaChartBar, FaTable } from 'react-icons/fa';
 import Chart from 'chart.js';
 import DataTable from 'datatables.net';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
+import 'datatables.net-responsive';
+import 'datatables.net-responsive-dt/css/responsive.dataTables.min.css';
 
 const InitBar = (ctx) => {
   return new Chart(ctx, {
@@ -135,6 +137,7 @@ const AdminPage = () => {
     let table;
     if (datatableRef.current) {
       table = new DataTable(datatableRef.current, {
+        responsive: true,
         language: {
           url: '//cdn.datatables.net/plug-ins/1.13.1/i18n/zh-HANT.json',
         },
@@ -255,7 +258,7 @@ const AdminPage = () => {
             資料管理
           </div>
           <div className="card-body">
-            <table ref={datatableRef}>
+            <table ref={datatableRef} className="display">
               <thead>
                 <tr>
                   <th>名字</th>
