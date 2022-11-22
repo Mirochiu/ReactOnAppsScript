@@ -2,7 +2,6 @@ import React from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 
 const ClickableIcon = ({ icon, text = '', onClick = () => {} }) => {
   return (
@@ -34,12 +33,11 @@ const BottomNav = ({
 
   return (
     <Navbar
-      as={Row}
       variant="light"
       className={className}
       fixed={pageFooter ? undefined : 'bottom'}
     >
-      <Nav as={Col} className="justify-content-around w-100">
+      <Nav className="justify-content-around w-100">
         {pageList.map((page, idx) => (
           <ClickableIcon
             key={`${pageFooter ? 'footer' : 'bottom'}-icon-${idx}`}

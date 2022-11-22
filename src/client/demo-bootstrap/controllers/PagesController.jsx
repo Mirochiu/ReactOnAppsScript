@@ -84,8 +84,10 @@ const PagesController = ({
     <>
       {TopNav}
       {curPage?.comp}
-      {FooterNav}
-      {BotNav}
+      <footer>
+        {FooterNav}
+        {BotNav}
+      </footer>
     </>
   );
 };
