@@ -1,11 +1,11 @@
-import { LINE_CONFIG as config } from '../settings';
+import { OAUTH_CONIFG } from '../settings';
 import { loginByOAuth } from '../user';
-import { getFunForCommonOAuth } from './common';
+import { getFunForCommonOAuthLogin } from './common';
 import templates from '../templates';
 
-export const checkState = (state) => state === config.loginState;
+const config = OAUTH_CONIFG.LineLogin;
 
-const OAuth = getFunForCommonOAuth(config, (oauthLogin) => {
+const OAuth = getFunForCommonOAuthLogin(config, (oauthLogin) => {
   const ourLogin = loginByOAuth(oauthLogin.sub, config.providerName);
   return templates.getSuccess({
     token: ourLogin.token,

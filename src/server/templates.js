@@ -49,6 +49,14 @@ const googleBinding = ({
   return postProc(template.evaluate());
 };
 
+const lineNotifyBinding = ({ provider = '', result = '' }) => {
+  const template = HtmlService.createTemplateFromFile('lineNotifyBinding');
+  template.baseUrl = SERVER_URL;
+  template.result = result;
+  template.loginBy = provider;
+  return postProc(template.evaluate());
+};
+
 const defaultPage = () =>
   postProc(HtmlService.createTemplateFromFile('index.html').evaluate());
 
@@ -57,5 +65,6 @@ export default {
   getSuccess: outputSuccess,
   getFailure: outputFailure,
   getGoogleBinding: googleBinding,
+  getLineNotifyBinding: lineNotifyBinding,
   getDefault: defaultPage,
 };

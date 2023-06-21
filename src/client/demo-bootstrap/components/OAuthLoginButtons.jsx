@@ -53,3 +53,5 @@ export const LineLoginButton = ({ children }) => {
     </OAuthLoginButton>
   );
 };
+
+export default OAuthLoginButton;

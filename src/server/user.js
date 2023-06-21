@@ -1,5 +1,5 @@
 import { RE_ACCOUNT, RE_PASSWORD, SERVER_URL } from './settings';
-import { getUserSheet, findIndexInColumn } from './sheet';
+import { getUserSheet, findIndexInColumn, log } from './sheet';
 import { createJwt, decodeJwt } from './jwt';
 import templates from './templates';
 
@@ -8,6 +8,7 @@ export const COLUMN_IDX_OF_PWD = 1;
 export const COLUMN_IDX_OF_ACCESSTOKEN = 2;
 export const COLUMN_IDX_OF_CONFIRMED = 3;
 export const COLUMN_IDX_OF_BIND_GOOGLE = 4;
+export const COLUMN_IDX_OF_BIND_LINE_NOTIFY = 5;
 
 const createToken = ({ name, openId }) => {
   return createJwt({
@@ -276,3 +277,27 @@ export function confirmOpenIdBinding(token) {
     });
   }
 }
+
+export const getLineNotifyToken = (token) => {
+  const user = auth(token);
+  const sheet = getUserSheet();
+  const rowIdx = findIndexInColumn(user.name, COLUMN_IDX_OF_NAME, sheet);
+  if (rowIdx < 0) throw new Error(`no found user with name:${user.name}`);
+  const range = sheet.getRange(1 + rowIdx, 1 + COLUMN_IDX_OF_BIND_LINE_NOTIFY);
+  return [range.getValue(), range];
+};
+
+export const bindUserWithLineNotify = (userToken, bindToken) => {
+  if (!bindToken) throw new Error('should give bindToken');
+  const [hasToken, range] = getLineNotifyToken(userToken);
+  if (hasToken) throw new Error('could not bind the line notify twice');
+  range.setValue(bindToken);
+  SpreadsheetApp.flush();
+  return true;
+};
+
+export const hasLineNotify = (userToken) => {
+  if (!userToken) throw new Error('should give bindToken');
+  const [hasToken] = getLineNotifyToken(userToken);
+  return !!hasToken;
+};

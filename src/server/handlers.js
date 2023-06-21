@@ -1,7 +1,6 @@
 import { getContentByName } from './content';
 import { confirmRegistration, confirmOpenIdBinding } from './user';
-import LineOAuth, { checkState as isLineState } from './oauth/line';
-import GoogleOAuth, { checkState as isGoogleState } from './oauth/google';
+import getOauthHandler from './oauth/getHandler';
 import templates, { postProc } from './templates';
 
 const Handlers = {
@@ -50,8 +49,14 @@ const Handlers = {
   oauth: {
     func: (arg) => {
       const { state } = arg;
-      if (isLineState(state)) return LineOAuth(arg);
-      if (isGoogleState(state)) return GoogleOAuth(arg);
+      const oauth = getOauthHandler(state);
+      if (oauth) {
+        const response = oauth(arg);
+        if (response === 'default') {
+          return Handlers.default.func();
+        }
+        return response;
+      }
       return templates.getFailure({
         error: '登入問題',
         desc: `未知的登入方法${state}`,

@@ -1,7 +1,8 @@
 import { decodeJwt } from '../jwt';
+import { log } from '../sheet';
 import Templates from '../templates';
 
-const getFuncForFetchToken = (config) => {
+const getTokenHandler = (config) => {
   return (code) => {
     const response = UrlFetchApp.fetch(config.tokenUrl, {
       contentType: 'application/x-www-form-urlencoded',
@@ -18,6 +19,69 @@ const getFuncForFetchToken = (config) => {
   };
 };
 
+const DEFAULT_FAILURE_HANDLER = (config) => {
+  if (typeof config.onOAuthError === 'function') return config.onOAuthError;
+  return (resp, error) => Templates.logError(error);
+};
+
+const getFailureHandler = (config = {}) => {
+  const onOAuthError = DEFAULT_FAILURE_HANDLER(config);
+  if (config.debug) {
+    return (resp, error) => {
+      log('#debug:oauth-failure', resp, error);
+      return onOAuthError(resp, error);
+    };
+  }
+  return onOAuthError;
+};
+
+export const DEFAULT_STATE_CHECKER = (config) => {
+  if (typeof config.checkState === 'function') return config.checkState;
+  return (state) => state && state === config.loginState;
+};
+
+const getStateHandler = (config = {}) => {
+  const checkState = DEFAULT_STATE_CHECKER(config);
+  if (config.debug) {
+    return (state) => {
+      log('#debug:oauth-state', state);
+      return checkState(state);
+    };
+  }
+  return checkState;
+};
+
+export const getFunForCommonOAuth = (config, callback) => {
+  const onFailure = getFailureHandler(config);
+  const checkState = getStateHandler(config);
+  const fetchToken = getTokenHandler(config);
+  return (resp) => {
+    try {
+      const { state, code, error } = resp;
+
+      if (error) {
+        // e.g. error_description=user canceled, error='access_denied'
+        throw new Error(error, resp.error_description);
+      }
+
+      if (!state || !checkState(state)) {
+        throw new Error('Invalid state', `state is unacceptable:${state}`);
+      }
+
+      if (!code) {
+        throw new Error(
+          'No Code',
+          `Not found code from oauth server:${code} ${state}`
+        );
+      }
+
+      return callback(fetchToken(code), resp);
+    } catch (except) {
+      return onFailure(resp, except);
+    }
+  };
+};
+
 const parseLogin = (json) => {
   const user = decodeJwt(json.id_token);
   const nowTime = Date.now();
@@ -26,32 +90,12 @@ const parseLogin = (json) => {
   return user;
 };
 
-export const getFunForCommonOAuth = (config, callback) => {
-  const fetchToken = getFuncForFetchToken(config);
-  // eslint-disable-next-line camelcase
-  return ({ state, code, error, error_description }) => {
-    if (error)
-      return Templates.getFailure({
-        error,
-        // eslint-disable-next-line camelcase
-        desc: error_description,
-        provider: config.providerName,
-      });
-    if (!state || state !== config.loginState || !code)
-      return Templates.getFailure({
-        error,
-        // eslint-disable-next-line camelcase
-        desc: error_description,
-        provider: config.providerName,
-      });
-    try {
-      return callback(parseLogin(fetchToken(code)));
-    } catch (except) {
-      return Templates.logError(except);
-    }
-  };
+export const getFunForCommonOAuthLogin = (config, callback) => {
+  return getFunForCommonOAuth(config, (oauthResponse, resp) =>
+    callback(parseLogin(oauthResponse), resp)
+  );
 };
 
 export default {
-  getFunForCommonOAuth,
+  getFunForCommonOAuthLogin,
 };

@@ -5,19 +5,49 @@ export const RE_ACCOUNT =
   /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
 export const RE_PASSWORD = /^[A-Za-z][A-Za-z0-9]{7,15}$/;
 export const SERVER_URL = ScriptApp.getService().getUrl();
-export const LINE_CONFIG = {
-  providerName: 'LINE',
-  tokenUrl: 'https://api.line.me/oauth2/v2.1/token',
-  callbackUrl: process.env.SERVER_URL,
-  channelId: process.env.LINE_CHANNEL_ID,
-  channelSecret: process.env.LINE_CHANNEL_SECRET,
-  loginState: process.env.LINE_STATE,
-};
-export const GOOGLE_CONFIG = {
-  providerName: 'Google',
-  tokenUrl: 'https://oauth2.googleapis.com/token',
-  callbackUrl: process.env.SERVER_URL,
-  channelId: process.env.GOOGLE_CLIENT_ID,
-  channelSecret: process.env.GOOGLE_SECRET,
-  loginState: process.env.GOOGLE_STATE,
+export const OAUTH_CONIFG = {
+  LineLogin: {
+    providerName: 'LINE',
+    authUrl: 'https://access.line.me/oauth2/v2.1/authorize',
+    scopeList: ['profile', 'openid'],
+    tokenUrl: 'https://api.line.me/oauth2/v2.1/token',
+    callbackUrl: process.env.SERVER_URL,
+    channelId: process.env.LINE_CHANNEL_ID,
+    channelSecret: process.env.LINE_CHANNEL_SECRET,
+    loginState: process.env.LINE_STATE,
+  },
+  GoogleLogin: {
+    providerName: 'Google',
+    authUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
+    scopeList: [
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'openid',
+    ],
+    tokenUrl: 'https://oauth2.googleapis.com/token',
+    callbackUrl: process.env.SERVER_URL,
+    channelId: process.env.GOOGLE_CLIENT_ID,
+    channelSecret: process.env.GOOGLE_SECRET,
+    loginState: process.env.GOOGLE_STATE,
+  },
+  LineNotify: {
+    providerName: 'LINE通知',
+    authUrl: 'https://notify-bot.line.me/oauth/authorize',
+    scopeList: ['notify'],
+    tokenUrl: 'https://notify-bot.line.me/oauth/token',
+    callbackUrl: process.env.SERVER_URL,
+    channelId: process.env.LINE_NOTIFY_ID,
+    channelSecret: process.env.LINE_NOTIFY_SECRET,
+    loginState: process.env.LINE_NOTIFY_STATE || '',
+    checkState: (state) => {
+      const prefix = process.env.LINE_NOTIFY_STATE;
+      if (state && state.startsWith(prefix)) {
+        const userToken = state.substr(prefix.length + 1);
+        // jwt format checker
+        if (userToken && userToken.split('.').length === 3) return true;
+      }
+      return false;
+    },
+    debug: true,
+  },
 };

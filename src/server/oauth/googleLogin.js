@@ -1,14 +1,14 @@
-import { GOOGLE_CONFIG as config, SERVER_URL } from '../settings';
+import { OAUTH_CONIFG, SERVER_URL } from '../settings';
 import { loginByOAuth, loginByOpenId, createGoogleBinding } from '../user';
-import { getFunForCommonOAuth } from './common';
+import { getFunForCommonOAuthLogin } from './common';
 import templates from '../templates';
 
-export const checkState = (state) => state === config.loginState;
+const config = OAUTH_CONIFG.GoogleLogin;
 
 const getTokenBindingUrl = (token) =>
   `${SERVER_URL}?show=bind-account&name=${token}`;
 
-const OAuth = getFunForCommonOAuth(config, (oauthLogin) => {
+const OAuth = getFunForCommonOAuthLogin(config, (oauthLogin) => {
   try {
     const { sub: openId, name } = oauthLogin;
     // use the bind user for login

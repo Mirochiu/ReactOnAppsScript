@@ -47,3 +47,8 @@ export function getContentSheet(sheetName) {
 export function getProductSheet() {
   return getSheetInUrl(SHEET_URL, '產品列表', { autoCreate: true });
 }
+
+export function log(...args) {
+  const sheet = getSheetInUrl(SHEET_URL, '紀錄檔', { autoCreate: true });
+  if (sheet) sheet.appendRow(Array.prototype.concat(new Date(), args));
+}
