@@ -47,7 +47,8 @@
     "react-bootstrap": "^2.5.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.6.0",
-    "react-transition-group": "^4.4.5"
+    "react-transition-group": "^4.4.5",
+    "use-file-picker": "^1.7.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.6",

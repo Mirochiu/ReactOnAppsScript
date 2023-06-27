@@ -5,7 +5,7 @@ import * as contentFunctions from './content';
 import * as secretFunctions from './oauthURLs';
 import * as productFunctions from './products';
 import { SERVER_URL } from './settings';
-import doLineNotify from './lineNotify';
+import doLineNotify from './api/lineNotify';
 
 // Expose public functions by attaching to `global`
 global.doGet = publicWebFunctions.doGet;
@@ -22,7 +22,9 @@ global.searchByNameInUploadedHtml = contentFunctions.searchHtmlName;
 global.getGoogleLoginURL = secretFunctions.getGoogleLoginURL;
 global.getLineLoginURL = secretFunctions.getLineLoginURL;
 global.getLineNotifyURL = secretFunctions.getLineNotifyURL;
+global.getImgurURL = secretFunctions.getImgurURL;
 global.hasLineNotify = userFunctions.hasLineNotify;
+global.getImgurToken = userFunctions.getImgurToken;
 global.getAllProducts = productFunctions.getAllProducts;
 global.getProductById = productFunctions.getProductById;
 global.doLineNotify = doLineNotify;

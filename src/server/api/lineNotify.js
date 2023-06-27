@@ -1,4 +1,4 @@
-import { getLineNotifyToken } from './user';
+import { getLineNotifyToken } from '../user';
 
 const doLineNotify = (token, message) => {
   if (!token) throw new Error('token should not be empty');

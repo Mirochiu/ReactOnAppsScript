@@ -5,9 +5,9 @@ import { CSSTransition } from 'react-transition-group';
 import { serverFunctions } from '../../utils/serverFunctions';
 import useAuth from '../hooks/useAuth';
 import LoadingState from './LoadingState';
-import { LineNotifyButton } from './LineNotifyButton';
+import LineNotifyButton from './LineNotifyButton';
 
-export const LineNotifyArea = ({ children }) => {
+const LineNotifyArea = ({ children }) => {
   const { getToken } = useAuth();
 
   const [userToken, setUserToken] = useState(null);

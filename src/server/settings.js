@@ -40,7 +40,27 @@ export const OAUTH_CONIFG = {
     channelSecret: process.env.LINE_NOTIFY_SECRET,
     loginState: process.env.LINE_NOTIFY_STATE || '',
     checkState: (state) => {
-      const prefix = process.env.LINE_NOTIFY_STATE;
+      const prefix = process.env.LINE_NOTIFY_STATE || '';
+      if (state && state.startsWith(prefix)) {
+        const userToken = state.substr(prefix.length + 1);
+        // jwt format checker
+        if (userToken && userToken.split('.').length === 3) return true;
+      }
+      return false;
+    },
+  },
+  // https://api.imgur.com/oauth2/addclient
+  Imgur: {
+    providerName: 'Imgur',
+    authUrl: 'https://api.imgur.com/oauth2/authorize',
+    scopeList: [],
+    tokenUrl: 'https://api.imgur.com/oauth2/token',
+    callbackUrl: process.env.SERVER_URL,
+    channelId: process.env.IMGUR_ID,
+    channelSecret: process.env.IMGUR_SECRET,
+    loginState: process.env.IMGUR_STATE || '',
+    checkState: (state) => {
+      const prefix = process.env.IMGUR_STATE || '';
       if (state && state.startsWith(prefix)) {
         const userToken = state.substr(prefix.length + 1);
         // jwt format checker

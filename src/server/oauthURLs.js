@@ -33,3 +33,12 @@ export function getLineNotifyURL(token) {
   const STATE = `${config.loginState}+${token}`;
   return `${AUTH_URL}?response_type=code&client_id=${CHANNEL_ID}&redirect_uri=${CALLBACK_URL}&state=${STATE}&scope=${SCOPE}`;
 }
+
+// https://api.imgur.com/oauth2
+export function getImgurURL(token) {
+  const config = OAUTH_CONIFG.Imgur;
+  const AUTH_URL = config.authUrl;
+  const CHANNEL_ID = config.channelId;
+  const STATE = `${config.loginState}+${token}`;
+  return `${AUTH_URL}?response_type=code&client_id=${CHANNEL_ID}&state=${STATE}`;
+}

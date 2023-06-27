@@ -9,6 +9,7 @@ export const COLUMN_IDX_OF_ACCESSTOKEN = 2;
 export const COLUMN_IDX_OF_CONFIRMED = 3;
 export const COLUMN_IDX_OF_BIND_GOOGLE = 4;
 export const COLUMN_IDX_OF_BIND_LINE_NOTIFY = 5;
+export const COLUMN_IDX_OF_BIND_IMGUR = 6;
 
 const createToken = ({ name, openId }) => {
   return createJwt({
@@ -278,14 +279,17 @@ export function confirmOpenIdBinding(token) {
   }
 }
 
-export const getLineNotifyToken = (token) => {
-  const user = auth(token);
+const getOauthToken = (userToken, idx) => {
+  const user = auth(userToken);
   const sheet = getUserSheet();
   const rowIdx = findIndexInColumn(user.name, COLUMN_IDX_OF_NAME, sheet);
   if (rowIdx < 0) throw new Error(`no found user with name:${user.name}`);
-  const range = sheet.getRange(1 + rowIdx, 1 + COLUMN_IDX_OF_BIND_LINE_NOTIFY);
+  const range = sheet.getRange(1 + rowIdx, 1 + idx);
   return [range.getValue(), range];
 };
+
+export const getLineNotifyToken = (userToken) =>
+  getOauthToken(userToken, COLUMN_IDX_OF_BIND_LINE_NOTIFY);
 
 export const bindUserWithLineNotify = (userToken, bindToken) => {
   if (!bindToken) throw new Error('should give bindToken');
@@ -300,4 +304,21 @@ export const hasLineNotify = (userToken) => {
   if (!userToken) throw new Error('should give bindToken');
   const [hasToken] = getLineNotifyToken(userToken);
   return !!hasToken;
+};
+
+export const getImgurToken = (userToken) => {
+  const [stringfyToken] = getOauthToken(userToken, COLUMN_IDX_OF_BIND_IMGUR);
+  if (!stringfyToken) {
+    throw new Error('no token');
+  }
+  return JSON.parse(stringfyToken).access_token;
+};
+
+export const bindUserWithImgur = (userToken, bindToken) => {
+  if (!bindToken) throw new Error('should give bindToken');
+  const [hasToken, range] = getImgurToken(userToken);
+  if (hasToken) throw new Error('could not bind the imgur twice');
+  range.setValue(bindToken);
+  SpreadsheetApp.flush();
+  return true;
 };
