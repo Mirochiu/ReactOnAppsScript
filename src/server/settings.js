@@ -5,10 +5,6 @@ export const RE_ACCOUNT =
   /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
 export const RE_PASSWORD = /^[A-Za-z][A-Za-z0-9]{7,15}$/;
 export const SERVER_URL = ScriptApp.getService().getUrl();
-
-// PLEASE DONOT CHANGE TO ARROW FUNCTION
-
-
 export const OAUTH_CONIFG = {
   LineLogin: {
     providerName: 'LINE',
@@ -56,7 +52,6 @@ export const OAUTH_CONIFG = {
     channelSecret: process.env.IMGUR_SECRET,
     loginState: process.env.IMGUR_STATE || '',
     stateWithJWT: true,
-    debug: true,
   },
   GoogleCalendar: {
     providerName: 'Google日曆',
@@ -65,7 +60,7 @@ export const OAUTH_CONIFG = {
     scopeList: [
       'https://www.googleapis.com/auth/calendar.readonly',
       'https://www.googleapis.com/auth/calendar.events.readonly',
-      'https://www.googleapis.com/auth/calendar.settings.readonly',
+      // 'https://www.googleapis.com/auth/calendar.settings.readonly',
     ],
     tokenUrl: 'https://oauth2.googleapis.com/token',
     callbackUrl: process.env.SERVER_URL,

@@ -8,19 +8,19 @@ import GoogleCalendar from './googleCalendar';
 
 const getOauthHandlerByState = (state) => {
   if (DEFAULT_STATE_CHECKER(OAUTH_CONIFG.GoogleLogin)(state)) {
-    return GoogleLogin;
+    return GoogleLogin.auth;
   }
   if (DEFAULT_STATE_CHECKER(OAUTH_CONIFG.LineLogin)(state)) {
-    return LineLogin;
+    return LineLogin.auth;
   }
   if (DEFAULT_STATE_CHECKER(OAUTH_CONIFG.LineNotify)(state)) {
-    return LineNotify;
+    return LineNotify.auth;
   }
   if (DEFAULT_STATE_CHECKER(OAUTH_CONIFG.Imgur)(state)) {
-    return Imgur;
+    return Imgur.auth;
   }
   if (DEFAULT_STATE_CHECKER(OAUTH_CONIFG.GoogleCalendar)(state)) {
-    return GoogleCalendar;
+    return GoogleCalendar.auth;
   }
   return null;
 };

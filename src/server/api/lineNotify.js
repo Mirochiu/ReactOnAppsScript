@@ -1,10 +1,10 @@
-import { getLineNotifyToken } from '../user';
+import lineNotify from '../oauth/lineNotify';
 
-const doLineNotify = (token, message) => {
+const notify = (token, message) => {
   if (!token) throw new Error('token should not be empty');
   if (!message) throw new Error('message should not be empty');
 
-  const [bindToken] = getLineNotifyToken(token);
+  const [bindToken] = lineNotify.getBindToken(token);
   if (!bindToken) throw new Error('not found bind token');
 
   const response = UrlFetchApp.fetch('https://notify-api.line.me/api/notify', {
@@ -20,4 +20,9 @@ const doLineNotify = (token, message) => {
   };
 };
 
-export default doLineNotify;
+const LineNotifyApi = {
+  notify,
+  hasBound: lineNotify.hasBound,
+};
+
+export default LineNotifyApi;

@@ -5,7 +5,7 @@ import templates from '../templates';
 
 const config = OAUTH_CONIFG.LineLogin;
 
-const OAuth = getFunForCommonOAuthLogin(config, (oauthLogin) => {
+const auth = getFunForCommonOAuthLogin(config, (oauthLogin) => {
   const ourLogin = loginByOAuth(oauthLogin.sub, config.providerName);
   return templates.getSuccess({
     token: ourLogin.token,
@@ -15,4 +15,8 @@ const OAuth = getFunForCommonOAuthLogin(config, (oauthLogin) => {
   });
 });
 
-export default OAuth;
+const LineLoginAuth = {
+  auth,
+};
+
+export default LineLoginAuth;

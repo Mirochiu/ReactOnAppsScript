@@ -8,7 +8,7 @@ const config = OAUTH_CONIFG.GoogleLogin;
 const getTokenBindingUrl = (token) =>
   `${SERVER_URL}?show=bind-account&name=${token}`;
 
-const OAuth = getFunForCommonOAuthLogin(config, (oauthLogin) => {
+const auth = getFunForCommonOAuthLogin(config, (oauthLogin) => {
   try {
     const { sub: openId, name } = oauthLogin;
     // use the bind user for login
@@ -47,4 +47,8 @@ const OAuth = getFunForCommonOAuthLogin(config, (oauthLogin) => {
   }
 });
 
-export default OAuth;
+const GoogleLoginAuth = {
+  auth,
+};
+
+export default GoogleLoginAuth;

@@ -106,12 +106,6 @@ const parseLogin = (json) => {
 export const getFunForCommonOAuthLogin = (config, callback) => {
   return getFunForCommonOAuth(config, (oauthResponse, resp) => {
     const jsonResponse = parseLogin(oauthResponse);
-    log(
-      '#debug:oauth-login',
-      JSON.stringify(oauthResponse, null, 2),
-      JSON.stringify(jsonResponse, null, 2),
-      JSON.stringify(resp, null, 2)
-    );
     return callback(jsonResponse, resp);
   });
 };

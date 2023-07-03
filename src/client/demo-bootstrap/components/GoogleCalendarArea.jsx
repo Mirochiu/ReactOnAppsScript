@@ -6,9 +6,9 @@ import LoadingState from './LoadingState';
 import MessagePanel from './MessagePanel';
 import GoogleCalendarButton from './GoogleCalendarButton';
 
-const ToEvents = (json) => {
-  // console.debug(JSON.stringify(json.items, null, 2));
-  return json.items.map((event) => ({
+const ToEvents = (events) => {
+  // console.debug(JSON.stringify(events, null, 2));
+  return events.map((event) => ({
     id: event.id,
     summary: event.summary,
     url: event.htmlLink,
@@ -103,7 +103,7 @@ const GoogleCalendarArea = ({ children }) => {
             console.error('listGoogleCanlendarToday', resp);
             throw error;
           }
-          const events = ToEvents(resp.json);
+          const events = ToEvents(resp.events);
           setEvents(events);
         })
         .catch(({ message }) => {

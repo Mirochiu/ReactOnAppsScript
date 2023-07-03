@@ -1,5 +1,5 @@
 import { RE_ACCOUNT, RE_PASSWORD, SERVER_URL } from './settings';
-import { getUserSheet, findIndexInColumn, log } from './sheet';
+import { getUserSheet, findIndexInColumn } from './sheet';
 import { createJwt, decodeJwt } from './jwt';
 import templates from './templates';
 
@@ -7,10 +7,13 @@ export const COLUMN_IDX_OF_NAME = 0;
 export const COLUMN_IDX_OF_PWD = 1;
 export const COLUMN_IDX_OF_ACCESSTOKEN = 2;
 export const COLUMN_IDX_OF_CONFIRMED = 3;
-export const COLUMN_IDX_OF_BIND_GOOGLE = 4;
-export const COLUMN_IDX_OF_BIND_LINE_NOTIFY = 5;
-export const COLUMN_IDX_OF_BIND_IMGUR = 6;
-export const COLUMN_IDX_OF_BIND_GOOGLE_CAL = 7;
+
+export const COLUMN_IDX_OF_BINDS = {
+  Google: 4,
+  LineNotify: 5,
+  ImgUr: 6,
+  GoogleCalendar: 7,
+};
 
 const createToken = ({ name, openId }) => {
   return createJwt({
@@ -48,7 +51,7 @@ export const loginByOpenId = (openId, provider) => {
   let providerColumnIdx = -1;
   switch (provider) {
     case 'Google':
-      providerColumnIdx = COLUMN_IDX_OF_BIND_GOOGLE;
+      providerColumnIdx = COLUMN_IDX_OF_BINDS.Google;
       break;
     default:
   }
@@ -209,7 +212,7 @@ export const createGoogleBinding = (email, openId) => {
   if (rowIdx < 0) {
     return null; // 沒找到既有Email帳號
   }
-  const bindRange = sheet.getRange(1 + rowIdx, 1 + COLUMN_IDX_OF_BIND_GOOGLE);
+  const bindRange = sheet.getRange(1 + rowIdx, 1 + COLUMN_IDX_OF_BINDS.Google);
   const bindId = bindRange.getValue();
   if (bindId && !(typeof bindId === 'string' && bindId.startsWith('ey'))) {
     throw new Error('已榜定');
@@ -243,7 +246,7 @@ function handleOpenIdConfirm(token) {
   let providerColumnIdx = -1;
   switch (json.openId.provider) {
     case 'Google':
-      providerColumnIdx = COLUMN_IDX_OF_BIND_GOOGLE;
+      providerColumnIdx = COLUMN_IDX_OF_BINDS.Google;
       break;
     default:
   }
@@ -280,72 +283,21 @@ export function confirmOpenIdBinding(token) {
   }
 }
 
-const getOauthToken = (userToken, idx) => {
+export const getOauthToken = (userToken, idx) => {
   const user = auth(userToken);
   const sheet = getUserSheet();
   const rowIdx = findIndexInColumn(user.name, COLUMN_IDX_OF_NAME, sheet);
   if (rowIdx < 0) throw new Error(`no found user with name:${user.name}`);
   const range = sheet.getRange(1 + rowIdx, 1 + idx);
-  return [range.getValue(), range];
+  const setter = (value) => {
+    range.setValue(value);
+    SpreadsheetApp.flush();
+  };
+  return [range.getValue(), setter];
 };
 
-const getOauthJsonToken = (userToken, idx) => {
-  const [stringfyToken, range] = getOauthToken(userToken, idx);
+export const getOauthTokenFromJson = (userToken, idx) => {
+  const [stringfyToken, setter] = getOauthToken(userToken, idx);
   const token = (stringfyToken && JSON.parse(stringfyToken).access_token) || '';
-  return [token, range];
-};
-
-export const getLineNotifyToken = (userToken) =>
-  getOauthToken(userToken, COLUMN_IDX_OF_BIND_LINE_NOTIFY);
-
-export const bindUserWithLineNotify = (userToken, bindToken) => {
-  if (!bindToken) throw new Error('should give bindToken');
-  const [hasToken, range] = getLineNotifyToken(userToken);
-  if (hasToken) throw new Error('could not bind the line notify twice');
-  range.setValue(bindToken);
-  SpreadsheetApp.flush();
-  return true;
-};
-
-export const hasLineNotify = (userToken) => {
-  if (!userToken) throw new Error('should give userToken');
-  const [hasToken] = getLineNotifyToken(userToken);
-  return !!hasToken;
-};
-
-export const getImgurToken = (userToken) =>
-  getOauthJsonToken(userToken, COLUMN_IDX_OF_BIND_IMGUR);
-
-export const bindUserWithImgur = (userToken, stringfyToken) => {
-  if (!stringfyToken && typeof stringfyToken === 'string')
-    throw new Error('should give bindToken');
-  const [hasToken, range] = getImgurToken(userToken);
-  if (hasToken) throw new Error('could not bind the imgur twice');
-  range.setValue(stringfyToken);
-  SpreadsheetApp.flush();
-  return true;
-};
-
-export const getGoogleCalendarToken = (userToken) =>
-  getOauthJsonToken(userToken, COLUMN_IDX_OF_BIND_GOOGLE_CAL);
-
-export const hasGoogleCalendarToken = (userToken) => {
-  if (!userToken) throw new Error('should give userToken');
-  try {
-    const [token] = getGoogleCalendarToken(userToken);
-    return !!token;
-  } catch (error) {
-    return false;
-  }
-};
-
-export const bindUserWithGoogleCalendar = (userToken, stringfyToken) => {
-  if (!stringfyToken && typeof stringfyToken === 'string')
-    throw new Error('should give stringfyToken');
-  const [hasToken, range] = getGoogleCalendarToken(userToken);
-  // if (hasToken) throw new Error('could not bind the google calendar twice');
-  if (hasToken) log('bind the google calendar twice', hasToken);
-  range.setValue(stringfyToken);
-  SpreadsheetApp.flush();
-  return true;
+  return [token, setter];
 };

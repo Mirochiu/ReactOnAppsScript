@@ -1,4 +1,4 @@
-import { getGoogleCalendarToken } from '../user';
+import googleCalendar from '../oauth/googleCalendar';
 
 const getTodayBeg = () => {
   const today = new Date();
@@ -12,10 +12,10 @@ const getTodayEnd = () => {
   return today.toISOString();
 };
 
-export const listToday = (token, calendarId) => {
+const listToday = (token, calendarId) => {
   if (!token) throw new Error('token should not be empty');
 
-  const [bindToken] = getGoogleCalendarToken(token);
+  const [bindToken] = googleCalendar.getBindToken(token);
   if (!bindToken) throw new Error('not found bind token');
 
   const calId =
@@ -39,12 +39,15 @@ export const listToday = (token, calendarId) => {
   });
 
   return {
-    fromCalId: calId,
-    // '#debug-bindToken': bindToken,
-    // '#debug-accessUrl': url.toString(),
-    json: JSON.parse(response.getContentText()),
+    calId,
+    events: JSON.parse(response.getContentText()).items,
     code: response.getResponseCode(),
   };
 };
 
-export default { listToday };
+const GoogleCalendarApi = {
+  listToday,
+  hasBound: googleCalendar.hasBound,
+};
+
+export default GoogleCalendarApi;
