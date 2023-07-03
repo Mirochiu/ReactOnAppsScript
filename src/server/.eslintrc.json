@@ -11,7 +11,8 @@
     "camelcase": "warn",
     "import/prefer-default-export": "warn",
     "import/no-extraneous-dependencies": "warn",
-    "prefer-object-spread": "warn"
+    "prefer-object-spread": "warn",
+    "prefer-template": "off"
   },
   "settings": {
     "import/resolver": {

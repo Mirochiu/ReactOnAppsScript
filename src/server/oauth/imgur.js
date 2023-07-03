@@ -10,14 +10,6 @@ const OAuth = getFunForCommonOAuth(config, (oauthResponse, resp) => {
       ? JSON.stringify(oauthResponse, null, 2)
       : oauthResponse;
   // https://api.imgur.com/oauth2
-  // {
-  //     "access_token":"5c3118ebb73fbb275945ab340be60b610a3216d6",
-  //     "refresh_token":"d36b474c95bb9ee54b992c7c34fffc2cc343d0a7",
-  //     "expires_in":3600,
-  //     "token_type":"Bearer",
-  //     "account_username":"saponifi3d"
-  // }
-
   const { state } = resp;
   const userToken = (state || '').substr(config.loginState.length + 1);
   const result = bindUserWithImgur(userToken, bindToken);

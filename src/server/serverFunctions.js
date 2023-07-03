@@ -2,10 +2,11 @@ import * as publicWebFunctions from './web';
 import * as driveFunctions from './drive';
 import * as userFunctions from './user';
 import * as contentFunctions from './content';
-import * as secretFunctions from './oauthURLs';
+import * as secretFunctions from './oauth/oauthURLs';
 import * as productFunctions from './products';
 import { SERVER_URL } from './settings';
 import doLineNotify from './api/lineNotify';
+import { listToday } from './api/googleCalendar';
 
 // Expose public functions by attaching to `global`
 global.doGet = publicWebFunctions.doGet;
@@ -23,8 +24,11 @@ global.getGoogleLoginURL = secretFunctions.getGoogleLoginURL;
 global.getLineLoginURL = secretFunctions.getLineLoginURL;
 global.getLineNotifyURL = secretFunctions.getLineNotifyURL;
 global.getImgurURL = secretFunctions.getImgurURL;
+global.getGoogleCalendarURL = secretFunctions.getGoogleCalendarURL;
 global.hasLineNotify = userFunctions.hasLineNotify;
-global.getImgurToken = userFunctions.getImgurToken;
+global.getImgurToken = (userToken) => userFunctions.getImgurToken(userToken)[0];
+global.hasGoogleCalendarToken = userFunctions.hasGoogleCalendarToken;
 global.getAllProducts = productFunctions.getAllProducts;
 global.getProductById = productFunctions.getProductById;
 global.doLineNotify = doLineNotify;
+global.listGoogleCanlendarToday = listToday;

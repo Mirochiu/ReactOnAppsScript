@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
-import Alert from 'react-bootstrap/Alert';
-import { CSSTransition } from 'react-transition-group';
 import { useFilePicker } from 'use-file-picker';
 import { serverFunctions } from '../../utils/serverFunctions';
 import useAuth from '../hooks/useAuth';
 import LoadingState from './LoadingState';
+import MessagePanel from './MessagePanel';
 import ImgurButton from './ImgurButton';
 
 const IMG_STYLE = {
@@ -68,28 +67,6 @@ const deleteFromImgur = async (token, deletehash) => {
     throw new Error(`rejected, code:${rsp.status}, msg:${rsp.statusText}`);
   const json = await rsp.json();
   return json;
-};
-
-const MessagePanel = ({ msgObj, onClose }) => {
-  const type2variant = (type) => {
-    if (type === 'error') {
-      return 'danger';
-    }
-    return 'primary';
-  };
-  return (
-    <CSSTransition in={!!msgObj} timeout={300} classNames="alert" unmountOnExit>
-      <Alert variant={type2variant(msgObj?.type)} dismissible onClose={onClose}>
-        <Alert.Heading>{msgObj?.title}</Alert.Heading>
-        <p>{msgObj?.message}</p>
-        {msgObj?.url && (
-          <a href={msgObj.url} target="_blank" rel="noreferrer">
-            連結
-          </a>
-        )}
-      </Alert>
-    </CSSTransition>
-  );
 };
 
 const ImageFilePicker = ({ onFilesSelected }) => {
@@ -181,7 +158,7 @@ const ImgurArea = ({ children }) => {
       serverFunctions
         .getImgurToken(userToken)
         .then((token) => {
-          // console.debug('getImgurToken', r);
+          // console.debug('getImgurToken', token);
           setBindToken(token);
         })
         .catch(({ message }) => {

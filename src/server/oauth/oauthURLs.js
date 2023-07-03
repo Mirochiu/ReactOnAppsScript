@@ -1,4 +1,4 @@
-import { OAUTH_CONIFG } from './settings';
+import { OAUTH_CONIFG } from '../settings';
 
 export function getGoogleLoginURL() {
   const config = OAUTH_CONIFG.GoogleLogin;
@@ -41,4 +41,15 @@ export function getImgurURL(token) {
   const CHANNEL_ID = config.channelId;
   const STATE = `${config.loginState}+${token}`;
   return `${AUTH_URL}?response_type=code&client_id=${CHANNEL_ID}&state=${STATE}`;
+}
+
+export function getGoogleCalendarURL(token) {
+  const config = OAUTH_CONIFG.GoogleCalendar;
+  const AUTH_URL = config.authUrl;
+  const SCOPE = config.scopeList.join('%20');
+  const CLIENT_ID = config.channelId;
+  const CALLBACK_URL = config.callbackUrl;
+  const STATE = `${config.loginState}+${token}`;
+  const NONCE = config.loginNonce || '';
+  return `${AUTH_URL}?access_type=offline&include_granted_scopes=true&response_type=code&client_id=${CLIENT_ID}&redirect_uri=${CALLBACK_URL}&state=${STATE}&scope=${SCOPE}&nonce=${NONCE}`;
 }

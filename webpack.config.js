@@ -35,7 +35,7 @@ const publicPath = process.env.ASSET_PATH || '/';
 const destination = path.resolve(__dirname, 'dist');
 
 // define server paths
-const serverEntry = './src/server/index.js';
+const serverEntry = './src/server/serverFunctions.js';
 
 // define appsscript.json file path
 const copyAppscriptEntry = './appsscript.json';

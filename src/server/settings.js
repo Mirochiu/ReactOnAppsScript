@@ -5,6 +5,10 @@ export const RE_ACCOUNT =
   /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
 export const RE_PASSWORD = /^[A-Za-z][A-Za-z0-9]{7,15}$/;
 export const SERVER_URL = ScriptApp.getService().getUrl();
+
+// PLEASE DONOT CHANGE TO ARROW FUNCTION
+
+
 export const OAUTH_CONIFG = {
   LineLogin: {
     providerName: 'LINE',
@@ -39,15 +43,7 @@ export const OAUTH_CONIFG = {
     channelId: process.env.LINE_NOTIFY_ID,
     channelSecret: process.env.LINE_NOTIFY_SECRET,
     loginState: process.env.LINE_NOTIFY_STATE || '',
-    checkState: (state) => {
-      const prefix = process.env.LINE_NOTIFY_STATE || '';
-      if (state && state.startsWith(prefix)) {
-        const userToken = state.substr(prefix.length + 1);
-        // jwt format checker
-        if (userToken && userToken.split('.').length === 3) return true;
-      }
-      return false;
-    },
+    stateWithJWT: true,
   },
   // https://api.imgur.com/oauth2/addclient
   Imgur: {
@@ -59,15 +55,24 @@ export const OAUTH_CONIFG = {
     channelId: process.env.IMGUR_ID,
     channelSecret: process.env.IMGUR_SECRET,
     loginState: process.env.IMGUR_STATE || '',
-    checkState: (state) => {
-      const prefix = process.env.IMGUR_STATE || '';
-      if (state && state.startsWith(prefix)) {
-        const userToken = state.substr(prefix.length + 1);
-        // jwt format checker
-        if (userToken && userToken.split('.').length === 3) return true;
-      }
-      return false;
-    },
+    stateWithJWT: true,
+    debug: true,
+  },
+  GoogleCalendar: {
+    providerName: 'Google日曆',
+    authUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
+    // https://developers.google.com/identity/protocols/oauth2/scopes?hl=zh-tw#calendar
+    scopeList: [
+      'https://www.googleapis.com/auth/calendar.readonly',
+      'https://www.googleapis.com/auth/calendar.events.readonly',
+      'https://www.googleapis.com/auth/calendar.settings.readonly',
+    ],
+    tokenUrl: 'https://oauth2.googleapis.com/token',
+    callbackUrl: process.env.SERVER_URL,
+    channelId: process.env.GOOGLE_CLIENT_ID,
+    channelSecret: process.env.GOOGLE_SECRET,
+    loginState: process.env.GOOGLE_CAL_STATE,
+    stateWithJWT: true,
     debug: true,
   },
 };

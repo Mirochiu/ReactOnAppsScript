@@ -10,6 +10,7 @@ export const COLUMN_IDX_OF_CONFIRMED = 3;
 export const COLUMN_IDX_OF_BIND_GOOGLE = 4;
 export const COLUMN_IDX_OF_BIND_LINE_NOTIFY = 5;
 export const COLUMN_IDX_OF_BIND_IMGUR = 6;
+export const COLUMN_IDX_OF_BIND_GOOGLE_CAL = 7;
 
 const createToken = ({ name, openId }) => {
   return createJwt({
@@ -288,6 +289,12 @@ const getOauthToken = (userToken, idx) => {
   return [range.getValue(), range];
 };
 
+const getOauthJsonToken = (userToken, idx) => {
+  const [stringfyToken, range] = getOauthToken(userToken, idx);
+  const token = (stringfyToken && JSON.parse(stringfyToken).access_token) || '';
+  return [token, range];
+};
+
 export const getLineNotifyToken = (userToken) =>
   getOauthToken(userToken, COLUMN_IDX_OF_BIND_LINE_NOTIFY);
 
@@ -301,24 +308,44 @@ export const bindUserWithLineNotify = (userToken, bindToken) => {
 };
 
 export const hasLineNotify = (userToken) => {
-  if (!userToken) throw new Error('should give bindToken');
+  if (!userToken) throw new Error('should give userToken');
   const [hasToken] = getLineNotifyToken(userToken);
   return !!hasToken;
 };
 
-export const getImgurToken = (userToken) => {
-  const [stringfyToken] = getOauthToken(userToken, COLUMN_IDX_OF_BIND_IMGUR);
-  if (!stringfyToken) {
-    throw new Error('no token');
-  }
-  return JSON.parse(stringfyToken).access_token;
-};
+export const getImgurToken = (userToken) =>
+  getOauthJsonToken(userToken, COLUMN_IDX_OF_BIND_IMGUR);
 
-export const bindUserWithImgur = (userToken, bindToken) => {
-  if (!bindToken) throw new Error('should give bindToken');
+export const bindUserWithImgur = (userToken, stringfyToken) => {
+  if (!stringfyToken && typeof stringfyToken === 'string')
+    throw new Error('should give bindToken');
   const [hasToken, range] = getImgurToken(userToken);
   if (hasToken) throw new Error('could not bind the imgur twice');
-  range.setValue(bindToken);
+  range.setValue(stringfyToken);
+  SpreadsheetApp.flush();
+  return true;
+};
+
+export const getGoogleCalendarToken = (userToken) =>
+  getOauthJsonToken(userToken, COLUMN_IDX_OF_BIND_GOOGLE_CAL);
+
+export const hasGoogleCalendarToken = (userToken) => {
+  if (!userToken) throw new Error('should give userToken');
+  try {
+    const [token] = getGoogleCalendarToken(userToken);
+    return !!token;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const bindUserWithGoogleCalendar = (userToken, stringfyToken) => {
+  if (!stringfyToken && typeof stringfyToken === 'string')
+    throw new Error('should give stringfyToken');
+  const [hasToken, range] = getGoogleCalendarToken(userToken);
+  // if (hasToken) throw new Error('could not bind the google calendar twice');
+  if (hasToken) log('bind the google calendar twice', hasToken);
+  range.setValue(stringfyToken);
   SpreadsheetApp.flush();
   return true;
 };

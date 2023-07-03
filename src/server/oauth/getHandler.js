@@ -4,6 +4,7 @@ import GoogleLogin from './googleLogin';
 import LineLogin from './lineLogin';
 import LineNotify from './lineNotify';
 import Imgur from './imgur';
+import GoogleCalendar from './googleCalendar';
 
 const getOauthHandlerByState = (state) => {
   if (DEFAULT_STATE_CHECKER(OAUTH_CONIFG.GoogleLogin)(state)) {
@@ -17,6 +18,9 @@ const getOauthHandlerByState = (state) => {
   }
   if (DEFAULT_STATE_CHECKER(OAUTH_CONIFG.Imgur)(state)) {
     return Imgur;
+  }
+  if (DEFAULT_STATE_CHECKER(OAUTH_CONIFG.GoogleCalendar)(state)) {
+    return GoogleCalendar;
   }
   return null;
 };

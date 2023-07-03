@@ -28,15 +28,28 @@ const getFailureHandler = (config = {}) => {
   const onOAuthError = DEFAULT_FAILURE_HANDLER(config);
   if (config.debug) {
     return (resp, error) => {
-      log('#debug:oauth-failure', resp, error);
+      log('#debug:oauth-failure', resp, error, error.stack);
       return onOAuthError(resp, error);
     };
   }
   return onOAuthError;
 };
 
+const getStateWithJwtChecker =
+  ({ loginState }) =>
+  (state) => {
+    const prefix = loginState || '';
+    if (state && state.startsWith(prefix)) {
+      const userToken = state.substr(prefix.length + 1);
+      // jwt format checker
+      if (userToken && userToken.split('.').length === 3) return true;
+    }
+    return false;
+};
+
 export const DEFAULT_STATE_CHECKER = (config) => {
   if (typeof config.checkState === 'function') return config.checkState;
+  if (config.stateWithJWT) return getStateWithJwtChecker(config);
   return (state) => state && state === config.loginState;
 };
 
@@ -91,9 +104,16 @@ const parseLogin = (json) => {
 };
 
 export const getFunForCommonOAuthLogin = (config, callback) => {
-  return getFunForCommonOAuth(config, (oauthResponse, resp) =>
-    callback(parseLogin(oauthResponse), resp)
-  );
+  return getFunForCommonOAuth(config, (oauthResponse, resp) => {
+    const jsonResponse = parseLogin(oauthResponse);
+    log(
+      '#debug:oauth-login',
+      JSON.stringify(oauthResponse, null, 2),
+      JSON.stringify(jsonResponse, null, 2),
+      JSON.stringify(resp, null, 2)
+    );
+    return callback(jsonResponse, resp);
+  });
 };
 
 export default {

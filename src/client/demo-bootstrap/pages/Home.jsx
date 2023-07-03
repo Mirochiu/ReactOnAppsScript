@@ -4,6 +4,7 @@ import { serverFunctions } from '../../utils/serverFunctions';
 import ProductList from '../components/ProductList';
 import LineNotifyArea from '../components/LineNotifyArea';
 import ImgurArea from '../components/ImgurArea';
+import GoogleCalendarArea from '../components/GoogleCalendarArea';
 
 const Home = () => {
   const [productData, setProductData] = useState(null);
@@ -27,6 +28,7 @@ const Home = () => {
     <Container>
       <LineNotifyArea>綁定LINE通知</LineNotifyArea>
       <ImgurArea>綁定Imgur</ImgurArea>
+      <GoogleCalendarArea>授權讀取Google日曆</GoogleCalendarArea>
 
       <h1>產品列表</h1>
       <ProductList productData={productData} />

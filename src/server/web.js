@@ -1,5 +1,5 @@
 import { WEB_TITLE } from './settings';
-import getDefaultHandlers from './handlers';
+import getDefaultHandlers from './webRoutes';
 
 export const doGet = (req) => {
   let { show, name } = req.parameter;
