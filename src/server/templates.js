@@ -57,8 +57,21 @@ const lineNotifyBinding = ({ provider = '', result = '' }) => {
   return postProc(template.evaluate());
 };
 
-const defaultPage = () =>
-  postProc(HtmlService.createTemplateFromFile('index.html').evaluate());
+const replaceTarget = (content, target, token) => {
+  let embedded = '';
+  if (token) {
+    embedded = 'try{localStorage.setItem(\'reactonappscript.user-token\',\'' + token + '\');}catch(error){console.error(error);}console.debug(\'clear params and hash\');google.script.history.replace(null,\'\',\'\');'
+  }
+  return content.replace(target, embedded);
+};
+
+const defaultPage = (token) => {
+  const htmlout = HtmlService.createTemplateFromFile('index.html').evaluate();
+  htmlout.setContent(
+    replaceTarget(htmlout.getContent(), '@@@loginToken@@@', token)
+  );
+  return postProc(htmlout);
+};
 
 export default {
   logError: logErrorAndOutput,

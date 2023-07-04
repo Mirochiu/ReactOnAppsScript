@@ -14,12 +14,7 @@ const auth = getFunForCommonOAuthLogin(config, (oauthLogin) => {
     // use the bind user for login
     const openIdLogin = loginByOpenId(openId, config.providerName);
     if (openIdLogin) {
-      return templates.getSuccess({
-        token: openIdLogin.token,
-        id: openId,
-        name,
-        provider: config.providerName,
-      });
+      return 'default' + openIdLogin.token;
     }
     // ask user to bind if the email has been registered.
     const email = oauthLogin.email_verified ? oauthLogin.email : null;
@@ -36,12 +31,7 @@ const auth = getFunForCommonOAuthLogin(config, (oauthLogin) => {
     }
     // simple login
     const ourLogin = loginByOAuth(openId, config.providerName);
-    return templates.getSuccess({
-      token: ourLogin.token,
-      id: openId,
-      name,
-      provider: config.providerName,
-    });
+    return 'default' + ourLogin.token;
   } catch (except) {
     return templates.logError(except);
   }

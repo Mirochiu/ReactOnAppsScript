@@ -21,7 +21,7 @@ const auth = getFunForCommonOAuth(config, (oauthResponse, resp) => {
   const userToken = (state || '').substr(config.loginState.length + 1);
   const result = bindWithUser(userToken, bindToken);
   if (!result) throw new Error('綁定失敗');
-  return 'default';
+  return 'default' + userToken;
 });
 
 const hasBound = (userToken) => {

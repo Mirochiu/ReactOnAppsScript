@@ -8,6 +8,7 @@ import { SERVER_URL } from './settings';
 import LineNotifyApi from './api/lineNotify';
 import googleCalendarApi from './api/googleCalendar';
 import ImgurApi from './api/imgUr';
+import onTriggered, { setupTrigger } from './trigger';
 
 // Expose public functions by attaching to `global`
 global.doGet = publicWebFunctions.doGet;
@@ -33,3 +34,5 @@ global.hasLineNotify = LineNotifyApi.hasBound;
 global.doLineNotify = LineNotifyApi.notify;
 global.hasGoogleCalendarToken = googleCalendarApi.hasBound;
 global.listGoogleCanlendarToday = googleCalendarApi.listToday;
+global.onTriggered = onTriggered;
+global.setupTrigger = setupTrigger;

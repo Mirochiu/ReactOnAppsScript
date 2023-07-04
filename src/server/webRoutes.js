@@ -51,11 +51,12 @@ const Handlers = {
       const { state } = arg;
       const oauth = getOauthHandler(state);
       if (oauth) {
-        const response = oauth(arg);
-        if (response === 'default') {
-          return Handlers.default.func();
+        const resp = oauth(arg);
+        if (typeof resp === 'string' && resp.startsWith('default')) {
+          const loginToken = resp.slice('default'.length);
+          return Handlers.default.func(loginToken);
         }
-        return response;
+        return resp;
       }
       return templates.getFailure({
         error: '登入問題',

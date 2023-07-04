@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
+import { BiRefresh } from 'react-icons/bi';
 import { serverFunctions } from '../../utils/serverFunctions';
 import useAuth from '../hooks/useAuth';
 import LoadingState from './LoadingState';
@@ -71,6 +72,8 @@ const GoogleCalendarArea = ({ children }) => {
   const [eventList, setEvents] = useState(null);
   const [reloadList, reloadImgList] = useState(false);
 
+  const reloadBtnRef = useRef();
+
   const { getToken } = useAuth();
 
   useEffect(() => {
@@ -91,8 +94,15 @@ const GoogleCalendarArea = ({ children }) => {
     }
   }, [userToken]);
 
+  const enableEl = (el, enabled) => {
+    if (el) {
+      el.disabled = !enabled;
+    }
+  };
+
   useEffect(() => {
     if (bind) {
+      enableEl(reloadBtnRef.current, false);
       serverFunctions
         .listGoogleCanlendarToday(userToken)
         .then((resp) => {
@@ -113,24 +123,39 @@ const GoogleCalendarArea = ({ children }) => {
             title: '錯誤',
             message,
           });
+        })
+        .finally(() => {
+          enableEl(reloadBtnRef.current, true);
         });
     }
   }, [bind, reloadList]);
+
+  const reloadEvents = () => {
+    setEvents(null);
+    reloadImgList((v) => !v);
+  };
 
   return (
     <LoadingState done={bind !== null}>
       {bind ? (
         <div>
-          <h1>Google日曆今日行程</h1>
-          <Button
-            variant="success"
-            size="sm"
-            onClick={() => reloadImgList((v) => !v)}
-          >
-            重整
-          </Button>
+          <h1>
+            Google日曆今日行程
+            <Button
+              ref={reloadBtnRef}
+              variant="outline-success"
+              size="sm"
+              onClick={reloadEvents}
+              title="重新整理"
+              className="ml-3"
+            >
+              <BiRefresh></BiRefresh>
+            </Button>
+          </h1>
           <MessagePanel msgObj={alert} onClose={() => setAlert(null)} />
-          <EventLister list={eventList} />
+          <LoadingState done={eventList !== null}>
+            <EventLister list={eventList} />
+          </LoadingState>
         </div>
       ) : (
         <GoogleCalendarButton userToken={userToken}>

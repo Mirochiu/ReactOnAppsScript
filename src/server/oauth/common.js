@@ -19,6 +19,24 @@ const getTokenHandler = (config) => {
   };
 };
 
+export const getRefreshTokenHandler = (config) => {
+  if (!config.refreshUrl) throw new Error('not found refreshUrl');
+  return (refreshToken) => {
+    if (!refreshToken) throw new Error('should give refreshToken');
+    const response = UrlFetchApp.fetch(config.refreshUrl, {
+      contentType: 'application/x-www-form-urlencoded',
+      method: 'post',
+      payload: {
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken,
+        client_id: config.channelId,
+        client_secret: config.channelSecret,
+      },
+    });
+    return JSON.parse(response.getContentText());
+  };
+};
+
 const DEFAULT_FAILURE_HANDLER = (config) => {
   if (typeof config.onOAuthError === 'function') return config.onOAuthError;
   return (resp, error) => Templates.logError(error);

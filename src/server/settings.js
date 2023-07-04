@@ -59,10 +59,11 @@ export const OAUTH_CONIFG = {
     // https://developers.google.com/identity/protocols/oauth2/scopes?hl=zh-tw#calendar
     scopeList: [
       'https://www.googleapis.com/auth/calendar.readonly',
-      'https://www.googleapis.com/auth/calendar.events.readonly',
+      // 'https://www.googleapis.com/auth/calendar.events.readonly',
       // 'https://www.googleapis.com/auth/calendar.settings.readonly',
     ],
     tokenUrl: 'https://oauth2.googleapis.com/token',
+    refreshUrl: 'https://oauth2.googleapis.com/token',
     callbackUrl: process.env.SERVER_URL,
     channelId: process.env.GOOGLE_CLIENT_ID,
     channelSecret: process.env.GOOGLE_SECRET,
