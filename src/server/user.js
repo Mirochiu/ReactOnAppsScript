@@ -15,6 +15,8 @@ export const COLUMN_IDX_OF_BINDS = {
   GoogleCalendar: 7,
 };
 
+export const COLUMN_IDX_OF_SETTINGS = 8;
+
 const createToken = ({ name, openId }) => {
   return createJwt({
     privateKey: ScriptApp.getScriptId(), // 請改成你喜歡的
@@ -314,7 +316,7 @@ export const updateJsonToken = (userToken, idx, brandNewToken) => {
   const [stringfyToken, setter] = getOauthToken(userToken, idx);
   if (!stringfyToken) throw new Error(`no found bind token @${idx}`);
   // TODO: check the ids in brandNewToken and oldToken match
-  log('#debug-update-token', brandNewToken, stringfyToken);
+  // log('#debug-update-token', brandNewToken, stringfyToken);
   if (!newObj.refresh_token) {
     newObj.refresh_token = JSON.parse(stringfyToken).refresh_token;
   }
@@ -328,7 +330,7 @@ export const updateAccessTokenOfBindWithUid = (uid, idx, newAccessToken) => {
   if (rowIdx < 0) throw new Error('not found name:' + uid);
   const bindRange = sheet.getRange(1 + rowIdx, 1 + idx);
   const tokenJson = JSON.parse(bindRange.getValue());
-  log('updateAccessTokenByName', tokenJson);
+  // log('updateAccessTokenByName', tokenJson);
   tokenJson.access_token = newAccessToken;
   bindRange.setValue(JSON.stringify(tokenJson));
   return true;

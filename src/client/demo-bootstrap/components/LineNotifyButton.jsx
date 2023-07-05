@@ -2,7 +2,7 @@ import React from 'react';
 import OAuthLoginButton from './OAuthLoginButtons';
 import { serverFunctions } from '../../utils/serverFunctions';
 
-export const LineNotifyButton = ({ children, userToken }) => {
+const LineNotifyButton = ({ children, userToken }) => {
   if (!userToken) return null;
 
   return (

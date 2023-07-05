@@ -33,6 +33,11 @@ global.getImgurToken = ImgurApi.getToken;
 global.hasLineNotify = LineNotifyApi.hasBound;
 global.doLineNotify = LineNotifyApi.notify;
 global.hasGoogleCalendarToken = googleCalendarApi.hasBound;
-global.listGoogleCanlendarToday = googleCalendarApi.listToday;
+global.listTodayEventsOnGoogleCanlendar = googleCalendarApi.listTodayEvents;
+global.listCalendarsOnGoogleCalendar = googleCalendarApi.listCalendars;
 global.onTriggered = onTriggered;
 global.setupTrigger = setupTrigger;
+global.ConcernedCalendars = (userToken, list) => {
+  if (list == null) return googleCalendarApi.getConcernedCalendars(userToken);
+  return googleCalendarApi.setConcernedCalendars(userToken, list);
+};

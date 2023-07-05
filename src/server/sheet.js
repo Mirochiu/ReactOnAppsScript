@@ -1,4 +1,9 @@
+import { sheetQuery } from 'sheetquery';
 import { SHEET_URL } from './settings';
+
+const getMainSpreadsheet = () => {
+  return SpreadsheetApp.openByUrl(SHEET_URL);
+};
 
 export function getSheetInUrl(url, name, options = {}) {
   if (
@@ -71,3 +76,32 @@ export function getRowsByNonEmptyColumns(columnList, sheet) {
     return isNonEmpty;
   });
 }
+
+export const getConfig = (key) => {
+  const query = sheetQuery(getMainSpreadsheet()).from('設定檔');
+  // eslint-disable-next-line eqeqeq
+  const result = query.where((row) => row.key == key).getRows();
+  if (!result || result.length < 1) {
+    return '';
+  }
+  return result[0].val;
+};
+
+export const setConfig = (key, val) => {
+  // eslint-disable-next-line eqeqeq
+  const query = sheetQuery(getMainSpreadsheet())
+    .from('設定檔')
+    .where((row) => row.key == key);
+  const rows = query.getRows();
+  log('#debug-setConfig', rows.length);
+  if (rows.length) {
+    log('#debug-setConfig', 'update');
+    query.updateRows((row) => {
+      // eslint-disable-next-line no-param-reassign
+      row.val = val;
+    });
+  } else {
+    log('#debug-setConfig', 'insert');
+    query.insertRows([{ key, val }]);
+  }
+};

@@ -5,6 +5,9 @@ export const RE_ACCOUNT =
   /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
 export const RE_PASSWORD = /^[A-Za-z][A-Za-z0-9]{7,15}$/;
 export const SERVER_URL = ScriptApp.getService().getUrl();
+export const API_KEYS = {
+  TinyPNG: process.env.TINYPNG_KEY,
+};
 export const OAUTH_CONIFG = {
   LineLogin: {
     providerName: 'LINE',
