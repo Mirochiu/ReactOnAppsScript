@@ -9,6 +9,7 @@ import LineNotifyApi from './api/lineNotify';
 import googleCalendarApi from './api/googleCalendar';
 import ImgurApi from './api/imgUr';
 import onTriggered, { setDailyNotification } from './trigger';
+import TinyPNGApi from './api/tinyPNG';
 
 // Expose public functions by attaching to `global`
 global.doGet = publicWebFunctions.doGet;
@@ -42,3 +43,4 @@ global.ConcernedCalendars = (userToken, list) => {
   if (list == null) return googleCalendarApi.getConcernedCalendars(userToken);
   return googleCalendarApi.setConcernedCalendars(userToken, list);
 };
+global.uploadToTinyPNG = TinyPNGApi.upload;

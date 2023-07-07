@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container';
 import { serverFunctions } from '../../utils/serverFunctions';
 import ProductList from '../components/ProductList';
 import LineNotifyArea from '../components/LineNotifyArea';
+import TinyPNGArea from '../components/TinyPNGArea';
 import ImgurArea from '../components/ImgurArea';
 import GoogleCalendarArea from '../components/GoogleCalendarArea';
 import ChangeTriggerHourMinute from '../components/ChangeTriggerHourMinute';
@@ -27,6 +28,7 @@ const Home = () => {
 
   return (
     <Container>
+      <TinyPNGArea>TinyPNG圖片壓縮</TinyPNGArea>
       <ChangeTriggerHourMinute></ChangeTriggerHourMinute>
       <LineNotifyArea>綁定LINE通知</LineNotifyArea>
       <ImgurArea>綁定Imgur</ImgurArea>

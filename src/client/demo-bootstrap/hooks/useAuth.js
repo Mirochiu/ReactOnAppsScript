@@ -21,7 +21,7 @@ const useAuthenticator = () => {
     if (token) {
       serverFunctions
         .authLogin(token)
-        .then(() => mounted && setAuthed(true))
+        .then((resp) => mounted && setAuthed(resp.name || true))
         .catch(() => mounted && setAuthed(false));
     } else {
       setAuthed(false);
