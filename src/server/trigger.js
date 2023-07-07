@@ -3,6 +3,7 @@ import {
   updateAccessTokenOfBindWithUid,
   COLUMN_IDX_OF_BINDS,
   COLUMN_IDX_OF_NAME,
+  isOwner,
 } from './user';
 import LineNotifyApi from './api/lineNotify';
 import GoogleCalendarApi from './api/googleCalendar';
@@ -169,23 +170,52 @@ const onTriggered = (event) => {
 
 export default onTriggered;
 
-export const setupTrigger = () => {
+export const setDailyNotification = (hour, minute) => {
+  isOwner();
+
+  log('setDailyNotification#1', typeof hour, typeof minute);
+
+  const h = parseInt(hour, 10);
+  const m = parseInt(minute, 10);
+  log('setDailyNotification#2', h, m);
+
+  if (Number.isNaN(h) || Number.isNaN(m)) {
+    const err = new Error('invalid arg');
+    err.hour = hour;
+    err.minute = minute;
+    throw err;
+  }
+
   // 這個必須是跟server外部提供的函數名稱相同
   const targetFn = 'onTriggered';
 
+  let deletedCount = 0;
   // 刪除舊有的觸發器（如果存在的話）
   const triggers = ScriptApp.getProjectTriggers();
   for (let i = 0; i < triggers.length; i += 1) {
     if (triggers[i].getHandlerFunction() === targetFn) {
       ScriptApp.deleteTrigger(triggers[i]);
+      deletedCount += 1;
     }
+  }
+
+  if (h < 0 || h >= 24 || m < 0 || m > 59) {
+    return {
+      deletedCount,
+      result: 'fail',
+    };
   }
 
   // 設定新的觸發器
   ScriptApp.newTrigger(targetFn)
     .timeBased()
     .everyDays(1)
-    .atHour(8)
-    .nearMinute(10) // +-15mins
+    .atHour(h)
+    .nearMinute(m) // +-15mins
     .create();
+
+  return {
+    deletedCount,
+    result: 'okay',
+  };
 };

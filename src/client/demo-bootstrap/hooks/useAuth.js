@@ -53,7 +53,7 @@ const useAuthenticator = () => {
   return { authed, login, logout, register, getToken };
 };
 
-const useHook = () => useContext(AuthContext);
+const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const auth = useAuthenticator();
@@ -61,4 +61,4 @@ export const AuthProvider = ({ children }) => {
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 };
 
-export default useHook;
+export default useAuth;

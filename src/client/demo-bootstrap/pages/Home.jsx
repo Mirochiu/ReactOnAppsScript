@@ -5,6 +5,7 @@ import ProductList from '../components/ProductList';
 import LineNotifyArea from '../components/LineNotifyArea';
 import ImgurArea from '../components/ImgurArea';
 import GoogleCalendarArea from '../components/GoogleCalendarArea';
+import ChangeTriggerHourMinute from '../components/ChangeTriggerHourMinute';
 
 const Home = () => {
   const [productData, setProductData] = useState(null);
@@ -26,6 +27,7 @@ const Home = () => {
 
   return (
     <Container>
+      <ChangeTriggerHourMinute></ChangeTriggerHourMinute>
       <LineNotifyArea>綁定LINE通知</LineNotifyArea>
       <ImgurArea>綁定Imgur</ImgurArea>
       <GoogleCalendarArea>授權讀取Google日曆</GoogleCalendarArea>

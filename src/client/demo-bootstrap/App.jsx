@@ -1,5 +1,6 @@
 import React from 'react';
 import { AuthProvider } from './hooks/useAuth';
+import { OwnerProvider } from './hooks/useOwner';
 import { CartProvider } from './hooks/useCart';
 import LoginController from './controllers/LoginController';
 import PagesController from './controllers/PagesController';
@@ -22,24 +23,26 @@ const onPageChanged = ({ page, goPage, logout }) => {
 
 const App = () => {
   return (
-    <AuthProvider>
-      <SimpleLoading>
-        <CartProvider>
-          <LoginController
-            submitForm={<LoginPage />}
-            registForm={<RegistPage />}
-          >
-            <PagesController
-              pages={MemberPages}
-              initPage={MemberPages.home}
-              buildTopNavigator={buildTopNav}
-              buildBottomNavigator={buildBottomNav}
-              onPageChanged={onPageChanged}
-            />
-          </LoginController>
-        </CartProvider>
-      </SimpleLoading>
-    </AuthProvider>
+    <OwnerProvider>
+      <AuthProvider>
+        <SimpleLoading>
+          <CartProvider>
+            <LoginController
+              submitForm={<LoginPage />}
+              registForm={<RegistPage />}
+            >
+              <PagesController
+                pages={MemberPages}
+                initPage={MemberPages.home}
+                buildTopNavigator={buildTopNav}
+                buildBottomNavigator={buildBottomNav}
+                onPageChanged={onPageChanged}
+              />
+            </LoginController>
+          </CartProvider>
+        </SimpleLoading>
+      </AuthProvider>
+    </OwnerProvider>
   );
 };
 

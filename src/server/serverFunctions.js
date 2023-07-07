@@ -8,19 +8,20 @@ import { SERVER_URL } from './settings';
 import LineNotifyApi from './api/lineNotify';
 import googleCalendarApi from './api/googleCalendar';
 import ImgurApi from './api/imgUr';
-import onTriggered, { setupTrigger } from './trigger';
+import onTriggered, { setDailyNotification } from './trigger';
 
 // Expose public functions by attaching to `global`
 global.doGet = publicWebFunctions.doGet;
 global.getServerUrl = () => SERVER_URL;
-global.uploadHtmlFile = contentFunctions.uploadHtmlFile;
 global.uploadImageFile = driveFunctions.uploadImageFile;
 global.listFilesInDriveFolder = driveFunctions.listFilesInDriveFolder;
 global.loginUser = userFunctions.login;
 global.authLogin = userFunctions.auth;
+global.register = userFunctions.register;
+global.isOwner = userFunctions.isOwner;
+global.uploadHtmlFile = contentFunctions.uploadHtmlFile;
 global.getLinkList = contentFunctions.getLinkList;
 global.deleteContentFromSheet = contentFunctions.deleteContentByName;
-global.register = userFunctions.register;
 global.searchByNameInUploadedHtml = contentFunctions.searchHtmlName;
 global.getAllProducts = productFunctions.getAllProducts;
 global.getProductById = productFunctions.getProductById;
@@ -36,7 +37,7 @@ global.hasGoogleCalendarToken = googleCalendarApi.hasBound;
 global.listTodayEventsOnGoogleCanlendar = googleCalendarApi.listTodayEvents;
 global.listCalendarsOnGoogleCalendar = googleCalendarApi.listCalendars;
 global.onTriggered = onTriggered;
-global.setupTrigger = setupTrigger;
+global.setDailyNotification = setDailyNotification;
 global.ConcernedCalendars = (userToken, list) => {
   if (list == null) return googleCalendarApi.getConcernedCalendars(userToken);
   return googleCalendarApi.setConcernedCalendars(userToken, list);

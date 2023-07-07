@@ -122,6 +122,15 @@ export function auth(token) {
   return json.user;
 }
 
+export function isOwner(notThrow) {
+  const e = Session.getEffectiveUser();
+  const a = Session.getActiveUser();
+  const result = e?.getEmail() === a?.getEmail();
+  if (!notThrow && !result)
+    throw new Error(`您不是專案擁有者，或是您可能尚未登入Google帳號`);
+  return result;
+}
+
 export function validateUploadPermission(notThrow) {
   const e = Session.getEffectiveUser();
   const a = Session.getActiveUser();
