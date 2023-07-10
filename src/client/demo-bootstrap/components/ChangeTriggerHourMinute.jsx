@@ -4,6 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { FiSave } from 'react-icons/fi';
 import useOwner from '../hooks/useOwner';
 import LoadingState from './LoadingState';
 import { serverFunctions } from '../../utils/serverFunctions';
@@ -20,11 +21,16 @@ const ControllPanel = ({ onSave }) => {
   };
   return (
     <Container>
-      <Row className="h1">通知時間調整</Row>
+      <Row className="h1 text-center text-md-start">通知時間調整</Row>
       <Row>
-        <Col className="my-auto text-end">請選擇要</Col>
-        <Col>
-          <Form.Select ref={hourRef}>
+        <Col className="my-auto col-5 d-md-flex flex-row">
+          <Form.Label
+            htmlFor="trigger-hour"
+            class="d-none d-md-block my-auto text-nowrap"
+          >
+            請選擇要
+          </Form.Label>
+          <Form.Select ref={hourRef} id="trigger-hour">
             <option>幾點</option>
             <option value="6">早上6點</option>
             <option value="7">早上7點</option>
@@ -44,19 +50,37 @@ const ControllPanel = ({ onSave }) => {
             <option value="21">晚上9點</option>
           </Form.Select>
         </Col>
-        <Col>
-          <Form.Select ref={minuteRef} as={Col}>
+        <Col className="my-auto col-4 d-md-flex flex-row">
+          <Form.Select ref={minuteRef} id="trigger-minute">
             <option>幾分</option>
             <option value="0">整點</option>
+            <option value="5">5分</option>
+            <option value="10">10分</option>
             <option value="15">15分</option>
-            <option value="30">30分</option>
+            <option value="20">20分</option>
+            <option value="25">25分</option>
+            <option value="30">半點</option>
+            <option value="35">35分</option>
+            <option value="40">40分</option>
             <option value="45">45分</option>
+            <option value="50">50分</option>
+            <option value="55">55分</option>
           </Form.Select>
+          <Form.Label
+            htmlFor="trigger-minute"
+            class="d-none d-md-block my-auto text-nowrap"
+          >
+            通知
+          </Form.Label>
         </Col>
-        <Col className="my-auto">通知</Col>
-        <Col>
-          <Button variant="primary" onClick={onClick}>
-            設定
+        <Col className="my-auto col-2">
+          <Button
+            variant="primary"
+            className="d-md-flex flex-row"
+            onClick={onClick}
+          >
+            <FiSave className="my-auto mx-1"></FiSave>
+            <span className="d-none d-md-block">儲存</span>
           </Button>
         </Col>
       </Row>
@@ -84,15 +108,12 @@ const ChangeTriggerHourMinute = () => {
     }
   }, [time]);
 
-  const onSave = (e) => {
-    // console.debug('ControllPanel onsave', e.Data);
-    setTime(e.Data);
-  };
-
   return (
     <LoadingState done={isOwner !== null}>
       <p>專案擁有者:{isOwner ? '是' : '不是'}</p>
-      {isOwner && <ControllPanel onSave={onSave}></ControllPanel>}
+      {isOwner && (
+        <ControllPanel onSave={(e) => setTime(e.Data)}></ControllPanel>
+      )}
     </LoadingState>
   );
 };
