@@ -32,7 +32,6 @@ export const OAUTH_CONIFG = {
     channelId: process.env.GOOGLE_CLIENT_ID,
     channelSecret: process.env.GOOGLE_SECRET,
     loginState: process.env.GOOGLE_STATE,
-    debug: true,
     urlConfig: {
       access_type: 'offline',
       include_granted_scopes: true,
@@ -89,7 +88,6 @@ export const OAUTH_CONIFG = {
     channelSecret: process.env.GOOGLE_SECRET,
     loginState: process.env.GOOGLE_CAL_STATE,
     stateWithJWT: true,
-    debug: true,
     urlConfig: {
       access_type: 'offline',
       include_granted_scopes: true,

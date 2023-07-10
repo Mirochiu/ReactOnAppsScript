@@ -93,15 +93,15 @@ export const setConfig = (key, val) => {
     .from('設定檔')
     .where((row) => row.key == key);
   const rows = query.getRows();
-  log('#debug-setConfig', rows.length);
+  // log('#debug-setConfig', rows.length);
   if (rows.length) {
-    log('#debug-setConfig', 'update');
+    // log('#debug-setConfig', 'update');
     query.updateRows((row) => {
       // eslint-disable-next-line no-param-reassign
       row.val = val;
     });
   } else {
-    log('#debug-setConfig', 'insert');
+    // log('#debug-setConfig', 'insert');
     query.insertRows([{ key, val }]);
   }
 };
