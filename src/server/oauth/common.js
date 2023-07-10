@@ -9,7 +9,7 @@ const getTokenHandler = (config) => {
       method: 'post',
       payload: {
         grant_type: 'authorization_code',
-        redirect_uri: config.callbackUrl,
+        redirect_uri: config.urlConfig.redirect_uri,
         code,
         client_id: config.channelId,
         client_secret: config.channelSecret,

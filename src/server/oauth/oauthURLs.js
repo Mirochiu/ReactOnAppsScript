@@ -1,55 +1,43 @@
 import { OAUTH_CONIFG } from '../settings';
 
+const oauthConfig2URL = (config, token) => {
+  const { authUrl, urlConfig, stateWithJWT } = config;
+  const params = Object.keys(urlConfig)
+    .map((k) => {
+      if (k === 'state' && stateWithJWT)
+        return k + '=' + encodeURIComponent(urlConfig[k]) + '+' + token;
+      if (k === 'scope' && Array.isArray(urlConfig[k]))
+        return k + '=' + encodeURIComponent(urlConfig[k].join(' '));
+      return k + '=' + encodeURIComponent(urlConfig[k]);
+    })
+    .join('&');
+  return authUrl + '?' + params;
+};
+
 export function getGoogleLoginURL() {
   const config = OAUTH_CONIFG.GoogleLogin;
-  const AUTH_URL = config.authUrl;
-  const SCOPE = config.scopeList.join('%20');
-  const CLIENT_ID = config.channelId;
-  const CALLBACK_URL = config.callbackUrl;
-  const STATE = config.loginState || '';
-  const NONCE = config.loginNonce || '';
-  return `${AUTH_URL}?access_type=offline&include_granted_scopes=true&response_type=code&client_id=${CLIENT_ID}&redirect_uri=${CALLBACK_URL}&state=${STATE}&scope=${SCOPE}&nonce=${NONCE}`;
+  return oauthConfig2URL(config);
 }
 
 // https://developers.line.biz/en/reference/line-login/
 export function getLineLoginURL() {
   const config = OAUTH_CONIFG.LineLogin;
-  const AUTH_URL = config.authUrl;
-  const SCOPE = config.scopeList.join('%20');
-  const CHANNEL_ID = config.channelId;
-  const CALLBACK_URL = config.callbackUrl;
-  const STATE = config.loginState || '';
-  const NONCE = config.loginNonce || '';
-  return `${AUTH_URL}?response_type=code&client_id=${CHANNEL_ID}&redirect_uri=${CALLBACK_URL}&state=${STATE}&scope=${SCOPE}&nonce=${NONCE}`;
+  return oauthConfig2URL(config);
 }
 
 // https://notify-bot.line.me/doc/en/
 export function getLineNotifyURL(token) {
   const config = OAUTH_CONIFG.LineNotify;
-  const AUTH_URL = config.authUrl;
-  const SCOPE = config.scopeList.join('%20');
-  const CHANNEL_ID = config.channelId;
-  const CALLBACK_URL = config.callbackUrl;
-  const STATE = `${config.loginState}+${token}`;
-  return `${AUTH_URL}?response_type=code&client_id=${CHANNEL_ID}&redirect_uri=${CALLBACK_URL}&state=${STATE}&scope=${SCOPE}`;
+  return oauthConfig2URL(config, token);
 }
 
 // https://api.imgur.com/oauth2
 export function getImgurURL(token) {
   const config = OAUTH_CONIFG.Imgur;
-  const AUTH_URL = config.authUrl;
-  const CHANNEL_ID = config.channelId;
-  const STATE = `${config.loginState}+${token}`;
-  return `${AUTH_URL}?response_type=code&client_id=${CHANNEL_ID}&state=${STATE}`;
+  return oauthConfig2URL(config, token);
 }
 
 export function getGoogleCalendarURL(token) {
   const config = OAUTH_CONIFG.GoogleCalendar;
-  const AUTH_URL = config.authUrl;
-  const SCOPE = config.scopeList.join('%20');
-  const CLIENT_ID = config.channelId;
-  const CALLBACK_URL = config.callbackUrl;
-  const STATE = `${config.loginState}+${token}`;
-  const NONCE = config.loginNonce || '';
-  return `${AUTH_URL}?access_type=offline&include_granted_scopes=true&response_type=code&client_id=${CLIENT_ID}&redirect_uri=${CALLBACK_URL}&state=${STATE}&scope=${SCOPE}&nonce=${NONCE}`;
+  return oauthConfig2URL(config, token);
 }

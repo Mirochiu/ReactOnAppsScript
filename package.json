@@ -44,9 +44,9 @@
     "datatables.net-responsive-dt": "^2.4.0",
     "gas-client": "^1.0.0",
     "react": "^18.2.0",
-    "react-bootstrap": "^2.5.0",
+    "react-bootstrap": "^2.8.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.6.0",
+    "react-icons": "^4.10.1",
     "react-transition-group": "^4.4.5",
     "sheetquery": "^1.4.0",
     "use-file-picker": "^1.7.0"
