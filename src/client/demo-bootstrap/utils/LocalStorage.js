@@ -20,11 +20,6 @@ const createLocalStorage = () => ({
 const isLocalStorageAvaiable = () => {
   const TEST_ITEM_NAME = 'reactonappscript.test-local-storage';
 
-  if (!navigator.cookieEnabled) {
-    console.warn('cookie disabled');
-    return false;
-  }
-
   if (typeof window.localStorage === 'undefined') {
     console.warn('localStorage not available');
     return false;

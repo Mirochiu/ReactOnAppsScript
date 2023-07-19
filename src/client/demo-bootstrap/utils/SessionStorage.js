@@ -20,11 +20,6 @@ const createSessionStorage = () => ({
 const isSessionStorageAvaiable = () => {
   const TEST_ITEM_NAME = 'reactonappscript.test-session-storage';
 
-  if (!navigator.cookieEnabled) {
-    console.warn('cookie disabled');
-    return false;
-  }
-
   if (typeof window.sessionStorage === 'undefined') {
     console.warn('sessionStorage not available');
     return false;
