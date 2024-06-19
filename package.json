@@ -102,7 +102,7 @@
     "mkdirp": "^1.0.4",
     "prettier": "^2.7.0",
     "prop-types": "^15.8.1",
-    "puppeteer": "^14.3.0",
+    "puppeteer": "^22.11.2",
     "puppeteer-extra": "^3.2.3",
     "puppeteer-extra-plugin-stealth": "^2.9.0",
     "react-refresh": "^0.14.0",
