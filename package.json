@@ -20,8 +20,8 @@
     "setup:https": "mkdirp certs && mkcert -key-file ./certs/key.pem -cert-file ./certs/cert.pem localhost 127.0.0.1",
     "build:dev": "tsc && vite build --mode development",
     "build": "tsc && vite build --mode production",
-    "deploy:dev": "yarn build:dev && yarn push",
-    "deploy": "yarn build && yarn push",
+    "deploy:dev": "yarn build:dev && yarn push && clasp deploy --description \"D$(date +%y%m%d_%H%M)\"",
+    "deploy": "yarn build && yarn push && clasp deploy --description \"R$(date +%y%m%d_%H%M)\"",
     "start": "yarn deploy:dev && yarn dev"
   },
   "keywords": [
