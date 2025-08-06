@@ -16,3 +16,6 @@ dist/
 
 #secret
 .env
+
+# clasp
+.clasp.json
