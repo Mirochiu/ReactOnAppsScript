@@ -18,7 +18,7 @@ importers:
         specifier: ^5.11.11
         version: 5.18.0(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       gas-client:
-        specifier: ^1.2.0
+        specifier: ^1.2.1
         version: 1.2.1
       prop-types:
         specifier: ^15.8.1
@@ -51,6 +51,9 @@ importers:
       '@types/node':
         specifier: ^20.11.30
         version: 20.19.9
+      '@types/prop-types':
+        specifier: ^15.7.15
+        version: 15.7.15
       '@types/puppeteer':
         specifier: ^5.4.6
         version: 5.4.7
@@ -117,6 +120,9 @@ importers:
       jest-image-snapshot:
         specifier: ^5.1.0
         version: 5.2.0(jest@28.1.3(@types/node@20.19.9))
+      mkdirp:
+        specifier: ^3.0.1
+        version: 3.0.1
       postcss:
         specifier: ^8.4.38
         version: 8.5.6
@@ -3634,6 +3640,11 @@ packages:
 
   mkdirp@0.5.6:
     resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
+    hasBin: true
+
+  mkdirp@3.0.1:
+    resolution: {integrity: sha512-+NsyUUAZDmo6YVHzL/stxSu3t9YS1iljliy3BSDrXJ/dkn1KYdmtZODGGjLcc9XLgVVpH4KshHB8XmZgMhaBXg==}
+    engines: {node: '>=10'}
     hasBin: true
 
   ms@2.1.2:
@@ -9148,6 +9159,8 @@ snapshots:
   mkdirp@0.5.6:
     dependencies:
       minimist: 1.2.8
+
+  mkdirp@3.0.1: {}
 
   ms@2.1.2: {}
 
