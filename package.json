@@ -2,11 +2,7 @@
   "name": "react-google-apps-script",
   "version": "3.1.0",
   "type": "module",
-  "description": "Starter project for using React with Google Apps Script",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/enuchi/React-Google-Apps-Script.git"
-  },
+  "description": "Starter project for developing React web apps with Google Apps Script.",
   "scripts": {
     "dev": "vite",
     "lint": "eslint .",
@@ -31,12 +27,7 @@
     "script",
     "sheets"
   ],
-  "author": "Elisha Nuchi",
   "license": "MIT",
-  "engines": {
-    "node": ">=10.0.0",
-    "npm": ">=6.0.0"
-  },
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
