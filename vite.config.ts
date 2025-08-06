@@ -40,6 +40,11 @@ const clientEntrypoints = [
     filename: 'sidebar-about-page',
     template: 'sidebar-about-page/index.html',
   },
+  {
+    name: 'CLIENT - Web Demo Bootstrap',
+    filename: 'web-demo-bootstrap',
+    template: 'web-demo-bootstrap/index.html',
+  },
 ];
 
 const keyPath = resolve(__dirname, './certs/key.pem');

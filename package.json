@@ -20,8 +20,8 @@
     "setup:https": "mkdirp certs && mkcert -key-file ./certs/key.pem -cert-file ./certs/cert.pem localhost 127.0.0.1",
     "build:dev": "tsc && vite build --mode development",
     "build": "tsc && vite build --mode production",
-    "deploy:dev": "pnpm run build:dev && pnpm run push && pnpm exec clasp deploy --description \"D$(date +%y%m%d_%H%M)\"",
-    "deploy": "pnpm run build && pnpm run push && pnpm exec clasp deploy --description \"R$(date +%y%m%d_%H%M)\"",
+    "deploy:dev": "pnpm run build:dev && pnpm run push && pnpm exec clasp deploy --description \"D$(date +%y%m%d_%H%M)\" --deploymentId $(jq -r .deploymentId .clasp.json)",
+    "deploy": "pnpm run build && pnpm run push && pnpm exec clasp deploy --description \"R$(date +%y%m%d_%H%M)\" --deploymentId $(jq -r .deploymentId .clasp.json)",
     "start": "pnpm run deploy:dev && pnpm run dev"
   },
   "keywords": [

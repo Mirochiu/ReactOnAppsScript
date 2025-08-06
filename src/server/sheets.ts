@@ -1,10 +1,39 @@
-const getSheets = () => SpreadsheetApp.getActive().getSheets();
+let spreadSheet: GoogleAppsScript.Spreadsheet.Spreadsheet | null = null;
 
-const getActiveSheetName = () => SpreadsheetApp.getActive().getSheetName();
+const getActiveSpreadsheet = (
+  sheetId?: string
+): GoogleAppsScript.Spreadsheet.Spreadsheet => {
+  if (spreadSheet !== null) {
+    return spreadSheet;
+  }
+  if (typeof sheetId === 'string' && sheetId.length > 0) {
+    spreadSheet = SpreadsheetApp.openById(sheetId);
+  } else {
+    spreadSheet = SpreadsheetApp.getActive();
+  }
+  if (spreadSheet === null) {
+    throw new Error(
+      'Unable to open the spreadsheet. Please verify that a correct sheetId is provided and that you have access permissions.'
+    );
+  }
+  return spreadSheet;
+};
+
+// init once
+// use the external spreadsheet
+spreadSheet = getActiveSpreadsheet(
+  PropertiesService.getScriptProperties().getProperty('sheetId')
+);
+// spreadSheet = getActiveSpreadsheet(); // use the bounded spreadsheet
+
+const getSheets = () => getActiveSpreadsheet().getSheets();
+
+const getActiveSheetName = () => getActiveSpreadsheet().getSheetName();
 
 export const getSheetsData = () => {
   const activeSheetName = getActiveSheetName();
-  return getSheets().map((sheet, index) => {
+  const sheets = getSheets();
+  return sheets.map((sheet, index) => {
     const name = sheet.getName();
     return {
       name,
@@ -15,17 +44,17 @@ export const getSheetsData = () => {
 };
 
 export const addSheet = (sheetTitle: string) => {
-  SpreadsheetApp.getActive().insertSheet(sheetTitle);
+  getActiveSpreadsheet().insertSheet(sheetTitle);
   return getSheetsData();
 };
 
 export const deleteSheet = (sheetIndex: number) => {
   const sheets = getSheets();
-  SpreadsheetApp.getActive().deleteSheet(sheets[sheetIndex]);
+  getActiveSpreadsheet().deleteSheet(sheets[sheetIndex]);
   return getSheetsData();
 };
 
 export const setActiveSheet = (sheetName: string) => {
-  SpreadsheetApp.getActive().getSheetByName(sheetName).activate();
+  getActiveSpreadsheet().getSheetByName(sheetName).activate();
   return getSheetsData();
 };

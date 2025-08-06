@@ -8,6 +8,7 @@ import {
 } from './ui';
 
 import { getSheetsData, addSheet, deleteSheet, setActiveSheet } from './sheets';
+import { doGet, doPost } from './web';
 
 // Public functions must be exported as named exports
 export {
@@ -21,4 +22,6 @@ export {
   addSheet,
   deleteSheet,
   setActiveSheet,
+  doGet,
+  doPost,
 };
