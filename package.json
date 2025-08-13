@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.24.6",
-    "@google/clasp": "^2.4.2",
+    "@google/clasp": "3.0.6-alpha",
     "@types/expect-puppeteer": "^5.0.0",
     "@types/jest-environment-puppeteer": "^5.0.2",
     "@types/node": "^20.11.30",
@@ -51,7 +51,7 @@
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
-    "@vitejs/plugin-react-swc": "^3.5.0",
+    "@vitejs/plugin-react-swc": "^3.11.0",
     "autoprefixer": "^10.4.19",
     "aws-sdk": "^2.1106.0",
     "cross-env": "^7.0.3",
@@ -79,8 +79,8 @@
     "rollup": "^4.18.0",
     "tailwindcss": "^3.4.3",
     "typescript": "^5.2.2",
-    "vite": "^5.2.0",
-    "vite-plugin-singlefile": "^2.0.1",
-    "vite-plugin-static-copy": "^1.0.1"
+    "vite": "^6.3.5",
+    "vite-plugin-singlefile": "^2.3.0",
+    "vite-plugin-static-copy": "^2.3.1"
   }
 }
