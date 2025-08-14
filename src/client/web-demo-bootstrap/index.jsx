@@ -1,8 +1,6 @@
 import { createRoot } from 'react-dom/client';
-import SheetEditor from './components/SheetEditor';
+import App from './App';
 
-import './styles.css';
-
-const container = document.getElementById('index');
+const container = document.getElementById('RApp');
 const root = createRoot(container);
-root.render(<SheetEditor />);
+root.render(<App />);

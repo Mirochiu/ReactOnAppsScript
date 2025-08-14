@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top" href="<?= baseUrl ?>">
+  </head>
+  <body>
+    <h1><?= loginBy ?>登入成功</h1>
+    <p>歡迎您:<?= bindName ?>使用<?= loginBy ?> 登入</p>
+    <p>請問您是否要榜定既有帳號(<?= bindUid ?>)?
+      <a href="<?= bindUrl ?>">[確認]</a> <a href="exec">[取消]</a>
+    </p>
+    <script>
+      google.script.history.replace(null, '', ''); // remove params and hash
+      // remove all scripts
+      document.querySelectorAll('script').forEach(function (s) {
+        s.parentNode.removeChild(s)
+      });
+    </script>
+  </body>
+</html>

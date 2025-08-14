@@ -29,15 +29,22 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "chart.js": "^2.9.4",
+    "datatables.net": "^1.13.1",
+    "datatables.net-dt": "^1.13.1",
+    "datatables.net-responsive": "^2.4.0",
+    "datatables.net-responsive-dt": "^2.4.0",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/material": "^5.11.11",
     "gas-client": "^1.2.1",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
-    "react-bootstrap": "^2.4.0",
+    "react-bootstrap": "^2.5.0",
     "react-dom": "^18.2.0",
-    "react-transition-group": "^4.4.2"
+    "react-icons": "^4.6.0",
+    "react-transition-group": "^4.4.5",
+    "use-file-picker": "^1.7.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.24.6",

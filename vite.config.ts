@@ -16,31 +16,6 @@ const devServerWrapper = './dev/dev-server-wrapper.html';
 
 const clientEntrypoints = [
   {
-    name: 'CLIENT - Dialog Demo',
-    filename: 'dialog-demo', // we'll add the .html suffix to these
-    template: 'dialog-demo/index.html',
-  },
-  {
-    name: 'CLIENT - Dialog Demo Bootstrap',
-    filename: 'dialog-demo-bootstrap',
-    template: 'dialog-demo-bootstrap/index.html',
-  },
-  {
-    name: 'CLIENT - Dialog Demo MUI',
-    filename: 'dialog-demo-mui',
-    template: 'dialog-demo-mui/index.html',
-  },
-  {
-    name: 'CLIENT - Dialog Demo Tailwind CSS',
-    filename: 'dialog-demo-tailwindcss',
-    template: 'dialog-demo-tailwindcss/index.html',
-  },
-  {
-    name: 'CLIENT - Sidebar About Page',
-    filename: 'sidebar-about-page',
-    template: 'sidebar-about-page/index.html',
-  },
-  {
     name: 'CLIENT - Web Demo Bootstrap',
     filename: 'web-demo-bootstrap',
     template: 'web-demo-bootstrap/index.html',
@@ -107,6 +82,7 @@ const clientBuildConfig = ({
           '@emotion/styled',
           'gas-client',
           '@types/react',
+          'react-icons',
         ],
         output: {
           format: 'iife', // needed to use globals from UMD builds
@@ -121,6 +97,7 @@ const clientBuildConfig = ({
             '@emotion/styled': 'emotionStyled',
             'gas-client': 'GASClient',
             '@types/react': '@types/react',
+            'react-icons': 'reactIcons',
           },
         },
         input: resolve(__dirname, clientRoot, template),
