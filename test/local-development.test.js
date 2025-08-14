@@ -43,7 +43,7 @@ describe(`Local setup ${isExtended ? '*extended*' : ''}`, () => {
   const containerSelector = isExtended ? 'div[role="dialog"]' : 'body';
 
   beforeAll(async () => {
-    process = exec('yarn dev');
+    process = exec('pnpm dev');
     page = await global.__BROWSER_GLOBAL__.newPage();
 
     await page.setViewport({
@@ -72,7 +72,7 @@ describe(`Local setup ${isExtended ? '*extended*' : ''}`, () => {
   it('should load Bootstrap example', async () => {
     const container = await page.$(containerSelector);
     const image = await container.screenshot();
-    await expect(image).toMatchImageSnapshot();
+    expect(image).toMatchImageSnapshot();
   });
 
   it('should modify Bootstrap title example', async () => {
@@ -90,7 +90,7 @@ describe(`Local setup ${isExtended ? '*extended*' : ''}`, () => {
     await page.waitForTimeout(4000);
     const container = await page.$(containerSelector);
     const image = await container.screenshot();
-    await expect(image).toMatchImageSnapshot();
+    expect(image).toMatchImageSnapshot();
   });
 
   it('should modify Bootstrap title example back to original', async () => {
@@ -108,6 +108,6 @@ describe(`Local setup ${isExtended ? '*extended*' : ''}`, () => {
     await page.waitForTimeout(4000);
     const container = await page.$(containerSelector);
     const image = await container.screenshot();
-    await expect(image).toMatchImageSnapshot();
+    expect(image).toMatchImageSnapshot();
   });
 });

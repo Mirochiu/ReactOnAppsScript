@@ -14,5 +14,5 @@ export default async function globalTeardown() {
   await global.__BROWSER_GLOBAL__.close();
 
   // clean-up the wsEndpoint file
-  await fsPromises.rmdir(DIR, { recursive: true, force: true });
+  await fsPromises.rm(DIR, { recursive: true, force: true });
 }

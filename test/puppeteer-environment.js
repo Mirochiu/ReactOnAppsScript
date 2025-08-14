@@ -10,7 +10,7 @@ import NodeEnvironment from 'jest-environment-node';
 
 const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
 
-export default class PuppeteerEnvironment extends NodeEnvironment.default {
+export default class PuppeteerEnvironment extends NodeEnvironment {
   async setup() {
     await super.setup();
     // get the wsEndpoint
