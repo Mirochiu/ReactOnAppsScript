@@ -1,7 +1,9 @@
+import waitForTimeout from './waitForTimeout';
+
 export const openAddon = async (page) => {
   await page.goto(process.env.SHEET_URL);
 
-  await page.waitForTimeout(5000); // pause for 3 seconds
+  await waitForTimeout(5000); // pause for 3 seconds
   await page.click('a:nth-child(2)'); // click on signin button
 
   await page.waitForSelector('input[name="identifier"]', { visible: true });
@@ -10,10 +12,10 @@ export const openAddon = async (page) => {
 
   await page.waitForSelector('input[name="Passwd"]', { visible: true });
   await page.type('input[name="Passwd"]', process.env.PASSWORD); // type pass
-  await page.waitForTimeout(500);
+  await waitForTimeout(500);
 
   await page.click('#passwordNext'); // click "next" button
-  await page.waitForTimeout(3000);
+  await waitForTimeout(3000);
 
   if (
     await page.evaluate(
@@ -24,7 +26,7 @@ export const openAddon = async (page) => {
   ) {
     try {
       await page.click('li:nth-child(3)');
-      await page.waitForTimeout(6000);
+      await waitForTimeout(6000);
     } catch {
       // eslint-disable-next-line no-console
       console.log('The "choose account recovery method" page isn\'t shown');
@@ -34,9 +36,9 @@ export const openAddon = async (page) => {
       'input[name="knowledgePreregisteredEmailResponse"]',
       process.env.TEST_RECOVERY_EMAIL
     ); // type recovery email
-    await page.waitForTimeout(6000);
+    await waitForTimeout(6000);
     await page.click('div[data-primary-action-label] button'); // click "next" button
-    await page.waitForTimeout(5000);
+    await waitForTimeout(5000);
   }
 
   if (
@@ -52,7 +54,7 @@ export const openAddon = async (page) => {
       await page.click(
         'div[data-secondary-action-label] > div > div:nth-child(2) button'
       );
-      await page.waitForTimeout(6000);
+      await waitForTimeout(6000);
     } catch {
       // eslint-disable-next-line no-console
       console.log('The "Simplify your sign-in" page isn\'t shown');
@@ -103,5 +105,5 @@ export const openAddon = async (page) => {
     timeout: 10000,
   });
 
-  await page.waitForTimeout(15000);
+  await waitForTimeout(15000);
 };

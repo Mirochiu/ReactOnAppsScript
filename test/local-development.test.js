@@ -4,6 +4,7 @@ import { exec } from 'child_process';
 import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import dotenv from 'dotenv';
 import { openAddon } from './utils/open-addon';
+import waitForTimeout from './utils/waitForTimeout';
 
 dotenv.config();
 
@@ -60,7 +61,7 @@ describe(`Local setup ${isExtended ? '*extended*' : ''}`, () => {
       await page.goto(
         'https://localhost:3000/dialog-demo-bootstrap/index.html'
       );
-      await page.waitForTimeout(3000);
+      await waitForTimeout(3000);
     }
   });
 
@@ -87,7 +88,7 @@ describe(`Local setup ${isExtended ? '*extended*' : ''}`, () => {
         "{ padding: '3px', overflowX: 'hidden', backgroundColor: 'black', color: 'white' }"
       );
     await fs.promises.writeFile(srcTestFile, result, 'utf8');
-    await page.waitForTimeout(4000);
+    await waitForTimeout(4000);
     const container = await page.$(containerSelector);
     const image = await container.screenshot();
     expect(image).toMatchImageSnapshot();
@@ -105,7 +106,7 @@ describe(`Local setup ${isExtended ? '*extended*' : ''}`, () => {
         "{ padding: '3px', overflowX: 'hidden' }"
       );
     await fs.promises.writeFile(srcTestFile, result, 'utf8');
-    await page.waitForTimeout(4000);
+    await waitForTimeout(4000);
     const container = await page.$(containerSelector);
     const image = await container.screenshot();
     expect(image).toMatchImageSnapshot();
