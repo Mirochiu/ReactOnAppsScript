@@ -11,7 +11,7 @@
     "test:integration:extended:ci-reporter": "cross-env IS_EXTENDED=true jest --forceExit || node test/utils/image-reporter-standalone.js",
     "login": "pnpm exec clasp login",
     "setup": "rimraf .clasp.json && mkdirp dist && pnpm exec clasp create --type webapp --title \"RGAS 3.1.0\" --rootDir ./dist && mv ./dist/.clasp.json ./.clasp.json && rimraf dist",
-    "open": "pnpm exec clasp open --webapp",
+    "open": "pnpm exec clasp open-web-app $(jq -r .deploymentId .clasp.json)",
     "push": "pnpm exec clasp push",
     "setup:https": "mkdirp certs && mkcert -key-file ./certs/key.pem -cert-file ./certs/cert.pem localhost 127.0.0.1",
     "build:dev": "tsc && vite build --mode development",
