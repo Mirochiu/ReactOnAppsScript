@@ -69,7 +69,7 @@
     "eslint-plugin-react-refresh": "^0.4.6",
     "gas-types-detailed": "^1.1.2",
     "mkdirp": "^3.0.1",
-    "postcss": "^8.4.38",
+    "postcss": "^8.5.18",
     "postcss-preset-env": "^9.5.4",
     "prettier": "^2.7.0",
     "rollup": "^4.59.0",
